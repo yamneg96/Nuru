@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Nuru Design System: Material Design 3 Tokens ─────────── */
+@theme inline {
+  /* Typography */
+  --font-heading: "Plus Jakarta Sans", var(--font-sans);
+  --font-sans: "Inter Variable", "Inter", sans-serif;
+
+  /* Radii */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-4xl: 2.5rem;
+
+  /* shadcn compatibility */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* M3 Extended Surface Colors */
+  --color-surface: var(--nuru-surface);
+  --color-surface-bright: var(--nuru-surface-bright);
+  --color-surface-dim: var(--nuru-surface-dim);
+  --color-surface-container: var(--nuru-surface-container);
+  --color-surface-container-low: var(--nuru-surface-container-low);
+  --color-surface-container-lowest: var(--nuru-surface-container-lowest);
+  --color-surface-container-high: var(--nuru-surface-container-high);
+  --color-surface-container-highest: var(--nuru-surface-container-highest);
+
+  /* M3 On-Surface Colors */
+  --color-on-surface: var(--nuru-on-surface);
+  --color-on-surface-variant: var(--nuru-on-surface-variant);
+  --color-on-background: var(--nuru-on-background);
+
+  /* M3 Primary Extended */
+  --color-primary-container: var(--nuru-primary-container);
+  --color-on-primary: var(--nuru-on-primary);
+  --color-on-primary-container: var(--nuru-on-primary-container);
+  --color-primary-fixed: var(--nuru-primary-fixed);
+  --color-primary-fixed-dim: var(--nuru-primary-fixed-dim);
+  --color-on-primary-fixed: var(--nuru-on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--nuru-on-primary-fixed-variant);
+
+  /* M3 Secondary Extended */
+  --color-secondary-container: var(--nuru-secondary-container);
+  --color-on-secondary: var(--nuru-on-secondary);
+  --color-on-secondary-container: var(--nuru-on-secondary-container);
+  --color-secondary-fixed: var(--nuru-secondary-fixed);
+  --color-secondary-fixed-dim: var(--nuru-secondary-fixed-dim);
+
+  /* M3 Tertiary */
+  --color-tertiary: var(--nuru-tertiary);
+  --color-tertiary-container: var(--nuru-tertiary-container);
+  --color-on-tertiary: var(--nuru-on-tertiary);
+  --color-on-tertiary-container: var(--nuru-on-tertiary-container);
+  --color-tertiary-fixed: var(--nuru-tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--nuru-tertiary-fixed-dim);
+
+  /* M3 Error */
+  --color-error: var(--nuru-error);
+  --color-error-container: var(--nuru-error-container);
+  --color-on-error: var(--nuru-on-error);
+  --color-on-error-container: var(--nuru-on-error-container);
+
+  /* M3 Outline */
+  --color-outline: var(--nuru-outline);
+  --color-outline-variant: var(--nuru-outline-variant);
+
+  /* M3 Inverse */
+  --color-inverse-surface: var(--nuru-inverse-surface);
+  --color-inverse-on-surface: var(--nuru-inverse-on-surface);
+  --color-inverse-primary: var(--nuru-inverse-primary);
+
+  /* Sidebar */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+}
+
+/* ── Light Theme (M3 Stitch Palette) ──────────────────────── */
+:root {
+  /* Core shadcn tokens mapped to M3 */
+  --background: #f9f9ff;
+  --foreground: #151c27;
+  --card: #ffffff;
+  --card-foreground: #151c27;
+  --popover: #ffffff;
+  --popover-foreground: #151c27;
+  --primary: #0058be;
+  --primary-foreground: #ffffff;
+  --secondary: #006c49;
+  --secondary-foreground: #ffffff;
+  --muted: #e7eefe;
+  --muted-foreground: #424754;
+  --accent: #d8e2ff;
+  --accent-foreground: #001a42;
+  --destructive: #ba1a1a;
+  --border: #c2c6d6;
+  --input: #c2c6d6;
+  --ring: #0058be;
+  --radius: 0.75rem;
+
+  /* M3 Surface System */
+  --nuru-surface: #f9f9ff;
+  --nuru-surface-bright: #f9f9ff;
+  --nuru-surface-dim: #d3daea;
+  --nuru-surface-container: #e7eefe;
+  --nuru-surface-container-low: #f0f3ff;
+  --nuru-surface-container-lowest: #ffffff;
+  --nuru-surface-container-high: #e2e8f8;
+  --nuru-surface-container-highest: #dce2f3;
+
+  /* M3 On-Surface */
+  --nuru-on-surface: #151c27;
+  --nuru-on-surface-variant: #424754;
+  --nuru-on-background: #151c27;
+
+  /* M3 Primary */
+  --nuru-primary-container: #2170e4;
+  --nuru-on-primary: #ffffff;
+  --nuru-on-primary-container: #fefcff;
+  --nuru-primary-fixed: #d8e2ff;
+  --nuru-primary-fixed-dim: #adc6ff;
+  --nuru-on-primary-fixed: #001a42;
+  --nuru-on-primary-fixed-variant: #004395;
+
+  /* M3 Secondary */
+  --nuru-secondary-container: #6cf8bb;
+  --nuru-on-secondary: #ffffff;
+  --nuru-on-secondary-container: #00714d;
+  --nuru-secondary-fixed: #6ffbbe;
+  --nuru-secondary-fixed-dim: #4edea3;
+
+  /* M3 Tertiary */
+  --nuru-tertiary: #825100;
+  --nuru-tertiary-container: #a36700;
+  --nuru-on-tertiary: #ffffff;
+  --nuru-on-tertiary-container: #fffbff;
+  --nuru-tertiary-fixed: #ffddb8;
+  --nuru-tertiary-fixed-dim: #ffb95f;
+
+  /* M3 Error */
+  --nuru-error: #ba1a1a;
+  --nuru-error-container: #ffdad6;
+  --nuru-on-error: #ffffff;
+  --nuru-on-error-container: #93000a;
+
+  /* M3 Outline */
+  --nuru-outline: #727785;
+  --nuru-outline-variant: #c2c6d6;
+
+  /* M3 Inverse */
+  --nuru-inverse-surface: #2a313d;
+  --nuru-inverse-on-surface: #ebf1ff;
+  --nuru-inverse-primary: #adc6ff;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #151c27;
+  --sidebar-primary: #0058be;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f3ff;
+  --sidebar-accent-foreground: #0058be;
+  --sidebar-border: #e2e8f8;
+  --sidebar-ring: #0058be;
+
+  /* Charts */
+  --chart-1: #0058be;
+  --chart-2: #006c49;
+  --chart-3: #825100;
+  --chart-4: #2170e4;
+  --chart-5: #adc6ff;
+}
+
+/* ── Dark Theme ───────────────────────────────────────────── */
+.dark {
+  --background: #111827;
+  --foreground: #ebf1ff;
+  --card: #1a2234;
+  --card-foreground: #ebf1ff;
+  --popover: #1a2234;
+  --popover-foreground: #ebf1ff;
+  --primary: #adc6ff;
+  --primary-foreground: #002f6b;
+  --secondary: #4edea3;
+  --secondary-foreground: #00382a;
+  --muted: #1e2a3e;
+  --muted-foreground: #9ca3b4;
+  --accent: #1e2a3e;
+  --accent-foreground: #adc6ff;
+  --destructive: #ffb4ab;
+  --border: #3a4255;
+  --input: #3a4255;
+  --ring: #adc6ff;
+
+  --nuru-surface: #111827;
+  --nuru-surface-bright: #1a2234;
+  --nuru-surface-dim: #0c1220;
+  --nuru-surface-container: #1e2a3e;
+  --nuru-surface-container-low: #151f30;
+  --nuru-surface-container-lowest: #0a0f1a;
+  --nuru-surface-container-high: #263348;
+  --nuru-surface-container-highest: #2e3b52;
+  --nuru-on-surface: #ebf1ff;
+  --nuru-on-surface-variant: #9ca3b4;
+  --nuru-on-background: #ebf1ff;
+  --nuru-primary-container: #004395;
+  --nuru-on-primary: #002f6b;
+  --nuru-on-primary-container: #d8e2ff;
+  --nuru-primary-fixed: #d8e2ff;
+  --nuru-primary-fixed-dim: #adc6ff;
+  --nuru-on-primary-fixed: #001a42;
+  --nuru-on-primary-fixed-variant: #004395;
+  --nuru-secondary-container: #005236;
+  --nuru-on-secondary: #00382a;
+  --nuru-on-secondary-container: #6ffbbe;
+  --nuru-secondary-fixed: #6ffbbe;
+  --nuru-secondary-fixed-dim: #4edea3;
+  --nuru-tertiary: #ffb95f;
+  --nuru-tertiary-container: #653e00;
+  --nuru-on-tertiary: #452b00;
+  --nuru-on-tertiary-container: #ffddb8;
+  --nuru-tertiary-fixed: #ffddb8;
+  --nuru-tertiary-fixed-dim: #ffb95f;
+  --nuru-error: #ffb4ab;
+  --nuru-error-container: #93000a;
+  --nuru-on-error: #690005;
+  --nuru-on-error-container: #ffdad6;
+  --nuru-outline: #8c909e;
+  --nuru-outline-variant: #424754;
+  --nuru-inverse-surface: #ebf1ff;
+  --nuru-inverse-on-surface: #2a313d;
+  --nuru-inverse-primary: #0058be;
+
+  --sidebar: #111827;
+  --sidebar-foreground: #ebf1ff;
+  --sidebar-primary: #adc6ff;
+  --sidebar-primary-foreground: #002f6b;
+  --sidebar-accent: #1e2a3e;
+  --sidebar-accent-foreground: #ebf1ff;
+  --sidebar-border: #3a4255;
+  --sidebar-ring: #adc6ff;
+
+  --chart-1: #adc6ff;
+  --chart-2: #4edea3;
+  --chart-3: #ffb95f;
+  --chart-4: #7da8ff;
+  --chart-5: #6cf8bb;
+}
+
+/* ── Base Styles ──────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans antialiased;
+  }
+}
+
+/* ── Material Symbols ─────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1;
+}
+
+/* ── Utilities ────────────────────────────────────────────── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

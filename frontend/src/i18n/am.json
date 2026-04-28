@@ -1,0 +1,14 @@
+{
+  "nav": { "home": "መነሻ", "explore": "ያስሱ", "chat": "ውይይት", "services": "አገልግሎቶች", "profile": "መገለጫ", "login": "ግባ", "logout": "ውጣ", "back": "ተመለስ" },
+  "landing": { "hero_title": "ሕይወትህ። ምርጫህ። የወደፊትህ።", "hero_subtitle": "ለግንኙነቶች፣ ጤና እና የሕይወት ውሳኔዎች ስም-ሳይገለጽ ድጋፍ።", "start_now": "አሁን ጀምር", "learn_more": "ተጨማሪ ይወቁ", "how_it_works": "እንዴት ይሰራል", "step1_title": "ስም ሳይገለጽ ጠይቅ", "step2_title": "ባለሙያ መልሶች ያግኙ", "step3_title": "በመረጃ ላይ ውሳኔ ያድርጉ", "trusted_title": "በወጣቶች ታምኗል", "youth_supported": "ወጣቶች ተደግፈዋል", "questions_answered": "ጥያቄዎች ተመልሰዋል", "features_title": "ዋና ባህሪያት", "built_for": "ለኢትዮጵያ ወጣቶች የተሰራ", "start_journey": "ጉዞዎን ይጀምሩ" },
+  "login": { "title_1": "በነጻ ተናገር።", "title_2": "ግላዊነትህ ይጠበቃል።", "subtitle": "ደህንነቱ የተጠበቀ ግባት እንጠቀማለን፣ ግን ማንነትዎ ስም ሳይገለጽ ይቆያል።", "continue_anon": "ስም ሳይገለጽ ቀጥል", "or": "ወይም", "footer": "Google የሚጠቀመው ለማረጋገጥ ብቻ ነው።" },
+  "onboarding": { "welcome": "እንኳን ወደ ኑሩ በደህና መጡ", "choose_language": "ቋንቋ ይምረጡ።", "privacy_title": "ግላዊነትዎ", "privacy_desc": "ማንም ማን እንደሆኑ አያውቅም።", "next": "ቀጣይ" },
+  "safely": { "title": "ገብተዋል — በደህንነት", "subtitle": "አሁን ስም ሳይገለጽ ነዎት።", "your_id": "ስም-ሳይገለጽ መታወቂያዎ", "start_exploring": "ማሰስ ይጀምሩ" },
+  "dashboard": { "greeting": "ዛሬ እንዴት ልንረዳዎ?", "greeting_sub": "ታማኝ መረጃ ለማቅረብ እዚህ ነን።", "action_pressure": "ጫና ይሰማኛል", "action_period": "ወር አበባዬ ዘግይቷል", "action_pregnancy": "እርግዝናን ማስቀረት", "action_advice": "ምክር እፈልጋለሁ", "recommended": "ለእርስዎ የሚመከር" },
+  "chat": { "assistant": "ረዳት", "encrypted": "ምስጢራዊ", "welcome_msg": "ሰላም። እኔ ኑሩ ነኝ። ዛሬ ምን አዲስ ነገር አለ?", "placeholder": "ለኑሩ ይላኩ...", "error_msg": "ችግር ተፈጥሯል። እንደገና ይሞክሩ።" },
+  "explore": { "title": "ያስሱ እና ይማሩ", "subtitle": "ለጤናማ ሕይወት ጠቃሚ እውቀት።", "relationships": "ጤናማ ግንኙነቶች", "body": "ሰውነቴ እና ጤናዬ", "myths": "ወሬዎች vs. እውነታዎች", "goals": "የሕይወት ግቦች", "quiz_title": "እውቀትዎን ይፈትኑ", "start_quiz": "ፈተና ይጀምሩ", "modules": "ሞጁሎች", "start_learning": "መማር ይጀምሩ" },
+  "services": { "search_placeholder": "ክሊኒኮችን ይፈልጉ...", "all_nearby": "ሁሉም አቅራቢያ", "free_services": "ነጻ አገልግሎቶች", "youth_friendly": "ለወጣቶች ተስማሚ", "pharmacy": "ፋርማሲ", "showing": "በማሳየት ላይ", "clinics_near": "አቅራቢያዎ ክሊኒኮች", "get_directions": "አቅጣጫ ያግኙ", "call": "ይደውሉ" },
+  "settings": { "title": "ግላዊነት እና ቅንብሮች", "safe_title": "ቦታዎ ደህንነቱ የተጠበቀ ነው", "privacy_controls": "የግላዊነት ቁጥጥሮች", "save_history": "ታሪክ ያስቀምጡ", "delete_data": "ውሂቤን ሰርዝ", "delete_btn": "ሰርዝ", "language_title": "የቋንቋ ምርጫ", "logout": "ውጣ" },
+  "decision": { "intro_title": "አብረን እንፍታ", "begin": "ግምገማ ይጀምሩ", "next_step": "ቀጣይ ደረጃ", "results": "ውጤቶችዎ" },
+  "common": { "loading": "በመጫን ላይ...", "privacy_policy": "የግላዊነት ፖሊሲ", "terms": "የአገልግሎት ውል", "contact": "ያግኙን", "copyright": "© 2024 ኑሩ።" }
+}
