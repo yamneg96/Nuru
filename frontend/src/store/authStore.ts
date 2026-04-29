@@ -1,13 +1,13 @@
-import { create } from "zustand";
+import { create } from "zustand"
 
 interface AuthState {
-  token: string | null;
-  anonymousId: string | null;
-  isAuthenticated: boolean;
-  isOnboarded: boolean;
-  login: (token: string, anonymousId: string) => void;
-  logout: () => void;
-  setOnboarded: (value: boolean) => void;
+  token: string | null
+  anonymousId: string | null
+  isAuthenticated: boolean
+  isOnboarded: boolean
+  login: (token: string, anonymousId: string) => void
+  logout: () => void
+  setOnboarded: (value: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -17,20 +17,25 @@ export const useAuthStore = create<AuthState>((set) => ({
   isOnboarded: localStorage.getItem("nuru_onboarded") === "true",
 
   login: (token, anonymousId) => {
-    localStorage.setItem("nuru_token", token);
-    localStorage.setItem("nuru_anonymous_id", anonymousId);
-    set({ token, anonymousId, isAuthenticated: true });
+    localStorage.setItem("nuru_token", token)
+    localStorage.setItem("nuru_anonymous_id", anonymousId)
+    set({ token, anonymousId, isAuthenticated: true })
   },
 
   logout: () => {
-    localStorage.removeItem("nuru_token");
-    localStorage.removeItem("nuru_anonymous_id");
-    localStorage.removeItem("nuru_onboarded");
-    set({ token: null, anonymousId: null, isAuthenticated: false, isOnboarded: false });
+    localStorage.removeItem("nuru_token")
+    localStorage.removeItem("nuru_anonymous_id")
+    localStorage.removeItem("nuru_onboarded")
+    set({
+      token: null,
+      anonymousId: null,
+      isAuthenticated: false,
+      isOnboarded: false,
+    })
   },
 
   setOnboarded: (value) => {
-    localStorage.setItem("nuru_onboarded", String(value));
-    set({ isOnboarded: value });
+    localStorage.setItem("nuru_onboarded", String(value))
+    set({ isOnboarded: value })
   },
-}));
+}))

@@ -1,89 +1,103 @@
-import { useState, useEffect } from "react";
-import { getServices } from "@/api/services.api";
-import type { ServiceLocation } from "@shared/types";
+import { useState, useEffect } from "react"
+import { getServices } from "@/api/services.api"
+import type { ServiceLocation } from "../../../shared/types"
 
 const FILTERS = [
   { label: "All Nearby", tag: "", icon: "check" },
   { label: "Free Services", tag: "free_options", icon: "volunteer_activism" },
   { label: "Youth-friendly", tag: "youth_friendly", icon: "child_care" },
   { label: "Pharmacy", tag: "pharmacy", icon: "medication" },
-];
+]
 
 export default function ServicesPage() {
-  const [services, setServices] = useState<ServiceLocation[]>([]);
-  const [activeFilter, setActiveFilter] = useState("");
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [services, setServices] = useState<ServiceLocation[]>([])
+  const [activeFilter, setActiveFilter] = useState("")
+  const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const params: Record<string, string> = {};
-        if (activeFilter) params.tag = activeFilter;
-        if (search) params.search = search;
-        const data = await getServices(params);
-        setServices(data);
+        const params: Record<string, string> = {}
+        if (activeFilter) params.tag = activeFilter
+        if (search) params.search = search
+        const data = await getServices(params)
+        console.log(data)
+        setServices(data)
       } catch {
-        setServices([]);
+        setServices([])
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    load();
-  }, [activeFilter, search]);
+    }
+    load()
+  }, [activeFilter, search])
 
   return (
-    <div className="max-w-5xl mx-auto px-5 md:px-8 py-6">
+    <div className="mx-auto max-w-5xl px-5 py-6 md:px-8">
       {/* Search */}
       <section className="mb-8">
-        <div className="relative w-full md:w-96 mb-4">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <div className="relative mb-4 w-full md:w-96">
+          <span className="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-outline">
+            search
+          </span>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all text-on-surface outline-none"
+            className="w-full rounded-xl border border-outline-variant/50 bg-surface-container-low py-3 pr-4 pl-12 text-on-surface transition-all outline-none focus:border-primary focus:ring-2 focus:ring-primary"
             placeholder="Search clinics, services..."
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
           {FILTERS.map((f) => {
-            const isActive = activeFilter === f.tag;
+            const isActive = activeFilter === f.tag
             return (
               <button
                 key={f.tag}
                 onClick={() => setActiveFilter(f.tag)}
-                className={`shrink-0 px-4 py-2 rounded-full font-semibold text-sm flex items-center gap-2 transition-colors ${
+                className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                   isActive
                     ? "bg-primary text-on-primary shadow-sm"
-                    : "bg-surface-container-high text-on-surface border border-outline-variant/30 hover:bg-surface-variant"
+                    : "hover:bg-surface-variant border border-outline-variant/30 bg-surface-container-high text-on-surface"
                 }`}
               >
-                <span className="material-symbols-outlined text-[18px]" style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}>{f.icon}</span>
+                <span
+                  className="material-symbols-outlined text-[18px]"
+                  style={
+                    isActive ? { fontVariationSettings: "'FILL' 1" } : undefined
+                  }
+                >
+                  {f.icon}
+                </span>
                 {f.label}
               </button>
-            );
+            )
           })}
         </div>
       </section>
 
       {/* Map Placeholder */}
-      <section className="mb-8 rounded-[24px] overflow-hidden relative h-64 md:h-80 shadow-[0_8px_30px_rgba(59,130,246,0.12)] border border-outline-variant/20">
-        <div className="absolute inset-0 bg-surface-container flex items-center justify-center">
+      <section className="relative mb-8 h-64 overflow-hidden rounded-[24px] border border-outline-variant/20 shadow-[0_8px_30px_rgba(59,130,246,0.12)] md:h-80">
+        <div className="absolute inset-0 flex items-center justify-center bg-surface-container">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn4iEXwaN2fcAMyoxD7jmyIAdBiHujlws1iwjqL3vfrRLtM251LTQgMQqB295xugyb97YkMBix1I0soxnjCzVFauuEXRat_MpPw0qjEJVjC9NI12KnprQUax5htODoCKskmuyOAkYC3VEMb7oRZIAATljRZaSoLNgKinUIPT6rm6g248_qJH0mOOU8ROMnRM6o2eOEW5tyK_7tAjYg1hSaNCMX1Qwyt3v4olnNFqw3gcg3v9IgQVSUi1homcLN1W55rDdyS_EtXgg"
             alt="Map view"
-            className="w-full h-full object-cover opacity-60"
+            className="h-full w-full object-cover opacity-60"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-          <div className="bg-surface/90 backdrop-blur-md px-4 py-2 rounded-xl border border-outline-variant/30 shadow-sm">
-            <p className="text-xs font-semibold text-outline uppercase tracking-wider mb-1">Showing</p>
-            <p className="font-semibold text-on-surface">{services.length} clinics near you</p>
+        <div className="absolute right-4 bottom-4 left-4 flex items-end justify-between">
+          <div className="rounded-xl border border-outline-variant/30 bg-surface/90 px-4 py-2 shadow-sm backdrop-blur-md">
+            <p className="mb-1 text-xs font-semibold tracking-wider text-outline uppercase">
+              Showing
+            </p>
+            <p className="font-semibold text-on-surface">
+              {services.length} clinics near you
+            </p>
           </div>
-          <button className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg transition-transform hover:scale-105">
             <span className="material-symbols-outlined fill">my_location</span>
           </button>
         </div>
@@ -92,47 +106,79 @@ export default function ServicesPage() {
       {/* Clinic Cards */}
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {services.map((svc, i) => (
-            <article key={i} className="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant/30 shadow-[0_4px_20px_rgba(59,130,246,0.05)] hover:shadow-[0_8px_24px_rgba(59,130,246,0.08)] transition-all flex flex-col h-full">
-              <div className="flex justify-between items-start mb-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {services?.map((svc, i) => (
+            <article
+              key={i}
+              className="flex h-full flex-col rounded-[24px] border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(59,130,246,0.05)] transition-all hover:shadow-[0_8px_24px_rgba(59,130,246,0.08)]"
+            >
+              <div className="mb-4 flex items-start justify-between">
                 <div>
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    {svc.verified && <span className="bg-secondary-container/50 text-on-secondary-container px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase">Verified</span>}
+                  <div className="mb-1 flex flex-wrap items-center gap-2">
+                    {svc.verified && (
+                      <span className="rounded-md bg-secondary-container/50 px-2 py-0.5 text-[10px] font-semibold text-on-secondary-container uppercase">
+                        Verified
+                      </span>
+                    )}
                     {svc.tags?.map((tag) => (
-                      <span key={tag} className="bg-primary-container/20 text-primary px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase">
+                      <span
+                        key={tag}
+                        className="rounded-md bg-primary-container/20 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase"
+                      >
                         {tag.replace(/_/g, " ")}
                       </span>
                     ))}
                   </div>
-                  <h2 className="font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface mb-1">{svc.name}</h2>
-                  <p className="text-outline flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[16px]">location_on</span>
+                  <h2 className="mb-1 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
+                    {svc.name}
+                  </h2>
+                  <p className="flex items-center gap-1 text-outline">
+                    <span className="material-symbols-outlined text-[16px]">
+                      location_on
+                    </span>
                     {svc.distance} away • {svc.area}
                   </p>
                 </div>
-                <div className="bg-surface-container p-2 rounded-xl text-primary">
-                  <span className="material-symbols-outlined">local_hospital</span>
+                <div className="rounded-xl bg-surface-container p-2 text-primary">
+                  <span className="material-symbols-outlined">
+                    local_hospital
+                  </span>
                 </div>
               </div>
               <div className="mb-6 flex-grow">
-                <p className="text-xs font-semibold text-outline uppercase mb-2">Available Services</p>
+                <p className="mb-2 text-xs font-semibold text-outline uppercase">
+                  Available Services
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {svc.services?.map((s) => (
-                    <span key={s} className="px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-lg text-sm">{s}</span>
+                    <span
+                      key={s}
+                      className="rounded-lg bg-surface-container-low px-3 py-1 text-sm text-on-surface-variant"
+                    >
+                      {s}
+                    </span>
                   ))}
                 </div>
               </div>
-              <div className="flex gap-2 mt-auto pt-4 border-t border-outline-variant/20">
-                <button className="flex-1 bg-primary text-on-primary py-3 rounded-full font-semibold flex justify-center items-center gap-2 hover:bg-surface-tint transition-colors">
-                  <span className="material-symbols-outlined text-[20px]">directions</span>Get Directions
+              <div className="mt-auto flex gap-2 border-t border-outline-variant/20 pt-4">
+                <button className="hover:bg-surface-tint flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-on-primary transition-colors">
+                  <span className="material-symbols-outlined text-[20px]">
+                    directions
+                  </span>
+                  Get Directions
                 </button>
                 {svc.phone && (
-                  <a href={`tel:${svc.phone}`} className="flex-1 bg-surface-container-high text-primary py-3 rounded-full font-semibold flex justify-center items-center gap-2 hover:bg-surface-variant transition-colors border border-outline-variant/20">
-                    <span className="material-symbols-outlined text-[20px]">call</span>Call
+                  <a
+                    href={`tel:${svc.phone}`}
+                    className="hover:bg-surface-variant flex flex-1 items-center justify-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container-high py-3 font-semibold text-primary transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">
+                      call
+                    </span>
+                    Call
                   </a>
                 )}
               </div>
@@ -141,5 +187,5 @@ export default function ServicesPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

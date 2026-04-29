@@ -1,11 +1,35 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 
 const QUICK_ACTIONS = [
-  { label: "I feel pressure in a relationship", icon: "favorite", bgIcon: "bg-primary-container text-on-primary-container", hoverBg: "group-hover:bg-primary group-hover:text-on-primary", flow: "relationship_pressure" },
-  { label: "I missed my period", icon: "calendar_month", bgIcon: "bg-error-container text-on-error-container", hoverBg: "group-hover:bg-error group-hover:text-on-error", flow: "missed_period" },
-  { label: "I want to avoid pregnancy", icon: "shield", bgIcon: "bg-secondary-container text-on-secondary-container", hoverBg: "group-hover:bg-secondary group-hover:text-on-secondary", flow: "contraception" },
-  { label: "I need advice", icon: "psychology", bgIcon: "bg-tertiary-container text-on-tertiary-container", hoverBg: "group-hover:bg-tertiary group-hover:text-on-tertiary", flow: "general_advice" },
-];
+  {
+    label: "I feel pressure in a relationship",
+    icon: "favorite",
+    bgIcon: "bg-primary-container text-on-primary-container",
+    hoverBg: "group-hover:bg-primary group-hover:text-on-primary",
+    flow: "relationship_pressure",
+  },
+  {
+    label: "I missed my period",
+    icon: "calendar_month",
+    bgIcon: "bg-error-container text-on-error-container",
+    hoverBg: "group-hover:bg-error group-hover:text-on-error",
+    flow: "missed_period",
+  },
+  {
+    label: "I want to avoid pregnancy",
+    icon: "shield",
+    bgIcon: "bg-secondary-container text-on-secondary-container",
+    hoverBg: "group-hover:bg-secondary group-hover:text-on-secondary",
+    flow: "contraception",
+  },
+  {
+    label: "I need advice",
+    icon: "psychology",
+    bgIcon: "bg-tertiary-container text-on-tertiary-container",
+    hoverBg: "group-hover:bg-tertiary group-hover:text-on-tertiary",
+    flow: "general_advice",
+  },
+]
 
 const LEARNING_CARDS = [
   {
@@ -29,43 +53,50 @@ const LEARNING_CARDS = [
     cta: "Start Check-in",
     img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYFRCjtB2LqsJyf0O1-oVLuPZLXySe_JzmQlhNHQ-u1tXi91akTMbOHdNhtxrdBnzlXlHEgf3fW8tI8LDWQ3L35QJkSiANlp78sgTyiF-E4fpoemPwP522xE0c3U-DFjkrSDsrrgsn5Zt3KODU3pYbSTpqBh0jM08QXASLunOV63juE9tfv18iycUGroWIzPvJPztOoLaRTZ6lKW5meW1BK1BEVaEfzSCOL62Uwuq-5Au_ZgL4NpZggfCx9EMmdhifvbOTzEfzHeo",
   },
-];
+]
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleQuickAction = (flow: string) => {
     if (flow === "general_advice") {
-      navigate("/chat");
+      navigate("/chat")
     } else {
-      navigate(`/decision?flow=${flow}`);
+      navigate(`/decision?flow=${flow}`)
     }
-  };
+  }
 
   return (
-    <div className="max-w-screen-xl mx-auto px-5 md:px-8 py-6 space-y-8">
+    <div className="mx-auto max-w-screen-xl space-y-8 px-5 py-6 md:px-8">
       {/* Greeting */}
       <section className="space-y-2">
         <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-[38px] font-bold text-on-surface">
           How can we help you today?
         </h1>
-        <p className="text-lg leading-7 text-on-surface-variant max-w-2xl">
-          We're here to support you with private, trustworthy information and guidance.
+        <p className="max-w-2xl text-lg leading-7 text-on-surface-variant">
+          We're here to support you with private, trustworthy information and
+          guidance.
         </p>
       </section>
 
       {/* Quick Actions */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {QUICK_ACTIONS.map((action) => (
           <button
             key={action.flow}
             onClick={() => handleQuickAction(action.flow)}
-            className="bg-surface-container-low hover:bg-surface-container transition-colors rounded-2xl p-6 flex flex-col items-start gap-4 border border-outline-variant shadow-sm active:scale-95 duration-200 text-left group"
+            className="group flex flex-col items-start gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-6 text-left shadow-sm transition-colors duration-200 hover:bg-surface-container active:scale-95"
           >
-            <div className={`${action.bgIcon} p-3 rounded-full ${action.hoverBg} transition-colors`}>
-              <span className="material-symbols-outlined text-[32px] fill">{action.icon}</span>
+            <div
+              className={`${action.bgIcon} rounded-full p-3 ${action.hoverBg} transition-colors`}
+            >
+              <span className="material-symbols-outlined fill text-[32px]">
+                {action.icon}
+              </span>
             </div>
-            <span className="font-semibold text-on-surface">{action.label}</span>
+            <span className="font-semibold text-on-surface">
+              {action.label}
+            </span>
           </button>
         ))}
       </section>
@@ -75,21 +106,30 @@ export default function DashboardPage() {
         <h2 className="font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
           Recommended for you
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {LEARNING_CARDS.map((card) => (
-            <div key={card.title} className="bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden shadow-sm flex flex-col">
-              <div className="h-40 bg-surface-container-highest relative">
-                <img alt={card.title} className="w-full h-full object-cover" src={card.img} />
-                <div className="absolute top-2 right-2 bg-surface/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-semibold text-primary">
+            <div
+              key={card.title}
+              className="flex flex-col overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm"
+            >
+              <div className="relative h-40 bg-surface-container-highest">
+                <img
+                  alt={card.title}
+                  className="h-full w-full object-cover"
+                  src={card.img}
+                />
+                <div className="absolute top-2 right-2 rounded-full bg-surface/80 px-2 py-1 text-xs font-semibold text-primary backdrop-blur-sm">
                   {card.badge}
                 </div>
               </div>
-              <div className="p-6 flex flex-col gap-2 flex-grow">
+              <div className="flex flex-grow flex-col gap-2 p-6">
                 <h3 className="font-semibold text-on-surface">{card.title}</h3>
-                <p className="text-on-surface-variant line-clamp-2 flex-grow">{card.desc}</p>
+                <p className="line-clamp-2 flex-grow text-on-surface-variant">
+                  {card.desc}
+                </p>
                 <button
                   onClick={() => navigate("/explore")}
-                  className="text-primary font-semibold self-start hover:underline mt-2"
+                  className="mt-2 self-start font-semibold text-primary hover:underline"
                 >
                   {card.cta}
                 </button>
@@ -102,10 +142,10 @@ export default function DashboardPage() {
       {/* Floating Chat Button */}
       <button
         onClick={() => navigate("/chat")}
-        className="fixed bottom-24 right-5 md:bottom-10 md:right-8 bg-primary text-on-primary p-4 rounded-2xl shadow-[0_4px_14px_rgba(0,88,190,0.39)] hover:bg-surface-tint transition-colors z-40 flex items-center justify-center active:scale-95 duration-200"
+        className="hover:bg-surface-tint fixed right-5 bottom-24 z-40 flex items-center justify-center rounded-2xl bg-primary p-4 text-on-primary shadow-[0_4px_14px_rgba(0,88,190,0.39)] transition-colors duration-200 active:scale-95 md:right-8 md:bottom-10"
       >
-        <span className="material-symbols-outlined text-[28px] fill">chat</span>
+        <span className="material-symbols-outlined fill text-[28px]">chat</span>
       </button>
     </div>
-  );
+  )
 }

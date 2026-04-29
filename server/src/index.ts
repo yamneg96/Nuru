@@ -20,12 +20,23 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
 
 // ── Routes ───────────────────────────────────────────────────
-app.use("/auth", authRoutes);
-app.use("/chat", chatRoutes);
-app.use("/decision", decisionRoutes);
-app.use("/services", servicesRoutes);
-app.use("/metrics", metricsRoutes);
-app.use("/user", userRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/decision", decisionRoutes);
+app.use("/api/v1/services", servicesRoutes);
+app.use("/api/v1/metrics", metricsRoutes);
+app.use("/api/v1/user", userRoutes);
+
+// route / with nice html :
+app.use("/", (_req, res) => {
+  res.send(`
+    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+      <h1>Nuru API</h1>
+      <p>Welcome to the Nuru API</p>
+      <a href="/health">Health Check</a>
+    </div>
+  `);
+});
 
 // Health check
 app.get("/health", (_req, res) => {
