@@ -8,7 +8,7 @@ export function AppLayout() {
     <div className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
       <AppHeader />
       <MobileHeader />
-      <main className="flex-1 pb-24 md:pb-0">
+      <main className="min-h-screen flex-1 pb-24 md:pb-0">
         <Outlet />
       </main>
       <AppFooter />

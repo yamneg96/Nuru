@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"
 import { loginWithGoogle } from "@/api/auth.api"
 import { useAuthStore } from "@/store/authStore"
@@ -35,16 +35,16 @@ export default function LoginPage() {
       <div className="pointer-events-none absolute top-0 left-0 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-fixed-dim/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-0 bottom-0 h-[600px] w-[600px] translate-x-1/3 translate-y-1/3 rounded-full bg-secondary-container/20 blur-[100px]" />
 
-      <main className="relative z-10 grid w-full max-w-6xl grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-[80px]">
+      <main className="relative min-h-screen z-10 grid w-full max-w-6xl grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-[80px]">
         {/* Left Column: Hero */}
         <div className="flex flex-col gap-6 px-4 md:col-span-5 md:px-0">
           <div className="mb-2 flex items-center gap-2 text-primary">
-            <span className="material-symbols-outlined fill text-[32px]">
-              favorite
-            </span>
-            <span className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold tracking-tight text-primary">
+            <Link to="/" className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold tracking-tight text-primary">
+              <span className="material-symbols-outlined fill text-[32px]">
+                arrow_back_ios
+              </span>
               Nuru
-            </span>
+            </Link>
           </div>
           <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-[38px] font-bold text-on-surface">
             Talk freely.

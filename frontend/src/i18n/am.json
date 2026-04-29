@@ -1,4 +1,5 @@
 {
+  "nuru": "ኑሩ",
   "nav": { "home": "መነሻ", "explore": "ያስሱ", "chat": "ውይይት", "services": "አገልግሎቶች", "profile": "መገለጫ", "login": "ግባ", "logout": "ውጣ", "back": "ተመለስ" },
   "landing": { "hero_title": "ሕይወትህ። ምርጫህ። የወደፊትህ።", "hero_subtitle": "ለግንኙነቶች፣ ጤና እና የሕይወት ውሳኔዎች ስም-ሳይገለጽ ድጋፍ።", "start_now": "አሁን ጀምር", "learn_more": "ተጨማሪ ይወቁ", "how_it_works": "እንዴት ይሰራል", "step1_title": "ስም ሳይገለጽ ጠይቅ", "step2_title": "ባለሙያ መልሶች ያግኙ", "step3_title": "በመረጃ ላይ ውሳኔ ያድርጉ", "trusted_title": "በወጣቶች ታምኗል", "youth_supported": "ወጣቶች ተደግፈዋል", "questions_answered": "ጥያቄዎች ተመልሰዋል", "features_title": "ዋና ባህሪያት", "built_for": "ለኢትዮጵያ ወጣቶች የተሰራ", "start_journey": "ጉዞዎን ይጀምሩ" },
   "login": { "title_1": "በነጻ ተናገር።", "title_2": "ግላዊነትህ ይጠበቃል።", "subtitle": "ደህንነቱ የተጠበቀ ግባት እንጠቀማለን፣ ግን ማንነትዎ ስም ሳይገለጽ ይቆያል።", "continue_anon": "ስም ሳይገለጽ ቀጥል", "or": "ወይም", "footer": "Google የሚጠቀመው ለማረጋገጥ ብቻ ነው።" },

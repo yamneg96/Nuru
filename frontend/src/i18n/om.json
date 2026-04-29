@@ -1,4 +1,5 @@
 {
+  "nuru": "Nuru",
   "nav": { "home": "Mana", "explore": "Qoradhu", "chat": "Haasawa", "services": "Tajaajila", "profile": "Eenyummaa", "login": "Seeni", "logout": "Ba'i", "back": "Duuba" },
   "landing": { "hero_title": "Jireenya kee. Filannoo kee. Fuuldura kee.", "hero_subtitle": "Hariiroo, fayyaa fi murtee jireenyaatiif deeggarsa maqaa malee.", "start_now": "Amma Jalqabi", "learn_more": "Dabalata Barbaadi", "how_it_works": "Akkamitti hojjeta", "step1_title": "Maqaa malee gaafadhu", "step2_title": "Deebii ogeeyyii argadhu", "step3_title": "Murtee hubannoo irratti hundaa'e godhi", "trusted_title": "Dargaggootaan amanamaa", "youth_supported": "dargaggoonni deeggaraman", "questions_answered": "gaaffiiwwan deebifaman", "features_title": "Amaloota Ijoo", "built_for": "Dargaggoota Itoophiyaatiif ijaarame", "start_journey": "Imala Kee Jalqabi" },
   "login": { "title_1": "Bilisa dubbadhu.", "title_2": "Iccitiin kee eegama.", "subtitle": "Seensa nageenya qabu fayyadamna, garuu eenyummaan kee dhokataadha.", "continue_anon": "Maqaa malee itti fufi", "or": "ykn", "footer": "Google kan fayyadamnu dhugaa ta'uu kee mirkaneessuuf qofa." },
