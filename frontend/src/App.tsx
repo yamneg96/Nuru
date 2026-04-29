@@ -35,17 +35,17 @@ export default function App() {
         />
 
         {/* Onboarding (no bottom nav) */}
-        <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/safely" element={<SafelyPage />} />
+        <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
+        <Route path="/safely" element={<ProtectedRoute><SafelyPage /></ProtectedRoute>} />
 
         {/* Chat has its own full-screen layout */}
-        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
 
         {/* Decision flow has its own layout */}
-        <Route path="/decision" element={<DecisionFlowPage />} />
+        <Route path="/decision" element={<ProtectedRoute><DecisionFlowPage /></ProtectedRoute>} />
 
         {/* App shell routes (header + bottom nav) */}
-        <Route element={<AppLayout />}>
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/services" element={<ServicesPage />} />
