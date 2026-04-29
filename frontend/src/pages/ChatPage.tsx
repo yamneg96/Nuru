@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { ArrowLeft } from "lucide-react"
 import { sendMessage } from "@/api/chat.api"
 
 interface Message {
@@ -13,6 +15,7 @@ const SUGGESTIONS = [
 ]
 
 export default function ChatPage() {
+  const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -59,6 +62,9 @@ export default function ChatPage() {
     <div className="flex h-[100dvh] flex-col bg-surface text-on-surface antialiased">
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-gray-100 bg-white px-5 py-3 shadow-sm dark:bg-gray-900">
         <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="mr-2 rounded-full p-2 hover:bg-surface-hover">
+            <ArrowLeft className="h-5 w-5 text-on-surface" />
+          </button>
           <h1 className="font-['Plus_Jakarta_Sans'] text-xl font-bold text-blue-600">
             Nuru
           </h1>

@@ -7,6 +7,7 @@ interface AuthState {
   isOnboarded: boolean
   login: (token: string, anonymousId: string) => void
   logout: () => void
+  softLogout: () => void
   setOnboarded: (value: boolean) => void
 }
 
@@ -31,6 +32,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       anonymousId: null,
       isAuthenticated: false,
       isOnboarded: false,
+    })
+  },
+
+  softLogout: () => {
+    localStorage.removeItem("nuru_token")
+    localStorage.removeItem("nuru_anonymous_id")
+    set({
+      token: null,
+      anonymousId: null,
+      isAuthenticated: false,
     })
   },
 

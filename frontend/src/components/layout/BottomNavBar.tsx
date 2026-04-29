@@ -10,6 +10,10 @@ const NAV_ITEMS = [
 
 export function BottomNavBar() {
   const location = useLocation()
+  
+  if (location.pathname === "/") {
+    return null
+  }
 
   return (
     <nav className="pb-safe fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[24px] border-t border-gray-100 bg-white px-4 pt-2 shadow-[0_-4px_20px_rgba(59,130,246,0.08)] md:hidden dark:border-gray-800 dark:bg-gray-900">

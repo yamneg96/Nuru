@@ -179,6 +179,59 @@ const FLOWS: Record<string, { questions: FlowQuestion[]; computeResult: (answers
       };
     },
   },
+  contraception: {
+    questions: [
+      {
+        id: "current_method",
+        text: "Are you currently using any method of contraception?",
+        type: "single_choice",
+        options: [
+          { value: "yes_consistent", label: "Yes, consistently" },
+          { value: "yes_inconsistent", label: "Yes, but sometimes I forget" },
+          { value: "no", label: "No, I'm not using any" },
+        ],
+      },
+      {
+        id: "goal",
+        text: "What is your main goal right now?",
+        type: "single_choice",
+        options: [
+          { value: "prevent_pregnancy", label: "Prevent pregnancy" },
+          { value: "sti_protection", label: "Protect against STIs" },
+          { value: "both", label: "Both pregnancy and STI protection" },
+          { value: "learn", label: "Just want to learn my options" },
+        ],
+      },
+    ],
+    computeResult: (answers) => {
+      let riskScore = 0;
+      if (answers.current_method === "no") riskScore += 3;
+      if (answers.current_method === "yes_inconsistent") riskScore += 2;
+      
+      const risk_level = riskScore >= 3 ? "high" : riskScore >= 2 ? "moderate" : "low";
+      
+      const summary = risk_level === "high" 
+        ? "It looks like you could benefit from learning about reliable contraception options."
+        : "You're taking good steps, but there might be more suitable or reliable methods for you.";
+        
+      const advice = [
+        "Finding the right contraception method is a personal choice.",
+        "Condoms are the only method that protect against both pregnancy and STIs.",
+        "Long-acting reversible contraceptives (LARCs) like implants or IUDs are very effective and easy to use."
+      ];
+      
+      return {
+        risk_level,
+        summary,
+        advice,
+        next_steps: [
+          { title: "Explore Methods", description: "Compare different options", icon: "search", action: "/explore", action_type: "navigate" },
+          { title: "Find a Clinic", description: "Talk to a healthcare provider", icon: "local_hospital", action: "/services", action_type: "navigate" },
+          { title: "Chat with Nuru", description: "Get personalized advice", icon: "chat", action: "/chat", action_type: "navigate" }
+        ],
+      };
+    },
+  },
 };
 
 // ── Service Functions ────────────────────────────────────────

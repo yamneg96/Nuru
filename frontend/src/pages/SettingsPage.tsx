@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { usePreferencesStore } from "@/store/preferencesStore"
 import { useAuthStore } from "@/store/authStore"
+import { useThemeStore } from "@/store/themeStore"
 import { updatePreferences, deleteUserData } from "@/api/user.api"
 
 export default function SettingsPage() {
@@ -9,7 +10,14 @@ export default function SettingsPage() {
   const { language, saveHistory, setLanguage, setSaveHistory } =
     usePreferencesStore()
   const logout = useAuthStore((s) => s.logout)
+  const softLogout = useAuthStore((s) => s.softLogout)
+  const { theme, setTheme } = useThemeStore()
   const [deleting, setDeleting] = useState(false)
+
+  const handleSoftLogout = () => {
+    softLogout()
+    navigate("/")
+  }
 
   const handleLanguageChange = async (
     lang: "english" | "amharic" | "oromo"
@@ -122,6 +130,27 @@ export default function SettingsPage() {
             </label>
           </div>
 
+          {/* Dark Theme Toggle */}
+          <div className="border-surface-variant flex items-center justify-between border-b py-1 pb-4">
+            <div className="pr-4">
+              <div className="mb-1 font-semibold text-on-surface">
+                Dark Theme
+              </div>
+              <div className="text-sm text-on-surface-variant">
+                Switch between light and dark mode appearance.
+              </div>
+            </div>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as "light" | "dark" | "system")}
+              className="rounded-lg border border-outline-variant bg-surface-container-low px-3 py-2 text-on-surface outline-none focus:border-primary"
+            >
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+
           {/* Delete Data */}
           <div className="flex items-center justify-between pt-1">
             <div className="pr-4">
@@ -141,6 +170,27 @@ export default function SettingsPage() {
                 delete_sweep
               </span>
               {deleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+
+          {/* Soft Logout */}
+          <div className="flex items-center justify-between pt-1">
+            <div className="pr-4">
+              <div className="mb-1 font-semibold text-on-surface">
+                Soft Logout
+              </div>
+              <div className="text-sm text-on-surface-variant">
+                Sign out of your session without deleting your data.
+              </div>
+            </div>
+            <button
+              onClick={handleSoftLogout}
+              className="flex flex-shrink-0 items-center gap-1 rounded-full border border-outline-variant bg-surface px-4 py-2 font-semibold text-on-surface shadow-sm transition-colors hover:bg-surface-hover"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                logout
+              </span>
+              Logout
             </button>
           </div>
         </div>

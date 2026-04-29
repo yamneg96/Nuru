@@ -6,41 +6,6 @@ export default function LandingPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-surface-bright font-sans text-on-surface antialiased">
-      {/* TopAppBar */}
-      <header className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-gray-100 bg-white/90 px-8 py-4 font-['Plus_Jakarta_Sans'] shadow-sm backdrop-blur-md dark:border-gray-800 dark:bg-gray-900">
-        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-          Nuru
-        </div>
-        <div className="flex items-center gap-6">
-          <nav className="hidden gap-6 font-semibold text-on-surface-variant md:flex">
-            <a
-              className="transition-colors hover:text-primary"
-              href="#how-it-works"
-            >
-              How it works
-            </a>
-            <a
-              className="transition-colors hover:text-primary"
-              href="#features"
-            >
-              Features
-            </a>
-            <a className="transition-colors hover:text-primary" href="#trust">
-              About us
-            </a>
-          </nav>
-          <Link
-            to="/login"
-            className="flex items-center gap-2 rounded-full bg-primary/10 px-6 py-2 font-semibold text-primary transition-colors hover:bg-primary/20"
-          >
-            <span className="material-symbols-outlined text-[20px]">
-              lock_person
-            </span>
-            Login
-          </Link>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="mx-auto flex max-w-[1440px] flex-col items-center gap-16 px-8 pt-20 pb-16 lg:flex-row">
         <div className="flex flex-1 flex-col items-start text-left">
@@ -294,35 +259,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-inverse-surface px-8 py-16 text-inverse-on-surface">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-10 md:flex-row">
-          <div className="text-2xl font-bold text-inverse-primary">Nuru</div>
-          <div className="flex gap-8">
-            <a
-              className="transition-colors hover:text-inverse-primary"
-              href="#"
-            >
-              Privacy Policy
-            </a>
-            <a
-              className="transition-colors hover:text-inverse-primary"
-              href="#"
-            >
-              Terms of Service
-            </a>
-            <a
-              className="transition-colors hover:text-inverse-primary"
-              href="#"
-            >
-              Contact
-            </a>
-          </div>
-          <div className="text-sm opacity-70">
-            © 2024 Nuru. All rights reserved.
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

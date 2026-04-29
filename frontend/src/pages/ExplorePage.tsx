@@ -88,6 +88,7 @@ export default function ExplorePage() {
         {CATEGORIES.filter((c) => !c.featured).map((cat) => (
           <div
             key={cat.id}
+            onClick={() => navigate(`/module/${cat.id}`)}
             className="group flex cursor-pointer flex-col rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(59,130,246,0.05)] transition-shadow duration-300 hover:shadow-[0_8px_30px_rgba(59,130,246,0.1)]"
           >
             <div
@@ -139,7 +140,10 @@ export default function ExplorePage() {
           <p className="mb-4 text-sm text-on-surface-variant">
             Take a quick quiz to see what you've learned today.
           </p>
-          <button className="mx-auto rounded-full border border-outline-variant/30 bg-white px-4 py-2 font-semibold text-on-surface transition-colors hover:bg-surface-container-low">
+          <button 
+            onClick={() => navigate("/quiz")}
+            className="mx-auto rounded-full border border-outline-variant/30 bg-white px-4 py-2 font-semibold text-on-surface transition-colors hover:bg-surface-container-low"
+          >
             Start Quiz
           </button>
         </div>

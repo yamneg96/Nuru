@@ -10,6 +10,7 @@ import { decisionRoutes } from "./routes/decision.routes.js";
 import { servicesRoutes } from "./routes/services.routes.js";
 import { metricsRoutes } from "./routes/metrics.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
+import { quizRouter as quizRoutes } from "./routes/quiz.routes.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/v1/decision", decisionRoutes);
 app.use("/api/v1/services", servicesRoutes);
 app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/quiz", quizRoutes);
 
 // route / with nice html :
 app.use("/", (_req, res) => {

@@ -84,16 +84,16 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Divider */}
+              {/* Divider
               <div className="flex items-center gap-4 py-2">
                 <div className="h-px flex-1 bg-outline-variant/50" />
                 <span className="text-xs font-semibold tracking-wider text-outline uppercase">
                   or
                 </span>
                 <div className="h-px flex-1 bg-outline-variant/50" />
-              </div>
+              </div> */}
 
-              {/* Anonymous Option */}
+              {/* Anonymous Option
               <button
                 onClick={handleAnonymousContinue}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-transparent px-6 py-4 text-primary transition-colors duration-200 hover:bg-surface-container-low active:scale-[0.98]"
@@ -104,7 +104,7 @@ export default function LoginPage() {
                 <span className="font-semibold">
                   Continue anonymously (limited features)
                 </span>
-              </button>
+              </button> */}
             </div>
 
             <hr className="border-outline-variant/30" />
