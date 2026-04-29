@@ -45,7 +45,7 @@ decisionRoutes.post("/step", authMiddleware, async (req: Request, res: Response)
  */
 decisionRoutes.get("/result/:sessionId", authMiddleware, async (req: Request, res: Response) => {
   try {
-    const result = await getDecisionResult(req.params.sessionId);
+    const result = await getDecisionResult(req.params.sessionId as string);
     res.json(result);
   } catch (error: any) {
     console.error("Decision result error:", error);

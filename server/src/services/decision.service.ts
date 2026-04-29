@@ -12,7 +12,7 @@ interface FlowQuestion {
   options: { value: string; label: string; icon?: string }[];
 }
 
-const FLOWS: Record<string, { questions: FlowQuestion[]; computeResult: (answers: Record<string, string | string[]>) => { risk_level: "low" | "moderate" | "high"; summary: string; advice: string[]; next_steps: { title: string; description: string; icon: string; action: string; action_type: string }[] } }> = {
+const FLOWS: Record<string, { questions: FlowQuestion[]; computeResult: (answers: Record<string, string | string[]>) => { risk_level: "low" | "moderate" | "high"; summary: string; advice: string[]; next_steps: { title: string; description: string; icon: string; action: string; action_type: string }[]; ai_explanation?: string; } }> = {
   missed_period: {
     questions: [
       {
