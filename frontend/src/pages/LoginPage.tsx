@@ -25,9 +25,9 @@ export default function LoginPage() {
     }
   }
 
-  const handleAnonymousContinue = () => {
-    navigate("/dashboard")
-  }
+  // const handleAnonymousContinue = () => {
+  //   navigate("/dashboard")
+  // }
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-container-low p-4 font-sans text-on-surface antialiased md:p-8">
