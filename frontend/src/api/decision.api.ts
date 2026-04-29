@@ -4,7 +4,7 @@ import type {
   DecisionStepResponse,
   DecisionResult,
   FlowType,
-} from "@shared/types"
+} from "../../../shared/types"
 
 export async function startFlow(
   flowType: FlowType

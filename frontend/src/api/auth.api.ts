@@ -1,5 +1,5 @@
 import api from "./client"
-import type { AuthResponse, UserProfile } from "@shared/types"
+import type { AuthResponse, UserProfile } from "../../../shared/types"
 
 export async function loginWithGoogle(
   credential: string

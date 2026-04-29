@@ -1,5 +1,5 @@
 import api from "./client"
-import type { UserProfile, UserPreferences } from "@shared/types"
+import type { UserProfile, UserPreferences } from "../../../shared/types"
 
 export async function updatePreferences(
   prefs: Partial<UserPreferences>

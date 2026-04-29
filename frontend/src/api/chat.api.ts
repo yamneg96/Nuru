@@ -1,5 +1,5 @@
 import api from "./client"
-import type { ChatResponse } from "@shared/types"
+import type { ChatResponse } from "../../../shared/types"
 
 export async function sendMessage(
   message: string,
