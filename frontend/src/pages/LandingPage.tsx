@@ -1,264 +1,424 @@
 import { Link } from "react-router-dom"
 import { useMetrics } from "@/hooks/useMetrics"
+import { useEffect } from "react"
 
 export default function LandingPage() {
   const { data: metrics } = useMetrics()
 
+  useEffect(() => {
+    const reveals = document.querySelectorAll(".reveal");
+
+    const revealOnScroll = () => {
+      const windowHeight = window.innerHeight;
+      reveals.forEach((reveal) => {
+        const revealTop = reveal.getBoundingClientRect().top;
+        const revealPoint = 100;
+        if (revealTop < windowHeight - revealPoint) {
+          reveal.classList.add("active");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", revealOnScroll);
+    revealOnScroll(); // Trigger on load
+    return () => window.removeEventListener("scroll", revealOnScroll);
+  }, []);
+
   return (
-    <div className="flex min-h-screen flex-col bg-surface-bright font-sans text-on-surface antialiased">
-      {/* Hero Section */}
-      <section className="mx-auto flex max-w-[1440px] flex-col items-center gap-16 px-8 pt-20 pb-16 lg:flex-row">
-        <div className="flex flex-1 flex-col items-start text-left">
-          <div className="mb-10 flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-primary-fixed shadow-[0_8px_24px_rgba(59,130,246,0.12)]">
-            <span className="material-symbols-outlined fill text-[48px] text-primary">
-              psychology_alt
-            </span>
+    <div className="bg-background text-on-background font-body-md  pb-32">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin-mobile py-md sticky top-0 z-40 bg-opacity-90 backdrop-blur-sm border-b border-outline-variant">
+        <div className="font-h2 text-h2 text-primary font-bold tracking-tight">Nuru</div>
+        <Link to="/login" aria-label="Quick Exit" className="text-primary p-2 rounded-full hover:bg-surface-container transition-colors">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>lock_person</span>
+        </Link>
+      </header>
+
+      {/* 1. Hero Section */}
+      <div className="bg-gradient-to-b from-surface-container-low to-background">
+        <main className="max-w-screen-xl mx-auto px-margin-mobile md:px-xl py-lg space-y-xl">
+          <section className="text-center space-y-xl py-12 md:py-24 flex flex-col items-center justify-center reveal active">
+            <div className="space-y-sm max-w-4xl">
+              <p className="font-label-caps text-on-surface-variant tracking-wider uppercase mb-4">Built for Ethiopian youth</p>
+              <h1 className="font-h1 text-5xl md:text-6xl lg:text-7xl font-bold text-on-surface leading-tight tracking-tight">You’re not alone. <br className="hidden md:block"/>Get guidance you can trust.</h1>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mt-6">Get private, judgment-free support for your reproductive health and well-being.</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-md mt-8">
+              <Link to="/login" className="bg-primary text-on-primary font-button px-8 py-4 rounded-full hover:bg-surface-tint transition-colors shadow-sm text-lg">Start Safely</Link>
+              <button className="bg-surface border border-outline text-primary font-button px-8 py-4 rounded-full hover:bg-surface-container transition-colors text-lg">Explore Topics</button>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <main className="max-w-screen-xl mx-auto px-margin-mobile md:px-xl py-lg space-y-24">
+        {/* 2. Trust Strip */}
+        <section className="bg-surface-container-low rounded-3xl p-lg reveal">
+          <div className="flex flex-col md:flex-row justify-around items-center gap-lg">
+            <div className="flex flex-col items-center text-center gap-2">
+              <span className="material-symbols-outlined text-[32px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
+              <h3 className="font-button text-on-surface">Anonymous &amp; Private</h3>
+            </div>
+            <div className="hidden md:block w-px h-12 bg-outline-variant"></div>
+            <div className="flex flex-col items-center text-center gap-2">
+              <span className="material-symbols-outlined text-[32px] text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              <h3 className="font-button text-on-surface">No names. No judgment.</h3>
+            </div>
+            <div className="hidden md:block w-px h-12 bg-outline-variant"></div>
+            <div className="flex flex-col items-center text-center gap-2">
+              <span className="material-symbols-outlined text-[32px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <h3 className="font-button text-on-surface">Built with health professionals</h3>
+            </div>
           </div>
-          <h1 className="mb-3 font-['Plus_Jakarta_Sans'] text-[56px] leading-[64px] font-bold tracking-tight text-balance text-on-surface">
-            Your life. Your choices. Your future.
-          </h1>
-          <p className="mb-16 max-w-2xl text-xl leading-8 text-balance text-on-surface-variant">
-            Anonymous support for relationships, health, and life decisions. A
-            safe space built for you.
-          </p>
-          <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row">
-            <Link
-              to="/login"
-              className="rounded-full bg-primary px-8 py-4 text-center font-semibold text-on-primary shadow-[0_4px_16px_rgba(0,88,190,0.25)] transition-transform hover:scale-105 active:scale-95 active:shadow-sm"
-            >
-              Start Now (No Login)
-            </Link>
-            <a
-              href="#how-it-works"
-              className="rounded-full border border-outline-variant/30 bg-surface-container-low px-8 py-4 text-center font-semibold text-primary transition-transform hover:scale-105 hover:bg-surface-container active:scale-95"
-            >
-              Learn More
+        </section>
+
+        {/* 3. Trusted By */}
+        <section className="text-center space-y-md py-md reveal">
+          <p className="font-label-caps text-on-surface-variant uppercase tracking-wider">Aligned with trusted youth and health initiatives</p>
+          <div className="flex flex-wrap justify-center items-center gap-xl md:gap-24 opacity-50">
+            <div className="font-h2 text-xl font-semibold text-on-surface">UNFPA Ethiopia</div>
+            <div className="font-h2 text-xl font-semibold text-on-surface">Ministry of Health Ethiopia</div>
+          </div>
+        </section>
+
+        {/* 4. Metrics */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-md reveal">
+          <div className="bg-surface p-xl rounded-2xl border border-outline-variant shadow-sm flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
+            <div className="bg-primary-container text-on-primary-container p-4 rounded-full">
+              <span className="material-symbols-outlined text-[32px]">group</span>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-on-surface mb-1">
+                {metrics ? metrics.total_users.toLocaleString() + "+" : "5,000+"}
+              </div>
+              <div className="font-body-md text-on-surface-variant">Youth supported</div>
+            </div>
+          </div>
+          <div className="bg-surface p-xl rounded-2xl border border-outline-variant shadow-sm flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
+            <div className="bg-tertiary-container text-on-tertiary-container p-4 rounded-full">
+              <span className="material-symbols-outlined text-[32px]">forum</span>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-on-surface mb-1">
+                {metrics ? metrics.total_questions.toLocaleString() + "+" : "12,000+"}
+              </div>
+              <div className="font-body-md text-on-surface-variant">Questions answered</div>
+            </div>
+          </div>
+          <div className="bg-surface p-xl rounded-2xl border border-outline-variant shadow-sm flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
+            <div className="bg-secondary-container text-on-secondary-container p-4 rounded-full">
+              <span className="material-symbols-outlined text-[32px]">trending_up</span>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-on-surface mb-1">15,000+</div>
+              <div className="font-body-md text-on-surface-variant">Active daily users</div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. How It Works */}
+        <section className="space-y-xl py-md reveal">
+          <div className="text-center">
+            <h2 className="font-h1 text-4xl text-on-surface font-bold">How it works</h2>
+            <p className="font-body-lg text-on-surface-variant mt-4">Three simple steps to get the support you need.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg relative mt-12">
+            <div className="hidden md:block absolute top-1/2 left-[16%] right-[16%] h-1 bg-outline-variant -z-10 rounded-full"></div>
+            <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
+              <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">1</div>
+              <div className="space-y-2">
+                <h3 className="font-h2 text-xl text-on-surface">Choose a Topic</h3>
+                <p className="font-body-md text-on-surface-variant">Select what's on your mind right now from our guided topics.</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
+              <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">2</div>
+              <div className="space-y-2">
+                <h3 className="font-h2 text-xl text-on-surface">Get Private Guidance</h3>
+                <p className="font-body-md text-on-surface-variant">Receive trustworthy, judgment-free information and answers.</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
+              <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">3</div>
+              <div className="space-y-2">
+                <h3 className="font-h2 text-xl text-on-surface">Take Action</h3>
+                <p className="font-body-md text-on-surface-variant">Find services, resources, or next steps near you.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. Start with what you're going through */}
+        <section className="space-y-lg reveal">
+          <div>
+            <h2 className="font-h1 text-4xl text-on-surface font-bold">Start with what you’re going through</h2>
+            <p className="font-body-lg text-on-surface-variant mt-4">Learn more about your body, relationships, and reproductive health in a safe space.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
+              <div className="bg-primary-container text-on-primary-container p-4 rounded-2xl group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>body_system</span>
+              </div>
+              <div className="space-y-2">
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-primary transition-colors">Your Body &amp; Changes</span>
+                <p className="font-body-md text-on-surface-variant">Understand puberty, periods, and how your body works without embarrassment.</p>
+              </div>
+            </button>
+            <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
+              <div className="bg-tertiary-container text-on-tertiary-container p-4 rounded-2xl group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+                <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>diversity_1</span>
+              </div>
+              <div className="space-y-2">
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-tertiary transition-colors">Safe Relationships</span>
+                <p className="font-body-md text-on-surface-variant">Learn about consent, setting boundaries, and building healthy connections.</p>
+              </div>
+            </button>
+            <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
+              <div className="bg-secondary-container text-on-secondary-container p-4 rounded-2xl group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+                <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>fact_check</span>
+              </div>
+              <div className="space-y-2">
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-secondary transition-colors">Myths vs. Facts</span>
+                <p className="font-body-md text-on-surface-variant">Get accurate, science-backed answers to common questions and dispel rumors.</p>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        {/* 7. Events & Workshops */}
+        <section className="space-y-lg reveal">
+          <div className="flex justify-between items-end">
+            <div>
+              <h2 className="font-h1 text-3xl text-on-surface font-bold">Events &amp; Workshops</h2>
+              <p className="font-body-md text-on-surface-variant mt-2">Join community sessions online and near you.</p>
+            </div>
+            <button className="text-primary font-button hover:underline hidden md:block">View all events</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            {[
+              {
+                title: "Youth Health Seminar",
+                location: "Addis Ababa Community Center",
+                icon: "location_on",
+                time: "Oct 15, 2:00 PM"
+              },
+              {
+                title: "Online Q&A Session",
+                location: "Virtual (Zoom)",
+                icon: "videocam",
+                time: "Oct 18, 5:00 PM"
+              },
+              {
+                title: "Wellness Workshop",
+                location: "Youth Hub",
+                icon: "location_on",
+                time: "Oct 22, 10:00 AM"
+              }
+            ].map((event, i) => (
+              <div key={i} className="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
+                <div className="h-40 bg-surface-container flex items-center justify-center text-outline">
+                  <span className="material-symbols-outlined text-4xl">event</span>
+                </div>
+                <div className="p-6 flex flex-col flex-grow gap-4">
+                  <div className="space-y-2 flex-grow">
+                    <h3 className="font-h2 text-xl text-on-surface">{event.title}</h3>
+                    <div className="flex items-center text-on-surface-variant text-sm gap-2">
+                      <span className="material-symbols-outlined text-[18px]">{event.icon}</span>
+                      <span>{event.location}</span>
+                    </div>
+                    <div className="flex items-center text-on-surface-variant text-sm gap-2">
+                      <span className="material-symbols-outlined text-[18px]">calendar_today</span>
+                      <span>{event.time}</span>
+                    </div>
+                  </div>
+                  <button className="w-full text-center border border-outline text-on-surface font-button py-2 rounded-full hover:bg-surface-container transition-colors">View Details</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="text-primary font-button hover:underline md:hidden w-full text-center mt-4">View all events</button>
+        </section>
+
+        {/* 8. Watch & Learn */}
+        <section className="space-y-lg reveal bg-surface-container-low -mx-margin-mobile md:-mx-xl px-margin-mobile md:px-xl py-12">
+          <div className="flex justify-between items-end">
+            <div>
+              <h2 className="font-h1 text-3xl text-on-surface font-bold">Watch &amp; Learn</h2>
+              <p className="font-body-md text-on-surface-variant mt-2">Short videos on important topics.</p>
+            </div>
+            <button className="text-primary font-button hover:underline hidden md:block">More videos</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
+            {[
+              {
+                title: "What happens during puberty?",
+                duration: "3:45"
+              },
+              {
+                title: "Understanding menstrual cycles",
+                duration: "5:12"
+              },
+              {
+                title: "How to talk about boundaries",
+                duration: "4:20"
+              }
+            ].map((video, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="relative bg-surface-variant rounded-2xl overflow-hidden aspect-video flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-4xl text-on-surface-variant opacity-50">smart_display</span>
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
+                    <div className="bg-surface/90 rounded-full p-3 backdrop-blur-sm group-hover:scale-110 transition-transform">
+                      <span className="material-symbols-outlined text-on-surface" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded font-medium">{video.duration}</div>
+                </div>
+                <h3 className="font-h2 text-lg text-on-surface group-hover:text-primary transition-colors">{video.title}</h3>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 9. Learn Something New */}
+        <section className="space-y-lg reveal">
+          <div>
+            <h2 className="font-h1 text-3xl text-on-surface font-bold">Learn Something New</h2>
+            <p className="font-body-md text-on-surface-variant mt-2">Quick reads on essential health and relationship topics.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+            {[
+              {
+                title: "Understanding consent",
+                desc: "Learn what consent means and how to practice it.",
+                icon: "handshake",
+                color: "primary",
+                containerColor: "primary-container",
+                onContainerColor: "on-primary-container"
+              },
+              {
+                title: "Mental health basics",
+                desc: "Tips for managing stress and taking care of your mind.",
+                icon: "healing",
+                color: "tertiary",
+                containerColor: "tertiary-container",
+                onContainerColor: "on-tertiary-container"
+              },
+              {
+                title: "Navigating family talks",
+                desc: "How to discuss sensitive topics with your parents.",
+                icon: "family_restroom",
+                color: "secondary",
+                containerColor: "secondary-container",
+                onContainerColor: "on-secondary-container"
+              }
+            ].map((item, i) => (
+              <a key={i} className="bg-surface p-6 rounded-2xl border border-outline-variant flex items-start gap-4 hover:shadow-md transition-all hover:-translate-y-1 group" href="#">
+                <div className={`p-3 bg-${item.containerColor} text-${item.onContainerColor} rounded-xl group-hover:bg-${item.color} group-hover:text-on-${item.color} transition-colors shrink-0`}>
+                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                </div>
+                <div>
+                  <h3 className={`font-h2 text-lg text-on-surface mb-1 group-hover:text-${item.color} transition-colors`}>{item.title}</h3>
+                  <p className="text-sm text-on-surface-variant">{item.desc}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* 10. Learning & Help */}
+        <section className="space-y-lg reveal">
+          <div>
+            <h2 className="font-h1 text-3xl text-on-surface font-bold">Resources &amp; Support</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
+            <a className="bg-surface p-8 rounded-3xl border border-outline-variant flex items-center justify-between hover:shadow-md hover:-translate-y-1 transition-all group h-full" href="#">
+              <div className="flex items-center gap-6">
+                <div className="p-5 bg-primary-container text-primary rounded-2xl">
+                  <span className="material-symbols-outlined text-[40px]">menu_book</span>
+                </div>
+                <div>
+                  <h3 className="font-h2 text-2xl text-on-surface group-hover:text-primary transition-colors">Browse Learning Library</h3>
+                  <p className="text-body-md text-on-surface-variant mt-1">Articles, videos, and guides</p>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-3xl text-on-surface-variant group-hover:translate-x-2 group-hover:text-primary transition-all">arrow_forward</span>
+            </a>
+            <a className="bg-surface p-8 rounded-3xl border border-outline-variant flex items-center justify-between hover:shadow-md hover:-translate-y-1 transition-all group h-full" href="#">
+              <div className="flex items-center gap-6">
+                <div className="p-5 bg-secondary-container text-secondary rounded-2xl">
+                  <span className="material-symbols-outlined text-[40px]">medical_services</span>
+                </div>
+                <div>
+                  <h3 className="font-h2 text-2xl text-on-surface group-hover:text-secondary transition-colors">Find Nearby Services</h3>
+                  <p className="text-body-md text-on-surface-variant mt-1">Clinics and help centers</p>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-3xl text-on-surface-variant group-hover:translate-x-2 group-hover:text-secondary transition-all">arrow_forward</span>
             </a>
           </div>
-        </div>
-        <div className="w-full flex-1">
-          <img
-            className="h-[600px] w-full rounded-[2rem] border border-outline-variant/30 object-cover shadow-[0_24px_48px_rgba(59,130,246,0.12)]"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK_BCuzlFXfVvIpoQnnsL58xgZRGQ6HTh_4P8DT_tOROlhfLZ_WXOMNnz-b5QOdPk6o4FRGFr6-N9D84oAoHaoiGiuWZVrtqwUQ2yipXlosw-OnbnL4HaJdsGxFlF6vr0XaV9vWDl11Ed0gBDeq1JOTyZqgxq89G3f60gpTUGCVZ5mzoyYn0wrXDWOuy9FmZs4RpXVYPALNquYcda4pxJQ2iHxdM1CIE8-BtZF-T3ll8FQxaeWabRkxePXD9XiHF1kXvMUPsQrqRI"
-            alt="Group of diverse youth standing together"
-          />
-        </div>
-      </section>
+        </section>
 
-      {/* How It Works */}
-      <section
-        id="how-it-works"
-        className="mx-auto mb-[120px] max-w-[1440px] px-8"
-      >
-        <div className="mb-16 text-center">
-          <h2 className="mb-3 font-['Plus_Jakarta_Sans'] text-[40px] leading-[48px] font-bold text-on-surface">
-            How it works
-          </h2>
-          <p className="mx-auto max-w-2xl text-xl text-on-surface-variant">
-            Simple, secure, and designed with your privacy in mind.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-          {[
-            {
-              icon: "visibility_off",
-              title: "Ask Anonymously",
-              desc: "No names, no tracking. Your identity is completely hidden from the moment you start typing.",
-              color: "primary-fixed",
-            },
-            {
-              icon: "medical_information",
-              title: "Get Expert Answers",
-              desc: "Receive reliable, judgment-free guidance from verified medical and counseling professionals.",
-              color: "secondary-container",
-            },
-            {
-              icon: "directions",
-              title: "Make Informed Choices",
-              desc: "Use accurate, culturally relevant information to make the best decisions for your future.",
-              color: "tertiary-fixed",
-            },
-          ].map((step) => (
-            <div
-              key={step.title}
-              className="relative flex flex-col items-start gap-4 overflow-hidden rounded-3xl border border-outline-variant/40 bg-surface-container-lowest p-10 shadow-[0_8px_32px_rgba(59,130,246,0.04)] transition-shadow hover:shadow-[0_16px_48px_rgba(59,130,246,0.08)]"
-            >
-              <div
-                className={`absolute top-0 right-0 h-32 w-32 bg-${step.color}/30 -z-0 rounded-bl-[4rem]`}
-              />
-              <div
-                className={`h-16 w-16 shrink-0 bg-${step.color} relative z-10 mb-2 flex items-center justify-center rounded-2xl`}
-              >
-                <span className="material-symbols-outlined fill text-[32px]">
-                  {step.icon}
-                </span>
-              </div>
-              <div className="relative z-10">
-                <h3 className="mb-2 text-2xl font-semibold text-on-surface">
-                  {step.title}
-                </h3>
-                <p className="text-lg text-on-surface-variant">{step.desc}</p>
-              </div>
+        {/* 11. Testimonials */}
+        <section className="space-y-lg bg-surface-container-low rounded-[40px] p-xl md:p-24 reveal overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+            <span className="material-symbols-outlined text-[200px]" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+          </div>
+          <h2 className="font-h1 text-4xl text-on-surface font-bold text-center mb-12">What others say</h2>
+          <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 gap-6 snap-x no-scrollbar">
+            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
+              <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+              <p className="font-body-lg text-on-surface italic flex-grow">"I was so scared when I missed my period. Nuru helped me understand my options without making me feel judged."</p>
+              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 19</div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section className="mx-auto mb-[120px] max-w-[1440px] px-8">
-        <div className="flex flex-col items-center rounded-[2rem] bg-primary/5 p-16 text-center">
-          <h2 className="mb-10 font-['Plus_Jakarta_Sans'] text-[40px] leading-[48px] font-bold text-on-surface">
-            Trusted by Youth Like You
-          </h2>
-          <div className="mb-16 grid w-full grid-cols-1 gap-10 md:grid-cols-3">
-            <div className="flex flex-col items-center gap-2">
-              <span className="material-symbols-outlined mb-2 text-[48px] text-primary">
-                groups
-              </span>
-              <div className="font-['Plus_Jakarta_Sans'] text-[40px] font-bold text-primary">
-                {metrics
-                  ? metrics.total_users.toLocaleString() + "+"
-                  : "10,000+"}
-              </div>
-              <div className="text-lg text-on-surface-variant">
-                youth supported
-              </div>
+            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
+              <span className="material-symbols-outlined text-tertiary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+              <p className="font-body-lg text-on-surface italic flex-grow">"The relationship advice helped me set better boundaries. I feel much safer now."</p>
+              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 22</div>
             </div>
-            <div className="flex flex-col items-center gap-2">
-              <span className="material-symbols-outlined mb-2 text-[48px] text-secondary">
-                forum
-              </span>
-              <div className="font-['Plus_Jakarta_Sans'] text-[40px] font-bold text-secondary">
-                {metrics
-                  ? metrics.total_questions.toLocaleString() + "+"
-                  : "5,000+"}
-              </div>
-              <div className="text-lg text-on-surface-variant">
-                questions answered
-              </div>
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <span className="material-symbols-outlined mb-2 text-[48px] text-tertiary">
-                trending_up
-              </span>
-              <div className="font-['Plus_Jakarta_Sans'] text-[40px] font-bold text-tertiary">
-                Growing
-              </div>
-              <div className="text-lg text-on-surface-variant">every day</div>
+            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
+              <span className="material-symbols-outlined text-secondary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+              <p className="font-body-lg text-on-surface italic flex-grow">"Finally a place where I can get real answers to the questions I'm too embarrassed to ask anyone else."</p>
+              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 17</div>
             </div>
           </div>
-          <div className="flex w-full max-w-3xl flex-col items-center justify-center gap-8 border-t border-outline-variant/20 pt-8 sm:flex-row">
-            <div className="flex items-center gap-2 font-semibold text-on-surface-variant">
-              <span className="material-symbols-outlined text-secondary">
-                visibility_off
-              </span>
-              <span>All users remain anonymous</span>
-            </div>
-            <div className="flex items-center gap-2 font-semibold text-on-surface-variant">
-              <span className="material-symbols-outlined text-secondary">
-                shield_lock
-              </span>
-              <span>No personal data shared</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Key Features */}
-      <section id="features" className="bg-surface-container-low py-[120px]">
-        <div className="mx-auto max-w-[1440px] px-8">
-          <div className="mb-16 flex flex-col items-end justify-between gap-10 md:flex-row">
-            <div>
-              <h2 className="mb-3 font-['Plus_Jakarta_Sans'] text-[40px] leading-[48px] font-bold text-on-surface">
-                Key Features
-              </h2>
-              <p className="max-w-2xl text-xl text-on-surface-variant">
-                Everything you need to navigate life's big questions.
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
-            <div className="relative col-span-1 flex min-h-[400px] flex-col justify-center gap-4 overflow-hidden rounded-[2rem] bg-primary-container p-16 text-on-primary-container shadow-[0_16px_48px_rgba(33,112,228,0.12)] md:col-span-8">
-              <div className="absolute -right-12 -bottom-12 opacity-10">
-                <span className="material-symbols-outlined fill text-[300px]">
-                  forum
-                </span>
-              </div>
-              <span className="material-symbols-outlined fill mb-2 text-[48px]">
-                forum
-              </span>
-              <div className="relative z-10 max-w-lg">
-                <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-[32px] font-bold">
-                  Anonymous Q&amp;A Community
-                </h3>
-                <p className="text-xl opacity-90">
-                  A safe space to ask anything without fear of judgment or
-                  exposure.
-                </p>
-              </div>
-            </div>
-            <div className="col-span-1 flex flex-col gap-10 md:col-span-4">
-              <div className="flex min-h-[180px] flex-1 flex-col justify-between rounded-[2rem] bg-secondary-container p-8 text-on-secondary-container shadow-sm transition-shadow hover:shadow-md">
-                <span className="material-symbols-outlined fill text-[40px]">
-                  explore
-                </span>
-                <div className="mt-auto pt-8">
-                  <h3 className="mb-2 font-['Plus_Jakarta_Sans'] text-2xl font-bold">
-                    Life guidance
-                  </h3>
-                  <p className="opacity-90">
-                    Navigate relationships and personal growth.
-                  </p>
-                </div>
-              </div>
-              <div className="text-on-tertiary-fixed-variant flex min-h-[180px] flex-1 flex-col justify-between rounded-[2rem] bg-tertiary-fixed p-8 shadow-sm transition-shadow hover:shadow-md">
-                <span className="material-symbols-outlined fill text-[40px]">
-                  diversity_3
-                </span>
-                <div className="mt-auto pt-8">
-                  <h3 className="mb-2 font-['Plus_Jakarta_Sans'] text-2xl font-bold">
-                    Youth-friendly services
-                  </h3>
-                  <p className="opacity-90">
-                    Tailored support for young adults.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        {/* 12. Final CTA */}
+        <section className="text-center space-y-6 py-24 flex flex-col items-center reveal">
+          <h2 className="font-h1 text-4xl md:text-5xl font-bold text-on-surface">Start your journey safely today</h2>
+          <p className="font-body-lg text-on-surface-variant font-medium">Private. Safe. Always.</p>
+          <Link to="/login" className="bg-primary text-on-primary font-button px-10 py-4 rounded-full hover:bg-surface-tint transition-all shadow-md hover:shadow-lg mt-8 text-lg hover:-translate-y-1">Start Safely</Link>
+        </section>
+      </main>
 
-      {/* Trust Section */}
-      <section
-        id="trust"
-        className="flex flex-col items-center gap-10 bg-surface-container px-8 py-[120px] text-center"
-      >
-        <div className="mb-2 flex items-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container-lowest px-6 py-3 shadow-sm">
-          <span className="material-symbols-outlined fill text-[24px] text-secondary">
-            verified_user
-          </span>
-          <span className="text-xs font-semibold tracking-wider text-secondary uppercase">
-            Private &amp; Secure by Design
-          </span>
-        </div>
-        <h2 className="max-w-3xl font-['Plus_Jakarta_Sans'] text-[48px] font-bold text-on-surface">
-          Built for Ethiopian youth
-        </h2>
-        <p className="max-w-2xl text-xl text-on-surface-variant">
-          Designed with deep respect for local culture, prioritizing your
-          privacy, safety, and well-being above all else.
-        </p>
-        <div className="mt-16">
-          <Link
-            to="/login"
-            className="rounded-full bg-primary px-12 py-4 text-xl font-semibold text-on-primary shadow-[0_4px_16px_rgba(0,88,190,0.25)] transition-transform hover:scale-105 active:scale-95"
-          >
-            Start Your Journey Anonymously
-          </Link>
-        </div>
-      </section>
+      {/* Floating Chat Action Button */}
+      <button className="fixed bottom-24 right-margin-mobile md:bottom-10 md:right-xl bg-primary text-on-primary p-4 rounded-2xl shadow-[0_4px_14px_rgba(0,88,190,0.39)] hover:bg-surface-tint transition-all hover:scale-105 z-40 flex items-center justify-center active:scale-95 duration-200">
+        <span className="material-symbols-outlined text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>chat</span>
+      </button>
 
+      {/* BottomNavBar */}
+      <nav className="bg-surface-container-lowest font-plus-jakarta-sans text-[11px] font-medium fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.08)] md:hidden rounded-t-[24px] border-t border-outline-variant">
+        <button className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1">
+          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
+          <span className="font-label-caps text-label-caps">Home</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
+          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>explore</span>
+          <span className="font-label-caps text-label-caps">Explore</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
+          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>chat</span>
+          <span className="font-label-caps text-label-caps">Chat</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
+          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>medical_services</span>
+          <span className="font-label-caps text-label-caps">Services</span>
+        </button>
+        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
+          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>person</span>
+          <span className="font-label-caps text-label-caps">Profile</span>
+        </button>
+      </nav>
     </div>
   )
 }
