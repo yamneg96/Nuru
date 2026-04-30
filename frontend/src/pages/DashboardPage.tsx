@@ -69,7 +69,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-screen-xl space-y-8 px-5 py-6 md:px-8">
+    <div className="min-h-screen mx-auto max-w-screen-xl space-y-8 px-5 py-6 md:px-8">
       {/* Greeting */}
       <section className="space-y-2">
         <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-[38px] font-bold text-on-surface">
