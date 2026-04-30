@@ -1,4 +1,4 @@
-import { Router, type Request, type Response } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { getPublicMetrics } from "../services/metrics.service.js";
 
 export const metricsRoutes = Router();
@@ -7,12 +7,11 @@ export const metricsRoutes = Router();
  * GET /metrics/public
  * Returns real usage statistics (no auth required)
  */
-metricsRoutes.get("/public", async (_req: Request, res: Response) => {
+metricsRoutes.get("/public", async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const metrics = await getPublicMetrics();
-    res.json(metrics);
+    res.json({ data: metrics });
   } catch (error) {
-    console.error("Metrics error:", error);
-    res.status(500).json({ error: "Failed to fetch metrics" });
+    next(error);
   }
 });

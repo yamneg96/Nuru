@@ -1,21 +1,23 @@
-import { Router, type Request, type Response } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
+import { z } from "zod";
 import { verifyGoogleToken, hashEmail, findOrCreateUser, generateJWT } from "../services/auth.service.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { User } from "../models/User.js";
 
 export const authRoutes = Router();
 
+const loginSchema = z.object({
+  credential: z.string().min(1, "Google credential is required"),
+});
+
 /**
  * POST /auth/google
  * Authenticate via Google credential → anonymous user
  */
-authRoutes.post("/google", async (req: Request, res: Response) => {
+authRoutes.post("/google", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { credential } = req.body;
-    if (!credential) {
-      res.status(400).json({ error: "Missing Google credential" });
-      return;
-    }
+    // Validate request body
+    const { credential } = loginSchema.parse(req.body);
 
     // 1. Verify Google token & extract email
     const email = await verifyGoogleToken(credential);
@@ -30,10 +32,14 @@ authRoutes.post("/google", async (req: Request, res: Response) => {
     const token = generateJWT(user.anonymous_id);
 
     // 5. Return token + anonymous_id (no PII)
-    res.json({ token, anonymous_id: user.anonymous_id });
+    res.json({
+      data: {
+        token,
+        anonymous_id: user.anonymous_id,
+      },
+    });
   } catch (error) {
-    console.error("Auth error:", error);
-    res.status(401).json({ error: "Authentication failed" });
+    next(error);
   }
 });
 
@@ -41,17 +47,17 @@ authRoutes.post("/google", async (req: Request, res: Response) => {
  * GET /auth/me
  * Get current user profile (requires auth)
  */
-authRoutes.get("/me", authMiddleware, async (req: Request, res: Response) => {
+authRoutes.get("/me", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.findOne({ anonymous_id: req.anonymousId });
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "User not found" } });
     }
 
-    res.json((user as any).toSafeJSON());
+    res.json({
+      data: (user as any).toSafeJSON(),
+    });
   } catch (error) {
-    console.error("Get me error:", error);
-    res.status(500).json({ error: "Server error" });
+    next(error);
   }
 });

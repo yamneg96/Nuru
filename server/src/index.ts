@@ -11,6 +11,7 @@ import { servicesRoutes } from "./routes/services.routes.js";
 import { metricsRoutes } from "./routes/metrics.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { quizRouter as quizRoutes } from "./routes/quiz.routes.js";
+import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
 
@@ -28,6 +29,9 @@ app.use("/api/v1/services", servicesRoutes);
 app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/quiz", quizRoutes);
+
+// Error Handler (must be after all routes)
+app.use(errorHandler);
 
 // route / with nice html :
 app.use("/", (_req, res) => {

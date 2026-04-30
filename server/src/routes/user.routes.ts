@@ -1,4 +1,5 @@
-import { Router, type Request, type Response } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
+import { z } from "zod";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { User } from "../models/User.js";
 import { ChatLog } from "../models/ChatLog.js";
@@ -6,19 +7,24 @@ import { DecisionSession } from "../models/DecisionSession.js";
 
 export const userRoutes = Router();
 
+const preferencesSchema = z.object({
+  language: z.enum(["english", "amharic", "oromo"]).optional(),
+  save_history: z.boolean().optional(),
+});
+
 /**
  * PUT /user/preferences
  * Update user preferences (language, save_history)
  */
-userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Response) => {
+userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { language, save_history } = req.body;
+    const { language, save_history } = preferencesSchema.parse(req.body);
     const update: Record<string, any> = {};
 
-    if (language && ["english", "amharic", "oromo"].includes(language)) {
+    if (language) {
       update["preferences.language"] = language;
     }
-    if (typeof save_history === "boolean") {
+    if (save_history !== undefined) {
       update["preferences.save_history"] = save_history;
     }
 
@@ -29,14 +35,12 @@ userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Respons
     );
 
     if (!user) {
-      res.status(404).json({ error: "User not found" });
-      return;
+      return res.status(404).json({ error: { code: "NOT_FOUND", message: "User not found" } });
     }
 
-    res.json((user as any).toSafeJSON());
+    res.json({ data: (user as any).toSafeJSON() });
   } catch (error) {
-    console.error("Update preferences error:", error);
-    res.status(500).json({ error: "Failed to update preferences" });
+    next(error);
   }
 });
 
@@ -44,7 +48,7 @@ userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Respons
  * DELETE /user/data
  * Delete all user data — complete wipe
  */
-userRoutes.delete("/data", authMiddleware, async (req: Request, res: Response) => {
+userRoutes.delete("/data", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await Promise.all([
       ChatLog.deleteMany({ anonymous_id: req.anonymousId }),
@@ -52,9 +56,8 @@ userRoutes.delete("/data", authMiddleware, async (req: Request, res: Response) =
       User.deleteOne({ anonymous_id: req.anonymousId }),
     ]);
 
-    res.json({ message: "All data deleted successfully" });
+    res.json({ data: { message: "All data deleted successfully" } });
   } catch (error) {
-    console.error("Delete data error:", error);
-    res.status(500).json({ error: "Failed to delete data" });
+    next(error);
   }
 });

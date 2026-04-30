@@ -1,75 +1,84 @@
-import { Router, type Request, type Response } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import rateLimit from "express-rate-limit";
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { generateResponse } from "../services/ai.service.js";
 import { ChatLog } from "../models/ChatLog.js";
 
 export const chatRoutes = Router();
 
+const messageSchema = z.object({
+  message: z.string().min(1, "Message is required").max(2000, "Message too long"),
+  conversation_id: z.string().uuid().optional(),
+});
+
 // Rate limit: 20 messages per minute per user
 const chatLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 20,
   keyGenerator: (req) => (req as any).anonymousId || req.ip || "unknown",
-  message: { error: "Too many messages. Please wait a moment." },
+  message: { error: { code: "RATE_LIMIT", message: "Too many messages. Please wait a moment." } },
 });
 
 /**
  * POST /chat/message
  * Send a message and get an AI response
  */
-chatRoutes.post("/message", authMiddleware, chatLimiter, async (req: Request, res: Response) => {
-  try {
-    const { message, conversation_id } = req.body;
-    if (!message || typeof message !== "string" || message.trim().length === 0) {
-      res.status(400).json({ error: "Message is required" });
-      return;
-    }
+chatRoutes.post(
+  "/message",
+  authMiddleware,
+  chatLimiter,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { message, conversation_id } = messageSchema.parse(req.body);
 
-    // Sanitize input
-    const sanitizedMessage = message.trim().slice(0, 2000);
-    const convId = conversation_id || uuidv4();
+      const convId = conversation_id || uuidv4();
 
-    // Find or create conversation
-    let chatLog = await ChatLog.findOne({ conversation_id: convId, anonymous_id: req.anonymousId });
+      // Find or create conversation
+      let chatLog = await ChatLog.findOne({ conversation_id: convId, anonymous_id: req.anonymousId });
 
-    if (!chatLog) {
-      chatLog = new ChatLog({
-        anonymous_id: req.anonymousId!,
-        conversation_id: convId,
-        messages: [],
+      if (!chatLog) {
+        chatLog = new ChatLog({
+          anonymous_id: req.anonymousId!,
+          conversation_id: convId,
+          messages: [],
+        });
+      }
+
+      // Add user message
+      chatLog.messages.push({
+        role: "user",
+        content: message,
+        timestamp: new Date(),
       });
+
+      // Build conversation history for AI context (last 10 messages)
+      const historyForAI = chatLog.messages.slice(-10).map((m) => ({
+        role: m.role as "user" | "assistant" | "system",
+        content: m.content,
+      }));
+
+      // Generate AI response
+      const aiReply = await generateResponse(message, historyForAI);
+
+      // Add AI response
+      chatLog.messages.push({
+        role: "assistant",
+        content: aiReply,
+        timestamp: new Date(),
+      });
+
+      await chatLog.save();
+
+      res.json({
+        data: {
+          reply: aiReply,
+          conversation_id: convId,
+        },
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // Add user message
-    chatLog.messages.push({
-      role: "user",
-      content: sanitizedMessage,
-      timestamp: new Date(),
-    });
-
-    // Build conversation history for AI context (last 10 messages)
-    const historyForAI = chatLog.messages.slice(-10).map((m) => ({
-      role: m.role as "user" | "assistant" | "system",
-      content: m.content,
-    }));
-
-    // Generate AI response
-    const aiReply = await generateResponse(sanitizedMessage, historyForAI);
-
-    // Add AI response
-    chatLog.messages.push({
-      role: "assistant",
-      content: aiReply,
-      timestamp: new Date(),
-    });
-
-    await chatLog.save();
-
-    res.json({ reply: aiReply, conversation_id: convId });
-  } catch (error) {
-    console.error("Chat error:", error);
-    res.status(500).json({ error: "Failed to process message" });
   }
-});
+);

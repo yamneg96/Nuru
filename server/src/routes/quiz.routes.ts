@@ -1,21 +1,20 @@
-import { Router } from "express"
-import { generateQuiz } from "../services/quiz.service.js"
-import { authMiddleware } from "../middleware/auth.middleware.js"
+import { Router, type Request, type Response, type NextFunction } from "express";
+import { z } from "zod";
+import { generateQuiz } from "../services/quiz.service.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
-export const quizRouter = Router()
+export const quizRouter = Router();
 
-quizRouter.post("/generate", authMiddleware, async (req, res) => {
+const generateQuizSchema = z.object({
+  topic: z.string().min(1, "A valid topic string is required"),
+});
+
+quizRouter.post("/generate", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { topic } = req.body
-    if (!topic || typeof topic !== "string") {
-      res.status(400).json({ error: "A valid topic string is required" })
-      return
-    }
-
-    const quiz = await generateQuiz(topic)
-    res.json(quiz)
+    const { topic } = generateQuizSchema.parse(req.body);
+    const quiz = await generateQuiz(topic);
+    res.json({ data: quiz });
   } catch (error) {
-    console.error("Quiz generation error:", error)
-    res.status(500).json({ error: "Failed to generate quiz" })
+    next(error);
   }
-})
+});
