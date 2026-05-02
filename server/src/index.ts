@@ -41,6 +41,11 @@ app.use("/api/v1/admin", adminManagementRoutes);
 // Error Handler (must be after all routes)
 app.use(errorHandler);
 
+// Health check
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 // route / with nice html :
 app.use("/", (_req, res) => {
   res.send(`
@@ -50,11 +55,6 @@ app.use("/", (_req, res) => {
       <a href="/health">Health Check</a>
     </div>
   `);
-});
-
-// Health check
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // ── Start Server ─────────────────────────────────────────────

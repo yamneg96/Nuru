@@ -1,0 +1,22 @@
+[
+  {
+    "text": "What is the most important element of consent?",
+    "options": [
+      "It must be enthusiastic",
+      "It must be given by a parent",
+      "It must be written down",
+      "It must be quiet"
+    ],
+    "correct_index": 0,
+    "explanation": "Consent should be a 'hell yes!' and must be enthusiastic, freely given, and reversible."
+  },
+  {
+    "text": "True or False: Consent can be taken back at any time.",
+    "options": [
+      "True",
+      "False"
+    ],
+    "correct_index": 0,
+    "explanation": "Correct! You always have the right to change your mind, even if you already said yes."
+  }
+]

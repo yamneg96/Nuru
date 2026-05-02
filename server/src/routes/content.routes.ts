@@ -16,6 +16,11 @@ function toSlug(title: string): string {
   return slugify(title, { lower: true, strict: true });
 }
 
+// ── Validation Helpers ─────────────────────────────────────────────────────────
+// Zod v4-safe: coerces empty strings to undefined, handles form-data booleans
+const optionalStr = () => z.string().optional().transform((v) => (v === "" ? undefined : v));
+const optionalBool = z.preprocess((v) => v === "true" || v === true || v === 1, z.boolean());
+
 // ── Validation Schemas ─────────────────────────────────────────────────────────
 const moduleBaseSchema = z.object({
   title: z.string().min(1),
@@ -23,9 +28,9 @@ const moduleBaseSchema = z.object({
   icon: z.string().min(1),
   color: z.enum(["primary", "secondary", "tertiary"]),
   order: z.coerce.number().int(),
-  featured: z.preprocess((val) => val === "true" || val === true, z.boolean()),
-  published: z.preprocess((val) => val === "true" || val === true, z.boolean()),
-  content_markdown: z.string().optional(),
+  featured: optionalBool,
+  published: optionalBool,
+  content_markdown: optionalStr(),
 });
 
 const moduleCreateSchema = moduleBaseSchema.extend({
@@ -33,7 +38,7 @@ const moduleCreateSchema = moduleBaseSchema.extend({
   order: moduleBaseSchema.shape.order.default(0),
   featured: moduleBaseSchema.shape.featured.default(false),
   published: moduleBaseSchema.shape.published.default(false),
-  content_markdown: moduleBaseSchema.shape.content_markdown.default(""),
+  content_markdown: optionalStr(),
 });
 
 const moduleUpdateSchema = moduleBaseSchema.partial();
@@ -43,17 +48,17 @@ const articleBaseSchema = z.object({
   title: z.string().min(1),
   content_markdown: z.string().min(1),
   summary: z.string().min(1),
-  badge: z.string(),
-  image_url: z.string().url().or(z.literal("")),
-  video_id: z.string().nullable(),
+  badge: optionalStr(),
+  image_url: optionalStr(),
+  video_id: optionalStr(),
   order: z.coerce.number().int(),
-  published: z.preprocess((val) => val === "true" || val === true, z.boolean()),
+  published: optionalBool,
 });
 
 const articleCreateSchema = articleBaseSchema.extend({
-  badge: articleBaseSchema.shape.badge.default(""),
-  image_url: articleBaseSchema.shape.image_url.default(""),
-  video_id: articleBaseSchema.shape.video_id.default(null),
+  badge: optionalStr(),
+  image_url: optionalStr(),
+  video_id: optionalStr(),
   order: articleBaseSchema.shape.order.default(0),
   published: articleBaseSchema.shape.published.default(false),
 });

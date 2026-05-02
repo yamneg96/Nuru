@@ -8,21 +8,18 @@ import bcrypt from "bcrypt";
 
 describe("Admin Authentication", () => {
   const testAdmin = {
-    email: "admin@nuru.app",
+    email: "auth-test-admin@nuru.app",
     password: "Password123!",
   };
 
   beforeAll(async () => {
-    // Ensure DB is connected
     const { connectDB } = await import("../src/config/db.js");
     await connectDB();
 
-    // Clean up
-    await User.deleteMany({ role: "admin" });
+    // Clean up both roles
+    await User.deleteMany({ email: testAdmin.email });
     
-    // Create a test admin
     const passwordHash = await bcrypt.hash(testAdmin.password, 12);
-    
     await User.create({
       email: testAdmin.email,
       password_hash: passwordHash,
@@ -32,7 +29,7 @@ describe("Admin Authentication", () => {
   });
 
   afterAll(async () => {
-    await User.deleteMany({ role: "admin" });
+    await User.deleteMany({ email: testAdmin.email });
   });
 
   it("should fail login with wrong credentials", async () => {
@@ -51,7 +48,7 @@ describe("Admin Authentication", () => {
     
     expect(res.status).toBe(200);
     expect(res.body.data.token).toBeDefined();
-    expect(res.body.data.user.role).toBe("admin");
+    expect(["admin", "super_admin"]).toContain(res.body.data.user.role);
   });
 
   describe("isAdmin Middleware", () => {

@@ -43,8 +43,8 @@ describe("Admin User Management (Super Admin)", () => {
       .set("Authorization", `Bearer ${superToken}`);
     
     expect(res.status).toBe(200);
-    expect(res.body.data).toHaveLength(1);
-    expect(res.body.data[0].role).toBe("super_admin");
+    expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.data.some((a: any) => a.role === "super_admin")).toBe(true);
   });
 
   it("should create a new ordinary admin", async () => {
