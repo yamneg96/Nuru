@@ -22,8 +22,48 @@ const chatLimiter = rateLimit({
 });
 
 /**
- * POST /chat/message
- * Send a message and get an AI response
+ * @swagger
+ * /api/v1/chat/message:
+ *   post:
+ *     summary: Send a message to the AI
+ *     description: Send a message to the Nuru AI assistant and get a response. Maintains conversation history. Rate limited to 20 requests per minute.
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [message]
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: The user's message
+ *               conversation_id:
+ *                 type: string
+ *                 format: uuid
+ *                 description: Optional. The ID of an existing conversation to continue.
+ *     responses:
+ *       200:
+ *         description: AI response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     reply:
+ *                       type: string
+ *                     conversation_id:
+ *                       type: string
+ *       401:
+ *         description: Unauthorized
+ *       429:
+ *         description: Rate limit exceeded
  */
 chatRoutes.post(
   "/message",

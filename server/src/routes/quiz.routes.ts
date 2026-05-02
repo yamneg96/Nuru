@@ -9,6 +9,33 @@ const generateQuizSchema = z.object({
   topic: z.string().min(1, "A valid topic string is required"),
 });
 
+/**
+ * @swagger
+ * /api/v1/quiz/generate:
+ *   post:
+ *     summary: Generate a quiz
+ *     description: Generate a 3-question multiple choice quiz on a given SRH topic using AI.
+ *     tags: [Quiz]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [topic]
+ *             properties:
+ *               topic:
+ *                 type: string
+ *                 description: The topic for the quiz (e.g. 'contraception methods')
+ *     responses:
+ *       200:
+ *         description: Generated quiz
+ *       401:
+ *         description: Unauthorized
+ */
+
 quizRouter.post("/generate", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { topic } = generateQuizSchema.parse(req.body);

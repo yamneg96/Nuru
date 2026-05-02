@@ -13,8 +13,33 @@ const preferencesSchema = z.object({
 });
 
 /**
- * PUT /user/preferences
- * Update user preferences (language, save_history)
+ * @swagger
+ * /api/v1/user/preferences:
+ *   put:
+ *     summary: Update user preferences
+ *     description: Update language and history saving preferences.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               language:
+ *                 type: string
+ *                 enum: [english, amharic, oromo]
+ *               save_history:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Updated user profile
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
  */
 userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,8 +70,19 @@ userRoutes.put("/preferences", authMiddleware, async (req: Request, res: Respons
 });
 
 /**
- * DELETE /user/data
- * Delete all user data — complete wipe
+ * @swagger
+ * /api/v1/user/data:
+ *   delete:
+ *     summary: Delete all user data
+ *     description: Completely wipe all user data including chat logs, decision sessions, and the user profile.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: All data deleted successfully
+ *       401:
+ *         description: Unauthorized
  */
 userRoutes.delete("/data", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -1,4 +1,8 @@
 Design/
-.agent/
+.agents/
 .env
-        
+node_modules/
+dist/
+.DS_Store
+*.log
+Docs/

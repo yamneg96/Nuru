@@ -12,6 +12,7 @@ import { metricsRoutes } from "./routes/metrics.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { quizRouter as quizRoutes } from "./routes/quiz.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
+import { setupSwagger } from "./config/swagger.js";
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
 app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
+
+// ── Swagger Documentation ─────────────────────────────────────
+setupSwagger(app);
 
 // ── Routes ───────────────────────────────────────────────────
 app.use("/api/v1/auth", authRoutes);

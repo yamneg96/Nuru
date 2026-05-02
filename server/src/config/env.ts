@@ -12,6 +12,8 @@ const envSchema = z.object({
   GROK_API_KEY: z.string().optional().default(""),
   AI_PROVIDER: z.string().default("grok"),
   CLIENT_URL: z.string().url().default("http://localhost:5173"),
+  ADMIN_EMAIL: z.string().email().optional(),
+  ADMIN_PASSWORD: z.string().min(8).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

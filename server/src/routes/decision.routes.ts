@@ -19,7 +19,30 @@ const sessionIdParamSchema = z.object({
 });
 
 /**
- * POST /decision/start
+ * @swagger
+ * /api/v1/decision/start:
+ *   post:
+ *     summary: Start a decision flow
+ *     description: Initialize a new interactive decision tree flow (e.g., family planning method selection).
+ *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [flow_type]
+ *             properties:
+ *               flow_type:
+ *                 type: string
+ *                 description: Identifier for the flow (e.g. 'contraception')
+ *     responses:
+ *       200:
+ *         description: Initial step data for the flow
+ *       401:
+ *         description: Unauthorized
  */
 decisionRoutes.post("/start", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,7 +55,32 @@ decisionRoutes.post("/start", authMiddleware, async (req: Request, res: Response
 });
 
 /**
- * POST /decision/step
+ * @swagger
+ * /api/v1/decision/step:
+ *   post:
+ *     summary: Submit an answer for a decision step
+ *     description: Submit an answer to the current step and get the next step or final result.
+ *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [session_id, answer]
+ *             properties:
+ *               session_id:
+ *                 type: string
+ *                 description: The active decision session ID
+ *               answer:
+ *                 description: The selected answer(s)
+ *     responses:
+ *       200:
+ *         description: Next step or final result
+ *       401:
+ *         description: Unauthorized
  */
 decisionRoutes.post("/step", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,7 +93,28 @@ decisionRoutes.post("/step", authMiddleware, async (req: Request, res: Response,
 });
 
 /**
- * GET /decision/result/:sessionId
+ * @swagger
+ * /api/v1/decision/result/{sessionId}:
+ *   get:
+ *     summary: Get decision result
+ *     description: Retrieve the final result of a completed decision session.
+ *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The decision session ID
+ *     responses:
+ *       200:
+ *         description: Decision result data
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Session not found
  */
 decisionRoutes.get(
   "/result/:sessionId",

@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { v4 as uuidv4 } from "uuid";
-import { User } from "../models/User.js";
+import { User, type IUser } from "../models/User.js";
 import { env } from "../config/env.js";
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
@@ -54,17 +55,35 @@ export async function findOrCreateUser(emailHash: string) {
 }
 
 /**
- * Generate a JWT containing only the anonymous_id.
- * NEVER put email or PII in the token.
+ * Verify admin credentials.
  */
-export function generateJWT(anonymousId: string): string {
-  return jwt.sign({ sub: anonymousId }, env.JWT_SECRET, { expiresIn: "7d" });
+export async function verifyAdminCredentials(email: string, password: string): Promise<IUser> {
+  const normalizedEmail = email.toLowerCase().trim();
+  const user = await User.findOne({ email: normalizedEmail, role: "admin" });
+
+  if (!user || !user.password_hash) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isValid = await bcrypt.compare(password, user.password_hash);
+  if (!isValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  return user;
 }
 
 /**
- * Verify a JWT and return the anonymous_id.
+ * Generate a JWT containing the anonymous_id and role.
+ * NEVER put email or PII in the token.
  */
-export function verifyJWT(token: string): string {
-  const decoded = jwt.verify(token, env.JWT_SECRET) as { sub: string };
-  return decoded.sub;
+export function generateJWT(anonymousId: string, role: string = "user"): string {
+  return jwt.sign({ sub: anonymousId, role }, env.JWT_SECRET, { expiresIn: "7d" });
+}
+
+/**
+ * Verify a JWT and return the payload.
+ */
+export function verifyJWT(token: string): { sub: string; role: string } {
+  return jwt.verify(token, env.JWT_SECRET) as { sub: string; role: string };
 }

@@ -1,8 +1,11 @@
 import mongoose, { Schema, type Document } from "mongoose";
 
 export interface IUser extends Document {
-  anonymous_id: string;
-  email_hash: string;
+  anonymous_id?: string; // Optional for admins
+  email_hash?: string; // Optional for admins
+  email?: string; // Raw email for admins
+  password_hash?: string; // Only for admins
+  role: "user" | "admin";
   created_at: Date;
   last_active: Date;
   preferences: {
@@ -12,8 +15,11 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema<IUser>({
-  anonymous_id: { type: String, required: true, unique: true, index: true },
-  email_hash: { type: String, required: true, unique: true, index: true },
+  anonymous_id: { type: String, unique: true, index: true, sparse: true },
+  email_hash: { type: String, unique: true, index: true, sparse: true },
+  email: { type: String, unique: true, index: true, sparse: true },
+  password_hash: { type: String },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   created_at: { type: Date, default: Date.now },
   last_active: { type: Date, default: Date.now },
   preferences: {
@@ -25,7 +31,9 @@ const UserSchema = new Schema<IUser>({
 // NEVER expose email_hash or internals to API responses
 UserSchema.methods.toSafeJSON = function () {
   return {
-    anonymous_id: this.anonymous_id,
+    id: this.role === "admin" ? this._id : this.anonymous_id,
+    role: this.role,
+    email: this.email, // Only admins will have this
     created_at: this.created_at,
     last_active: this.last_active,
     preferences: this.preferences,
