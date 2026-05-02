@@ -1,5 +1,5 @@
 import api from "./client"
-import type { UserProfile, UserPreferences } from "../../../shared/types"
+import type { UserProfile, UserPreferences, MessageResponse } from "@/types"
 
 export async function updatePreferences(
   prefs: Partial<UserPreferences>
@@ -8,7 +8,7 @@ export async function updatePreferences(
   return data
 }
 
-export async function deleteUserData(): Promise<{ message: string }> {
-  const { data } = await api.delete<{ message: string }>("/user/data")
+export async function deleteUserData(): Promise<MessageResponse> {
+  const { data } = await api.delete<MessageResponse>("/user/data")
   return data
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { getServices } from "@/api/services.api"
-import type { ServiceLocation } from "../../../shared/types"
+import type { ServiceLocation } from "@/types"
 
 const FILTERS = [
   { label: "All Nearby", tag: "", icon: "check" },
@@ -123,7 +123,7 @@ export default function ServicesPage() {
                         Verified
                       </span>
                     )}
-                    {svc.tags?.map((tag) => (
+                    {svc.tags?.map((tag: string) => (
                       <span
                         key={tag}
                         className="rounded-md bg-primary-container/20 px-2 py-0.5 text-[10px] font-semibold text-primary uppercase"
@@ -153,7 +153,7 @@ export default function ServicesPage() {
                   Available Services
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {svc.services?.map((s) => (
+                  {svc.services?.map((s: string) => (
                     <span
                       key={s}
                       className="rounded-lg bg-surface-container-low px-3 py-1 text-sm text-on-surface-variant"

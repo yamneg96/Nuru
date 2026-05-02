@@ -5,7 +5,7 @@ import type {
   DecisionQuestion,
   DecisionResult,
   FlowType,
-} from "../../../shared/types"
+} from "@/types"
 
 export default function DecisionFlowPage() {
   const [params] = useSearchParams()
@@ -88,7 +88,7 @@ export default function DecisionFlowPage() {
 
   // Show result
   if (result) {
-    const riskColors = {
+    const riskColors: Record<string, string> = {
       low: "text-secondary",
       moderate: "text-tertiary",
       high: "text-error",
@@ -121,7 +121,7 @@ export default function DecisionFlowPage() {
               </div>
             )}
             <div className="space-y-2">
-              {result.advice.map((a, i) => (
+              {result.advice.map((a: string, i: number) => (
                 <div
                   key={i}
                   className="flex items-start gap-3 rounded-xl bg-surface-container-low p-3"
@@ -138,7 +138,7 @@ export default function DecisionFlowPage() {
             What would you like to do next?
           </h3>
           <div className="flex flex-col gap-3">
-            {result.next_steps?.map((step, i) => (
+            {result.next_steps?.map((step: { icon: string; action: string; title: string; description: string }, i: number) => (
               <button
                 key={i}
                 onClick={() => navigate(step.action)}
@@ -211,7 +211,7 @@ export default function DecisionFlowPage() {
                   : "flex flex-col gap-3"
               }
             >
-              {question.options.map((opt) => {
+              {question.options.map((opt: { value: string; label: string }) => {
                 const isSelected =
                   question.type === "multiple_choice"
                     ? Array.isArray(selected) && selected.includes(opt.value)

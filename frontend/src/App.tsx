@@ -1,28 +1,64 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { AppLayout } from "@/components/layout/AppLayout"
-import { ProtectedRoute, PublicRoute } from "@/components/guards"
-import LandingPage from "@/pages/LandingPage"
-import LoginPage from "@/pages/LoginPage"
-import OnboardingPage from "@/pages/OnboardingPage"
-import SafelyPage from "@/pages/SafelyPage"
-import DashboardPage from "@/pages/DashboardPage"
-import ChatPage from "@/pages/ChatPage"
-import DecisionFlowPage from "@/pages/DecisionFlowPage"
-import ExplorePage from "@/pages/ExplorePage"
-import ServicesPage from "@/pages/ServicesPage"
-import SettingsPage from "@/pages/SettingsPage"
-import { ThemeProvider } from "@/components/ThemeProvider"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { ProtectedRoute, PublicRoute } from "@/components/guards";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
-import QuizPage from "@/pages/QuizPage"
-import ModulePage from "@/pages/ModulePage"
-import { PrivacyPolicyPage, TermsPage, ContactPage } from "@/pages/StaticPages"
+/* ───────── PUBLIC ───────── */
+import LandingPage from "@/pages/public/LandingPage";
+import LoginPage from "@/pages/public/LoginPage";
+import OnboardingPage from "@/pages/public/OnboardingPage";
+import { PrivacyPolicyPage, TermsPage, ContactPage } from "@/pages/public/StaticPages";
+
+/* ───────── CORE ───────── */
+import DashboardPage from "@/pages/dashboard/DashboardPage";
+import SettingsPage from "@/pages/settings/SettingsPage";
+import SafelyPage from "@/pages/safety/SafelyPage";
+
+/* ───────── AI / CORE FEATURES ───────── */
+import ChatPage from "@/pages/chat/ChatPage";
+import DecisionFlowPage from "@/pages/decision/DecisionFlowPage";
+
+/* ───────── CONTENT ───────── */
+import ExplorePage from "@/pages/content/ExplorePage";
+import ModulePage from "@/pages/content/ModulePage";
+import QuizPage from "@/pages/content/Quiz/QuizPage";
+
+/* ───────── SERVICES ───────── */
+import ServicesPage from "@/pages/services/ServicesPage";
+
+/* ───────── FUTURE-READY (can lazy later) ───────── */
+// import ArticlePage from "@/pages/content/ArticlePage";
+// import VideoPage from "@/pages/content/VideoPage";
+// import QuizResultPage from "@/pages/content/Quiz/QuizResultPage";
+
+/* ───────── PHASE 2 ───────── */
+import ProfessionalsPage from "@/pages/professionals/ProfessionalsPage";
+import ProfessionalDetailPage from "@/pages/professionals/ProfessionalDetailPage";
+import EventsPage from "@/pages/events/EventsPage";
+import MyAppointmentsPage from "@/pages/appointments/MyAppointmentsPage";
+import BookAppointmentPage from "@/pages/appointments/BookAppointmentPage";
+import ReportsPage from "@/pages/reports/ReportsPage";
+
+/* ───────── PHASE 3 (real-time — deferred) ───────── */
+// import CommunitiesPage from "@/pages/community/CommunitiesPage";
+// import ConversationsPage from "@/pages/messaging/ConversationsPage";
+// import NotificationsPage from "@/pages/notifications/NotificationsPage";
+
+/* ───────── ADMIN ───────── */
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
+import AdminContentCMS from "@/pages/admin/AdminContentCMS";
+import AdminEventManagement from "@/pages/admin/AdminEventManagement";
+import AdminProfessionalVerification from "@/pages/admin/AdminProfessionalVerification";
 
 export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes (no layout shell) */}
+
+          {/* ───────── PUBLIC ROUTES (NO LAYOUT) ───────── */}
+
           <Route
             path="/login"
             element={
@@ -32,27 +68,71 @@ export default function App() {
             }
           />
 
-          {/* Onboarding (no bottom nav) */}
-          <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-          <Route path="/safely" element={<ProtectedRoute><SafelyPage /></ProtectedRoute>} />
+          <Route
+            path="/onboarding"
+            element={
+              <PublicRoute>
+                <OnboardingPage />
+              </PublicRoute>
+            }
+          />
 
-          {/* Chat has its own full-screen layout */}
-          <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
-
-          {/* Decision flow has its own layout */}
-          <Route path="/decision" element={<ProtectedRoute><DecisionFlowPage /></ProtectedRoute>} />
-
-          {/* Quiz and Module pages */}
-          <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
-          <Route path="/module/:id" element={<ProtectedRoute><ModulePage /></ProtectedRoute>} />
-
-          {/* Static Pages */}
+          {/* Static */}
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/contact" element={<ContactPage />} />
 
-          {/* App shell routes (header + footer + bottom nav) */}
+          {/* ───────── FULLSCREEN FLOWS (NO APP SHELL) ───────── */}
+
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/decision"
+            element={
+              <ProtectedRoute>
+                <DecisionFlowPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/quiz"
+            element={
+              <ProtectedRoute>
+                <QuizPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/module/:id"
+            element={
+              <ProtectedRoute>
+                <ModulePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/safely"
+            element={
+              <ProtectedRoute>
+                <SafelyPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ───────── MAIN APP SHELL ───────── */}
+
           <Route element={<AppLayout />}>
+
             <Route
               path="/"
               element={
@@ -61,16 +141,79 @@ export default function App() {
                 </PublicRoute>
               }
             />
-            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-            <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
-            <Route path="/services" element={<ProtectedRoute><ServicesPage /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/explore"
+              element={
+                <ProtectedRoute>
+                  <ExplorePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/services"
+              element={
+                <ProtectedRoute>
+                  <ServicesPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* ───────── PHASE 2 ROUTES ───────── */}
+
+            <Route path="/professionals" element={<ProtectedRoute><ProfessionalsPage /></ProtectedRoute>} />
+            <Route path="/professionals/:id" element={<ProtectedRoute><ProfessionalDetailPage /></ProtectedRoute>} />
+
+            <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
+
+            <Route path="/appointments" element={<ProtectedRoute><MyAppointmentsPage /></ProtectedRoute>} />
+
+            <Route path="/reports" element={<ReportsPage />} />
+
+            {/* ───────── FUTURE (deferred) ───────── */}
+            {/*
+            <Route path="/communities" element={<CommunitiesPage />} />
+            <Route path="/messages" element={<ConversationsPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            */}
+
           </Route>
 
-          {/* Fallback */}
+          {/* ───────── ADMIN (ISOLATED — own layout) ───────── */}
+
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/content" element={<AdminContentCMS />} />
+          <Route path="/admin/events" element={<AdminEventManagement />} />
+          <Route path="/admin/professionals" element={<AdminProfessionalVerification />} />
+
+          {/* Fullscreen flows outside app shell */}
+          <Route path="/appointments/book/:professionalId" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
+
+          {/* ───────── FALLBACK ───────── */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }
