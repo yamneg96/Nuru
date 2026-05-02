@@ -4,6 +4,9 @@ import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import { v4 as uuidv4 } from "uuid";
 import { User, type IUser } from "../models/User.js";
+import { ChatLog } from "../models/ChatLog.js";
+import { DecisionSession } from "../models/DecisionSession.js";
+import { UserProgress } from "../models/UserProgress.js";
 import { env } from "../config/env.js";
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
@@ -33,12 +36,48 @@ export function hashEmail(email: string): string {
 }
 
 /**
- * Find existing user by email hash or create a new anonymous user.
+ * Find existing user by email hash or create a new user.
+ * If previousAnonymousId is provided, migrates history.
  */
-export async function findOrCreateUser(emailHash: string) {
+export async function findOrCreateUser(emailHash: string, previousAnonymousId?: string) {
   let user = await User.findOne({ email_hash: emailHash });
 
-  if (!user) {
+  if (user) {
+    // Scenario B: Returning user logging in on a new device.
+    // If they have temporary history on this new device, merge it into their permanent account.
+    user.last_active = new Date();
+    await user.save();
+
+    if (previousAnonymousId && previousAnonymousId !== user.anonymous_id) {
+      // Find the temporary user account to ensure it exists
+      const tempUser = await User.findOne({ anonymous_id: previousAnonymousId });
+      
+      if (tempUser && !tempUser.email_hash) {
+        // Only merge if the temporary user is truly an anonymous "ghost" account
+        await Promise.all([
+          ChatLog.updateMany({ anonymous_id: previousAnonymousId }, { $set: { anonymous_id: user.anonymous_id } }),
+          DecisionSession.updateMany({ anonymous_id: previousAnonymousId }, { $set: { anonymous_id: user.anonymous_id } }),
+          UserProgress.updateMany({ anonymous_id: previousAnonymousId }, { $set: { anonymous_id: user.anonymous_id } })
+        ]);
+        
+        // Delete the ghost account
+        await User.deleteOne({ _id: tempUser._id });
+      }
+    }
+  } else {
+    // Scenario A: Brand new signup with Google
+    if (previousAnonymousId) {
+      user = await User.findOne({ anonymous_id: previousAnonymousId });
+      if (user && !user.email_hash) {
+        // Upgrade the anonymous user to a permanent user
+        user.email_hash = emailHash;
+        user.last_active = new Date();
+        await user.save();
+        return user;
+      }
+    }
+
+    // Fallback: If no previous session, create a completely new user
     user = await User.create({
       anonymous_id: uuidv4(),
       email_hash: emailHash,
@@ -46,9 +85,6 @@ export async function findOrCreateUser(emailHash: string) {
       last_active: new Date(),
       preferences: { language: "english", save_history: true },
     });
-  } else {
-    user.last_active = new Date();
-    await user.save();
   }
 
   return user;

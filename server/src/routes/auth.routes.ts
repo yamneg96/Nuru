@@ -8,6 +8,7 @@ export const authRoutes = Router();
 
 const googleLoginSchema = z.object({
   credential: z.string().min(1, "Google credential is required"),
+  previous_anonymous_id: z.string().optional(),
 });
 
 const adminLoginSchema = z.object({
@@ -51,7 +52,7 @@ const adminLoginSchema = z.object({
 authRoutes.post("/google", async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate request body
-    const { credential } = googleLoginSchema.parse(req.body);
+    const { credential, previous_anonymous_id } = googleLoginSchema.parse(req.body);
 
     // 1. Verify Google token & extract email
     const email = await verifyGoogleToken(credential);
@@ -59,8 +60,8 @@ authRoutes.post("/google", async (req: Request, res: Response, next: NextFunctio
     // 2. Hash email — raw email is NEVER stored
     const emailHash = hashEmail(email);
 
-    // 3. Find or create anonymous user
-    const user = await findOrCreateUser(emailHash);
+    // 3. Find or create anonymous user (with migration logic)
+    const user = await findOrCreateUser(emailHash, previous_anonymous_id);
 
     // 4. Generate JWT with anonymous_id and role
     const token = generateJWT(user.anonymous_id!, user.role);

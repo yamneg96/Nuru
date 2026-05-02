@@ -17,8 +17,8 @@ async function getModuleSummary(userId: string, moduleId: mongoose.Types.ObjectI
   const [totalArticles, totalVideos, doneArticles, doneVideos] = await Promise.all([
     Article.countDocuments({ module_id: moduleId, published: true }),
     Video.countDocuments({ module_id: moduleId, published: true }),
-    UserProgress.countDocuments({ user_id: userId, module_id: moduleId, content_type: "article" }),
-    UserProgress.countDocuments({ user_id: userId, module_id: moduleId, content_type: "video" }),
+    UserProgress.countDocuments({ anonymous_id: userId, module_id: moduleId, content_type: "article" }),
+    UserProgress.countDocuments({ anonymous_id: userId, module_id: moduleId, content_type: "video" }),
   ]);
   const total = totalArticles + totalVideos;
   const done = doneArticles + doneVideos;
@@ -69,7 +69,7 @@ progressRouter.post("/complete", authMiddleware, async (req: Request, res: Respo
 
     const record = await UserProgress.findOneAndUpdate(
       {
-        user_id: req.anonymousId,
+        anonymous_id: req.anonymousId,
         content_type: payload.content_type,
         content_id: payload.content_id,
       },
@@ -109,7 +109,7 @@ progressRouter.get("/", authMiddleware, async (req: Request, res: Response, next
     const userId = req.anonymousId!;
 
     // All completion records for this user
-    const completions = await UserProgress.find({ user_id: userId })
+    const completions = await UserProgress.find({ anonymous_id: userId })
       .sort({ completed_at: -1 });
 
     // Per-module progress summary
@@ -164,7 +164,7 @@ progressRouter.get("/module/:module_id", authMiddleware, async (req: Request, re
 
     const [summary, completions] = await Promise.all([
       getModuleSummary(userId, moduleId),
-      UserProgress.find({ user_id: userId, module_id: moduleId }).sort({ completed_at: -1 }),
+      UserProgress.find({ anonymous_id: userId, module_id: moduleId }).sort({ completed_at: -1 }),
     ]);
 
     res.json({
