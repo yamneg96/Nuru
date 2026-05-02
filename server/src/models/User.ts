@@ -1,23 +1,33 @@
 import mongoose, { Schema, type Document } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 export interface IUser extends Document {
-  anonymous_id: string;
-  email_hash: string;
+  anonymous_id?: string; // Optional for admins
+  email_hash?: string; // Optional for admins
+  email?: string; // Raw email for admins
+  name?: string; // Full name
+  password_hash?: string; // Only for admins
+  role: "user" | "admin" | "super_admin";
   created_at: Date;
   last_active: Date;
   preferences: {
-    language: "english" | "amharic" | "oromo";
+    language: "english" | "amharic" | "oromo" | "somali";
     save_history: boolean;
   };
+  toSafeJSON(): any;
 }
 
 const UserSchema = new Schema<IUser>({
-  anonymous_id: { type: String, required: true, unique: true, index: true },
-  email_hash: { type: String, required: true, unique: true, index: true },
+  anonymous_id: { type: String, unique: true, index: true, sparse: true, default: () => uuidv4() },
+  email_hash: { type: String, unique: true, index: true, sparse: true },
+  email: { type: String, unique: true, index: true, sparse: true },
+  name: { type: String, trim: true },
+  password_hash: { type: String },
+  role: { type: String, enum: ["user", "admin", "super_admin"], default: "user" },
   created_at: { type: Date, default: Date.now },
   last_active: { type: Date, default: Date.now },
   preferences: {
-    language: { type: String, enum: ["english", "amharic", "oromo"], default: "english" },
+    language: { type: String, enum: ["english", "amharic", "oromo", "somali"], default: "english" },
     save_history: { type: Boolean, default: true },
   },
 });
@@ -25,7 +35,10 @@ const UserSchema = new Schema<IUser>({
 // NEVER expose email_hash or internals to API responses
 UserSchema.methods.toSafeJSON = function () {
   return {
-    anonymous_id: this.anonymous_id,
+    id: this.role !== "user" ? this._id : this.anonymous_id,
+    role: this.role,
+    email: this.email,
+    name: this.name,
     created_at: this.created_at,
     last_active: this.last_active,
     preferences: this.preferences,

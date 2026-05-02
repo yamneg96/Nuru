@@ -1,23 +1,31 @@
 import dotenv from "dotenv";
+import { z } from "zod";
+
 dotenv.config();
 
-export const env = {
-  PORT: parseInt(process.env.PORT || "5000", 10),
-  NODE_ENV: process.env.NODE_ENV || "development",
-  MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017/nuru",
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
-  JWT_SECRET: process.env.JWT_SECRET || "dev-secret-change-in-production",
-  GROK_API_KEY: process.env.GROK_API_KEY || "",
-  AI_PROVIDER: process.env.AI_PROVIDER || "grok",
-  CLIENT_URL: process.env.CLIENT_URL || "http://localhost:5173",
-} as const;
+const envSchema = z.object({
+  PORT: z.coerce.number().default(5000),
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  MONGODB_URI: z.string().url().default("mongodb://localhost:27017/nuru"),
+  GOOGLE_CLIENT_ID: z.string().default(""),
+  JWT_SECRET: z.string().default("dev-secret-change-in-production"),
+  JWT_REFRESH_SECRET: z.string().default("refresh-secret-change-in-production"),
+  JWT_ACCESS_EXPIRY: z.string().default("15m"),
+  JWT_REFRESH_EXPIRY: z.string().default("30d"),
+  GEMINI_API_KEY: z.string().optional().default(""),
+  AI_PROVIDER: z.string().default("gemini"),
+  CLIENT_URL: z.string().url().default("http://localhost:5173"),
+  ADMIN_EMAIL: z.string().email().optional(),
+  ADMIN_PASSWORD: z.string().min(8).optional(),
+  GOOGLE_MAPS_API_KEY: z.string().default(""),
+});
 
-// Validate critical env vars in production
-if (env.NODE_ENV === "production") {
-  const required = ["MONGODB_URI", "GOOGLE_CLIENT_ID", "JWT_SECRET"] as const;
-  for (const key of required) {
-    if (!env[key]) {
-      throw new Error(`Missing required environment variable: ${key}`);
-    }
-  }
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error("❌ Invalid environment variables:", JSON.stringify(parsed.error.format(), null, 2));
+  process.exit(1);
 }
+
+export const env = parsed.data;
+

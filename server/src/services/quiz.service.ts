@@ -1,4 +1,6 @@
 import { generateResponse } from "./ai.service.js"
+import { logger } from "../utils/logger.js"
+
 
 export interface QuizQuestion {
   question: string
@@ -40,7 +42,7 @@ Return ONLY the JSON. No markdown formatting, no backticks, no introductory text
     
     return quizData
   } catch (error) {
-    console.error("Failed to parse quiz JSON:", error, responseText)
+    logger.error({ error, responseText }, "Failed to parse quiz JSON")
     throw new Error("Failed to generate a valid quiz. Please try again.")
   }
 }

@@ -9,6 +9,7 @@ export interface IChatMessage {
 export interface IChatLog extends Document {
   anonymous_id: string;
   conversation_id: string;
+  title?: string;
   messages: IChatMessage[];
   created_at: Date;
   updated_at: Date;
@@ -26,6 +27,7 @@ const ChatMessageSchema = new Schema<IChatMessage>(
 const ChatLogSchema = new Schema<IChatLog>({
   anonymous_id: { type: String, required: true, index: true },
   conversation_id: { type: String, required: true, unique: true, index: true },
+  title: { type: String, default: "New Conversation" },
   messages: [ChatMessageSchema],
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
