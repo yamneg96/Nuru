@@ -1,3 +1,11 @@
 Design/
+.agents/
+.env
+node_modules/
+dist/
+.DS_Store
+*.log
+Docs/
+
 Onboarding-Design/
 node_modules/

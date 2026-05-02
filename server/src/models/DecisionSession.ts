@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Document } from "mongoose";
+import { VALID_FLOW_TYPES } from "../config/constants.js";
 
 export interface IDecisionStep {
   question_id: string;
@@ -36,7 +37,7 @@ const DecisionStepSchema = new Schema<IDecisionStep>(
 const DecisionSessionSchema = new Schema<IDecisionSession>({
   session_id: { type: String, required: true, unique: true, index: true },
   anonymous_id: { type: String, required: true, index: true },
-  flow_type: { type: String, required: true },
+  flow_type: { type: String, required: true, enum: VALID_FLOW_TYPES },
   steps: [DecisionStepSchema],
   current_step: { type: Number, default: 0 },
   total_steps: { type: Number, required: true },
