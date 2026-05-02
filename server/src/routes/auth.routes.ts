@@ -120,9 +120,7 @@ authRoutes.post("/google", async (req: Request, res: Response, next: NextFunctio
  *       401:
  *         description: Invalid credentials
  */
-    next(error);
-  }
-});
+
 
 /**
  * @swagger
