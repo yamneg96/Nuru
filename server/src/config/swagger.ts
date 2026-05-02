@@ -135,7 +135,7 @@ export function setupSwagger(app: Express) {
   `;
 
   // Swagger Page
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, <any>{
     customJsStr: customJs,
     customSiteTitle: "Nuru API Docs",
     customCss: `

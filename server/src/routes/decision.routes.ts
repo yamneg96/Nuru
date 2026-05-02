@@ -7,8 +7,8 @@ import { startDecisionFlow, submitDecisionStep, getDecisionResult } from "../ser
 export const decisionRoutes = Router();
 
 const startFlowSchema = z.object({
-  flow_type: z.enum(VALID_FLOW_TYPES, {
-    errorMap: () => ({ message: "Invalid flow_type" }),
+  flow_type: z.enum(VALID_FLOW_TYPES as unknown as [string, ...string[]], {
+    message: "Invalid flow_type"
   }),
 });
 
@@ -51,7 +51,7 @@ const sessionIdParamSchema = z.object({
 decisionRoutes.post("/start", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { flow_type } = startFlowSchema.parse(req.body);
-    const result = await startDecisionFlow(req.anonymousId!, flow_type);
+    const result = await startDecisionFlow(req.anonymousId!, flow_type as any);
     res.json({ data: result });
   } catch (error) {
     next(error);
