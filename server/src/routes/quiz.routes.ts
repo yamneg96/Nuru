@@ -3,6 +3,7 @@ import { z } from "zod";
 import { generateQuiz } from "../services/quiz.service.js";
 import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
 import { Quiz } from "../models/Quiz.js";
+import { UserProgress } from "../models/UserProgress.js";
 import multer from "multer";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -303,6 +304,21 @@ quizRouter.post("/:id/submit", authMiddleware, async (req: Request, res: Respons
     });
 
     const percentage = Math.round((score / quiz.questions.length) * 100);
+
+    // Save to UserProgress
+    await UserProgress.findOneAndUpdate(
+      { anonymous_id: req.anonymousId, content_type: "quiz", content_id: quiz._id },
+      { 
+        $set: { 
+          module_id: quiz.module_id,
+          quiz_score: score,
+          quiz_total: quiz.questions.length,
+          quiz_passed: percentage >= 70, // 70% passing grade
+          completed_at: new Date()
+        } 
+      },
+      { upsert: true }
+    ).catch(err => console.error("Failed to save quiz progress:", err));
 
     res.json({
       data: {

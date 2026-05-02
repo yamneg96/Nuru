@@ -213,6 +213,12 @@ chatRoutes.post(
         res.write(`data: ${JSON.stringify({ chunk, conversation_id: convId })}\n\n`);
       });
 
+      // Cleanup on client disconnect
+      req.on("close", () => {
+        logger.info({ conversation_id: convId }, "SSE client disconnected");
+        res.end();
+      });
+
       // Done streaming
       res.write("data: [DONE]\n\n");
       res.end();

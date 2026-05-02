@@ -111,6 +111,33 @@ export async function verifyAdminCredentials(email: string, password: string): P
 }
 
 /**
+ * Register a new admin user.
+ */
+export async function registerAdmin(data: { name: string; email: string; password: string; role?: "admin" | "super_admin" }) {
+  const normalizedEmail = data.email.toLowerCase().trim();
+  
+  // Check if email already exists
+  const existing = await User.findOne({ email: normalizedEmail });
+  if (existing) {
+    throw new Error("Admin email already registered");
+  }
+
+  const passwordHash = await bcrypt.hash(data.password, 12);
+
+  const admin = await User.create({
+    name: data.name,
+    email: normalizedEmail,
+    password_hash: passwordHash,
+    role: data.role || "admin",
+    created_at: new Date(),
+    last_active: new Date(),
+    preferences: { language: "english", save_history: true },
+  });
+
+  return admin;
+}
+
+/**
  * Generate Access and Refresh tokens.
  */
 export async function generateTokens(user: IUser) {

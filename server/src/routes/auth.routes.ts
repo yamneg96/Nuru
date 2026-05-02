@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { z } from "zod";
-import { verifyGoogleToken, hashEmail, findOrCreateUser, generateTokens, refreshAccessToken, verifyAdminCredentials } from "../services/auth.service.js";
+import { verifyGoogleToken, hashEmail, findOrCreateUser, generateTokens, refreshAccessToken, verifyAdminCredentials, registerAdmin } from "../services/auth.service.js";
 import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
 import { User } from "../models/User.js";
 import { RefreshToken } from "../models/RefreshToken.js";
@@ -120,6 +120,36 @@ authRoutes.post("/google", async (req: Request, res: Response, next: NextFunctio
  *       401:
  *         description: Invalid credentials
  */
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/auth/admin/login:
+ *   post:
+ *     summary: Admin Login
+ *     description: Authenticate an admin user via email and password.
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated as admin
+ *       401:
+ *         description: Invalid credentials
+ */
 authRoutes.post("/admin/login", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = adminLoginSchema.parse(req.body);
@@ -141,6 +171,56 @@ authRoutes.post("/admin/login", async (req: Request, res: Response, next: NextFu
       return res.status(401).json({
         error: { code: "UNAUTHORIZED", message: "Invalid email or password" },
       });
+    }
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/auth/admin/register:
+ *   post:
+ *     summary: Register a new admin (admin only)
+ *     description: Create a new admin or super_admin account. Only callable by existing admins.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, password]
+ *             properties:
+ *               name: { type: string }
+ *               email: { type: string, format: email }
+ *               password: { type: string }
+ *               role: { type: string, enum: [admin, super_admin] }
+ *     responses:
+ *       201:
+ *         description: Admin created
+ *       403:
+ *         description: Forbidden
+ */
+authRoutes.post("/admin/register", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const adminSchema = z.object({
+      name: z.string().min(1),
+      email: z.string().email(),
+      password: z.string().min(8),
+      role: z.enum(["admin", "super_admin"]).optional(),
+    });
+
+    const data = adminSchema.parse(req.body);
+    const admin = await registerAdmin(data);
+
+    res.status(201).json({
+      data: (admin as any).toSafeJSON(),
+    });
+  } catch (error: any) {
+    if (error.message === "Admin email already registered") {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: error.message } });
     }
     next(error);
   }
