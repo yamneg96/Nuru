@@ -10,7 +10,7 @@ import { Video } from "../src/models/Video";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 async function getAdminToken(): Promise<string> {
-  await User.deleteMany({ role: "admin" });
+  await User.deleteMany({ email: "cms-test-admin@nuru.app" });
   const passwordHash = await bcrypt.hash("Admin123!", 12);
   await User.create({
     email: "cms-test-admin@nuru.app",
@@ -88,8 +88,9 @@ describe("CMS Content Routes", () => {
     it("should list published modules publicly", async () => {
       const res = await request(app).get("/api/v1/content/modules");
       expect(res.status).toBe(200);
-      expect(res.body.data).toHaveLength(1);
-      expect(res.body.data[0].article_count).toBe(0);
+      const mod = res.body.data.find((m: any) => m._id.toString() === moduleId.toString());
+      expect(mod).toBeDefined();
+      expect(mod.article_count).toBe(0);
     });
 
     it("should get module detail by slug", async () => {
@@ -197,7 +198,8 @@ describe("CMS Content Routes", () => {
     it("module detail should include video count", async () => {
       const res = await request(app).get("/api/v1/content/modules");
       expect(res.status).toBe(200);
-      expect(res.body.data[0].video_count).toBe(1);
+      const mod = res.body.data.find((m: any) => m._id.toString() === moduleId.toString());
+      expect(mod.video_count).toBe(1);
     });
   });
 

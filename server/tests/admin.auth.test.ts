@@ -58,6 +58,7 @@ describe("Admin Authentication", () => {
       const res = await request(app)
         .post("/api/v1/auth/admin/login")
         .send({ email: testAdmin.email, password: testAdmin.password });
+      if (!res.body.data) console.log("Admin Login Failed:", res.body);
       adminToken = res.body.data.token;
     });
 

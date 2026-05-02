@@ -103,6 +103,15 @@ adminManagementRoutes.post("/users", authMiddleware, isSuperAdmin, async (req: R
  *         name: id
  *         required: true
  *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name: { type: string }
+ *               password: { type: string }
+ *               role: { type: string, enum: [admin, super_admin] }
  *     responses:
  *       200:
  *         description: Admin updated

@@ -29,12 +29,12 @@ describe("Admin User Management (Super Admin)", () => {
     const { connectDB } = await import("../src/config/db.js");
     await connectDB();
 
-    await User.deleteMany({ role: { $in: ["admin", "super_admin"] } });
+    await User.deleteMany({ email: { $in: ["test-super@nuru.app", "new-admin@nuru.app", "ord@nuru.app"] } });
     superToken = await getSuperAdminToken();
   });
 
   afterAll(async () => {
-    await User.deleteMany({ role: { $in: ["admin", "super_admin"] } });
+    await User.deleteMany({ email: { $in: ["test-super@nuru.app", "new-admin@nuru.app", "ord@nuru.app"] } });
   });
 
   it("should list all admins (super admin only)", async () => {

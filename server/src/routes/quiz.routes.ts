@@ -57,7 +57,14 @@ quizRouter.get("/module/:module_id", async (req: Request, res: Response, next: N
   try {
     const quiz = await Quiz.findOne({ module_id: req.params.module_id, published: true });
     if (!quiz) return res.status(404).json({ error: "No published quiz found for this module" });
-    res.json({ data: quiz });
+
+    // Strip answers before sending to client
+    const safeQuiz = {
+      ...quiz.toObject(),
+      questions: quiz.questions.map(({ text, options }) => ({ text, options })),
+    };
+
+    res.json({ data: safeQuiz });
   } catch (error) {
     next(error);
   }
@@ -104,6 +111,28 @@ quizRouter.post("/generate", authMiddleware, async (req: Request, res: Response,
  *     tags: [Quiz]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title, questions]
+ *             properties:
+ *               module_id: { type: string }
+ *               title: { type: string }
+ *               description: { type: string }
+ *               published: { type: boolean }
+ *               questions:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required: [text, options, correct_index]
+ *                   properties:
+ *                     text: { type: string }
+ *                     options: { type: array, items: { type: string } }
+ *                     correct_index: { type: integer }
+ *                     explanation: { type: string }
  */
 quizRouter.post("/", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -123,6 +152,30 @@ quizRouter.post("/", authMiddleware, isAdmin, async (req: Request, res: Response
  *     tags: [Quiz]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               module_id: { type: string }
+ *               title: { type: string }
+ *               description: { type: string }
+ *               published: { type: boolean }
+ *               questions:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     text: { type: string }
+ *                     options: { type: array, items: { type: string } }
+ *                     correct_index: { type: integer }
+ *                     explanation: { type: string }
  */
 quizRouter.put("/:id", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {

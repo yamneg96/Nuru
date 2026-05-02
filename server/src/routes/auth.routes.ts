@@ -185,3 +185,44 @@ authRoutes.get("/me", authMiddleware, async (req: Request, res: Response, next: 
 authRoutes.get("/admin/verify", authMiddleware, isAdmin, (req: Request, res: Response) => {
   res.json({ data: { verified: true, role: req.userRole } });
 });
+
+/**
+ * @swagger
+ * /api/v1/auth/anonymous:
+ *   post:
+ *     summary: Create an anonymous user account
+ *     tags: [Auth]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               preferences:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+authRoutes.post("/anonymous", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { preferences } = req.body;
+    
+    // Create a user with a random anonymous_id
+    const user = await User.create({
+      role: "user",
+      preferences: preferences || { language: "english", save_history: true },
+    });
+
+    const token = generateJWT(user.anonymous_id!, user.role);
+
+    res.json({
+      data: {
+        token,
+        user: (user as any).toSafeJSON(),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});

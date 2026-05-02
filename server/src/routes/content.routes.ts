@@ -254,6 +254,15 @@ contentRoutes.post("/modules", authMiddleware, isAdmin, async (req: Request, res
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               title: { type: string }
+ *               description: { type: string }
+ *               icon: { type: string }
+ *               color: { type: string, enum: [primary, secondary, tertiary] }
+ *               order: { type: integer }
+ *               featured: { type: boolean }
+ *               published: { type: boolean }
+ *               content_markdown: { type: string }
  *     responses:
  *       200:
  *         description: Module updated
@@ -505,6 +514,21 @@ contentRoutes.post("/articles", authMiddleware, isAdmin, async (req: Request, re
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               module_id: { type: string }
+ *               title: { type: string }
+ *               content_markdown: { type: string }
+ *               summary: { type: string }
+ *               badge: { type: string }
+ *               image_url: { type: string }
+ *               video_id: { type: string, nullable: true }
+ *               order: { type: integer }
+ *               published: { type: boolean }
  *     responses:
  *       200:
  *         description: Article updated
@@ -746,6 +770,21 @@ contentRoutes.post("/videos", authMiddleware, isAdmin, async (req: Request, res:
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               module_id: { type: string }
+ *               title: { type: string }
+ *               description: { type: string }
+ *               source_type: { type: string, enum: [youtube, local] }
+ *               source_url: { type: string }
+ *               thumbnail_url: { type: string }
+ *               duration: { type: string }
+ *               order: { type: integer }
+ *               published: { type: boolean }
  *     responses:
  *       200:
  *         description: Video updated
