@@ -5,6 +5,9 @@ import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
 import { Module } from "../models/Module.js";
 import { Article } from "../models/Article.js";
 import { Video } from "../models/Video.js";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 export const contentRoutes = Router();
 
@@ -19,9 +22,10 @@ const moduleBaseSchema = z.object({
   description: z.string().min(1),
   icon: z.string().min(1),
   color: z.enum(["primary", "secondary", "tertiary"]),
-  order: z.number().int(),
-  featured: z.boolean(),
-  published: z.boolean(),
+  order: z.coerce.number().int(),
+  featured: z.preprocess((val) => val === "true" || val === true, z.boolean()),
+  published: z.preprocess((val) => val === "true" || val === true, z.boolean()),
+  content_markdown: z.string().optional(),
 });
 
 const moduleCreateSchema = moduleBaseSchema.extend({
@@ -29,6 +33,7 @@ const moduleCreateSchema = moduleBaseSchema.extend({
   order: moduleBaseSchema.shape.order.default(0),
   featured: moduleBaseSchema.shape.featured.default(false),
   published: moduleBaseSchema.shape.published.default(false),
+  content_markdown: moduleBaseSchema.shape.content_markdown.default(""),
 });
 
 const moduleUpdateSchema = moduleBaseSchema.partial();
@@ -41,8 +46,8 @@ const articleBaseSchema = z.object({
   badge: z.string(),
   image_url: z.string().url().or(z.literal("")),
   video_id: z.string().nullable(),
-  order: z.number().int(),
-  published: z.boolean(),
+  order: z.coerce.number().int(),
+  published: z.preprocess((val) => val === "true" || val === true, z.boolean()),
 });
 
 const articleCreateSchema = articleBaseSchema.extend({
@@ -304,6 +309,63 @@ contentRoutes.delete("/modules/:id", authMiddleware, isAdmin, async (req: Reques
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/content/modules/import:
+ *   post:
+ *     summary: Import module from Markdown file (admin)
+ *     description: Creates or updates a module using a .md file. Metadata fields should be sent as form fields.
+ *     tags: [Content - Modules]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [file, title, description, icon]
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The .md file containing the content
+ *               title: { type: string }
+ *               description: { type: string }
+ *               icon: { type: string }
+ *               color: { type: string, enum: [primary, secondary, tertiary] }
+ *               order: { type: integer }
+ *               published: { type: boolean }
+ *               featured: { type: boolean }
+ *     responses:
+ *       201:
+ *         description: Module imported
+ */
+contentRoutes.post("/modules/import", authMiddleware, isAdmin, upload.single("file"), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    const content_markdown = req.file.buffer.toString("utf-8");
+    
+    // Parse other fields from the body
+    const payload = moduleCreateSchema.parse({
+      ...req.body,
+      content_markdown,
+    });
+
+    const slug = toSlug(payload.title);
+    const mod = await Module.findOneAndUpdate(
+      { slug },
+      { $set: { ...payload, slug } },
+      { upsert: true, new: true }
+    );
+
+    res.status(201).json({ data: mod });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // ══════════════════════════════════════════════════════════════════════════════
 // ARTICLE ROUTES
 // ══════════════════════════════════════════════════════════════════════════════
@@ -487,6 +549,63 @@ contentRoutes.delete("/articles/:id", authMiddleware, isAdmin, async (req: Reque
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Article not found" } });
     }
     res.json({ data: { message: "Article deleted" } });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/content/articles/import:
+ *   post:
+ *     summary: Import article from Markdown file (admin)
+ *     description: Creates or updates an article using a .md file. Metadata fields should be sent as form fields.
+ *     tags: [Content - Articles]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required: [file, module_id, title, summary]
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: The .md file containing the content
+ *               module_id: { type: string }
+ *               title: { type: string }
+ *               summary: { type: string }
+ *               badge: { type: string }
+ *               image_url: { type: string }
+ *               order: { type: integer }
+ *               published: { type: boolean }
+ *     responses:
+ *       201:
+ *         description: Article imported
+ */
+contentRoutes.post("/articles/import", authMiddleware, isAdmin, upload.single("file"), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    const content_markdown = req.file.buffer.toString("utf-8");
+
+    // Parse other fields from the body
+    const payload = articleCreateSchema.parse({
+      ...req.body,
+      content_markdown,
+    });
+
+    const slug = toSlug(payload.title);
+    const article = await Article.findOneAndUpdate(
+      { slug, module_id: payload.module_id },
+      { $set: { ...payload, slug } },
+      { upsert: true, new: true }
+    );
+
+    res.status(201).json({ data: article });
   } catch (error) {
     next(error);
   }

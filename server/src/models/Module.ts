@@ -9,6 +9,7 @@ export interface IModule extends Document {
   order: number;
   featured: boolean;
   published: boolean;
+  content_markdown?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -22,6 +23,7 @@ const ModuleSchema = new Schema<IModule>({
   order: { type: Number, default: 0 },
   featured: { type: Boolean, default: false },
   published: { type: Boolean, default: false },
+  content_markdown: { type: String, default: "" },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
 });

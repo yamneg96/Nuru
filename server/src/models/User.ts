@@ -13,6 +13,7 @@ export interface IUser extends Document {
     language: "english" | "amharic" | "oromo";
     save_history: boolean;
   };
+  toSafeJSON(): any;
 }
 
 const UserSchema = new Schema<IUser>({
