@@ -13,6 +13,10 @@ describe("Admin Authentication", () => {
   };
 
   beforeAll(async () => {
+    // Ensure DB is connected
+    const { connectDB } = await import("../src/config/db.js");
+    await connectDB();
+
     // Clean up
     await User.deleteMany({ role: "admin" });
     
