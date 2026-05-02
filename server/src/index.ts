@@ -24,6 +24,17 @@ import eventRoutes, { adminEventRoutes } from "./routes/event.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
+
+// ── Start Server ─────────────────────────────────────────────
+async function start() {
+  await connectDB();
+  app.listen(env.PORT, () => {
+    logger.info(`🚀 Nuru API running on port ${env.PORT}`);
+    logger.info(`   Environment: ${env.NODE_ENV}`);
+    logger.info(`   AI Provider: ${env.AI_PROVIDER}`);
+  });
+}
+
 const app = express();
 app.set("etag", false); // Disable 304 caching for API responses
 
@@ -118,16 +129,6 @@ app.use("/", (_req, res) => {
     </div>
   `);
 });
-
-// ── Start Server ─────────────────────────────────────────────
-async function start() {
-  await connectDB();
-  app.listen(env.PORT, () => {
-    logger.info(`🚀 Nuru API running on port ${env.PORT}`);
-    logger.info(`   Environment: ${env.NODE_ENV}`);
-    logger.info(`   AI Provider: ${env.AI_PROVIDER}`);
-  });
-}
 
 start().catch((err) => {
   logger.error(err, "Failed to start server");
