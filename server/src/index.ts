@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
 import pinoHttp from "pino-http";
 import { logger } from "./utils/logger.js";
@@ -25,6 +26,7 @@ const app = express();
 // ── Middleware ────────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+app.use(cookieParser());
 
 // Correlation ID
 app.use((req, res, next) => {

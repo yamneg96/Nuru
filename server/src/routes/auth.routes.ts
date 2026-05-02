@@ -1,8 +1,21 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { z } from "zod";
-import { verifyGoogleToken, hashEmail, findOrCreateUser, generateJWT, verifyAdminCredentials } from "../services/auth.service.js";
+import { verifyGoogleToken, hashEmail, findOrCreateUser, generateTokens, refreshAccessToken, verifyAdminCredentials } from "../services/auth.service.js";
 import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
 import { User } from "../models/User.js";
+import { RefreshToken } from "../models/RefreshToken.js";
+import { env } from "../config/env.js";
+import { logger } from "../utils/logger.js";
+
+const setRefreshCookie = (res: Response, token: string) => {
+  res.cookie("refreshToken", token, {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  });
+};
 
 export const authRoutes = Router();
 
@@ -63,13 +76,16 @@ authRoutes.post("/google", async (req: Request, res: Response, next: NextFunctio
     // 3. Find or create anonymous user (with migration logic)
     const user = await findOrCreateUser(emailHash, previous_anonymous_id);
 
-    // 4. Generate JWT with anonymous_id and role
-    const token = generateJWT(user.anonymous_id!, user.role);
+    // 4. Generate Tokens
+    const { accessToken, refreshToken } = await generateTokens(user);
 
-    // 5. Return token + anonymous_id (no PII)
+    // 5. Set refresh token in HTTP-only cookie
+    setRefreshCookie(res, refreshToken);
+
+    // 6. Return access token + anonymous_id (no PII)
     res.json({
       data: {
-        token,
+        token: accessToken,
         user: (user as any).toSafeJSON(),
       },
     });
@@ -110,11 +126,12 @@ authRoutes.post("/admin/login", async (req: Request, res: Response, next: NextFu
 
     const user = await verifyAdminCredentials(email, password);
 
-    const token = generateJWT(user.id, user.role);
+    const { accessToken, refreshToken } = await generateTokens(user);
+    setRefreshCookie(res, refreshToken);
 
     res.json({
       data: {
-        token,
+        token: accessToken,
         user: (user as any).toSafeJSON(),
       },
     });
@@ -209,20 +226,75 @@ authRoutes.post("/anonymous", async (req: Request, res: Response, next: NextFunc
   try {
     const { preferences } = req.body;
     
-    // Create a user with a random anonymous_id
     const user = await User.create({
       role: "user",
       preferences: preferences || { language: "english", save_history: true },
     });
 
-    const token = generateJWT(user.anonymous_id!, user.role);
+    const { accessToken, refreshToken } = await generateTokens(user);
+    setRefreshCookie(res, refreshToken);
 
     res.json({
       data: {
-        token,
+        token: accessToken,
         user: (user as any).toSafeJSON(),
       },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/auth/refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     description: Exchange a valid refresh token cookie for a new access token.
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: New access token
+ */
+authRoutes.post("/refresh", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      return res.status(401).json({ error: { code: "UNAUTHORIZED", message: "Refresh token missing" } });
+    }
+
+    const { accessToken } = await refreshAccessToken(refreshToken);
+
+    res.json({
+      data: {
+        token: accessToken,
+      },
+    });
+  } catch (error: any) {
+    logger.error({ error: error.message }, "Refresh token error");
+    res.status(401).json({ error: { code: "UNAUTHORIZED", message: "Invalid refresh token" } });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     description: Clear refresh token cookie and invalidate it in the database.
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ */
+authRoutes.post("/logout", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    if (refreshToken) {
+      await RefreshToken.deleteOne({ token: refreshToken });
+    }
+    res.clearCookie("refreshToken");
+    res.json({ data: { success: true } });
   } catch (error) {
     next(error);
   }

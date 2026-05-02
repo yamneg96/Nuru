@@ -7,6 +7,7 @@ import { User, type IUser } from "../models/User.js";
 import { ChatLog } from "../models/ChatLog.js";
 import { DecisionSession } from "../models/DecisionSession.js";
 import { UserProgress } from "../models/UserProgress.js";
+import { RefreshToken } from "../models/RefreshToken.js";
 import { env } from "../config/env.js";
 
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
@@ -110,11 +111,60 @@ export async function verifyAdminCredentials(email: string, password: string): P
 }
 
 /**
- * Generate a JWT containing the anonymous_id and role.
- * NEVER put email or PII in the token.
+ * Generate Access and Refresh tokens.
  */
-export function generateJWT(anonymousId: string, role: string = "user"): string {
-  return jwt.sign({ sub: anonymousId, role }, env.JWT_SECRET, { expiresIn: "7d" });
+export async function generateTokens(user: IUser) {
+  const anonymousId = user.anonymous_id || user._id.toString();
+  const accessToken = jwt.sign(
+    { sub: anonymousId, role: user.role },
+    env.JWT_SECRET,
+    { expiresIn: env.JWT_ACCESS_EXPIRY as any }
+  );
+
+  const refreshToken = jwt.sign(
+    { sub: anonymousId },
+    env.JWT_REFRESH_SECRET,
+    { expiresIn: env.JWT_REFRESH_EXPIRY as any }
+  );
+
+  // Store refresh token in DB
+  const decoded = jwt.decode(refreshToken) as { exp: number };
+  await RefreshToken.create({
+    token: refreshToken,
+    user_id: user._id,
+    anonymous_id: anonymousId,
+    expires_at: new Date(decoded.exp * 1000),
+  });
+
+  return { accessToken, refreshToken };
+}
+
+/**
+ * Generate a new Access Token using a valid Refresh Token.
+ */
+export async function refreshAccessToken(refreshToken: string) {
+  try {
+    const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_SECRET) as { sub: string };
+    
+    // Check if token exists in DB
+    const storedToken = await RefreshToken.findOne({ token: refreshToken });
+    if (!storedToken) throw new Error("Refresh token not found");
+
+    const user = await User.findOne({ 
+      $or: [{ anonymous_id: decoded.sub }, { _id: decoded.sub }] 
+    });
+    if (!user) throw new Error("User not found");
+
+    const accessToken = jwt.sign(
+      { sub: user.anonymous_id || user._id.toString(), role: user.role },
+      env.JWT_SECRET,
+      { expiresIn: env.JWT_ACCESS_EXPIRY as any }
+    );
+
+    return { accessToken };
+  } catch (error) {
+    throw new Error("Invalid refresh token");
+  }
 }
 
 /**

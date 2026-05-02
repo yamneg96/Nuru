@@ -1,4 +1,5 @@
 import mongoose, { Schema, type Document } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 export interface IUser extends Document {
   anonymous_id?: string; // Optional for admins
@@ -17,7 +18,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema<IUser>({
-  anonymous_id: { type: String, unique: true, index: true, sparse: true },
+  anonymous_id: { type: String, unique: true, index: true, sparse: true, default: () => uuidv4() },
   email_hash: { type: String, unique: true, index: true, sparse: true },
   email: { type: String, unique: true, index: true, sparse: true },
   name: { type: String, trim: true },
