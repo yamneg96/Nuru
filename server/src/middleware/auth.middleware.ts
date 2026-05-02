@@ -38,11 +38,26 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
 /**
  * RBAC middleware for admin-only routes.
  * Must be used AFTER authMiddleware.
+ * Allows both admin and super_admin.
  */
 export function isAdmin(req: Request, res: Response, next: NextFunction): void {
-  if (req.userRole !== "admin") {
+  if (req.userRole !== "admin" && req.userRole !== "super_admin") {
     res.status(403).json({
       error: { code: "FORBIDDEN", message: "Admin access required" },
+    });
+    return;
+  }
+  next();
+}
+
+/**
+ * RBAC middleware for super-admin-only routes.
+ * Must be used AFTER authMiddleware.
+ */
+export function isSuperAdmin(req: Request, res: Response, next: NextFunction): void {
+  if (req.userRole !== "super_admin") {
+    res.status(403).json({
+      error: { code: "FORBIDDEN", message: "Super Admin access required" },
     });
     return;
   }

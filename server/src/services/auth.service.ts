@@ -59,7 +59,7 @@ export async function findOrCreateUser(emailHash: string) {
  */
 export async function verifyAdminCredentials(email: string, password: string): Promise<IUser> {
   const normalizedEmail = email.toLowerCase().trim();
-  const user = await User.findOne({ email: normalizedEmail, role: "admin" });
+  const user = await User.findOne({ email: normalizedEmail, role: { $in: ["admin", "super_admin"] } });
 
   if (!user || !user.password_hash) {
     throw new Error("Invalid credentials");

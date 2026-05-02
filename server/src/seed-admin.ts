@@ -17,18 +17,19 @@ async function seedAdmin() {
     const email = env.ADMIN_EMAIL.toLowerCase().trim();
 
     // Delete existing admin to ensure fresh seed
-    await User.deleteMany({ email, role: "admin" });
+    await User.deleteMany({ email, role: { $in: ["admin", "super_admin"] } });
 
     const passwordHash = await bcrypt.hash(env.ADMIN_PASSWORD, 12);
 
     await User.create({
       email: email,
+      name: "Super Admin",
       password_hash: passwordHash,
-      role: "admin",
+      role: "super_admin",
       preferences: { language: "english", save_history: true },
     });
 
-    console.log(`✅ Admin created successfully: ${env.ADMIN_EMAIL}`);
+    console.log(`✅ Super Admin created successfully: ${env.ADMIN_EMAIL}`);
     console.log(`   Initial password: ${env.ADMIN_PASSWORD}`);
     
     await mongoose.disconnect();

@@ -12,6 +12,7 @@ import { metricsRoutes } from "./routes/metrics.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { quizRouter as quizRoutes } from "./routes/quiz.routes.js";
 import { contentRoutes } from "./routes/content.routes.js";
+import { adminManagementRoutes } from "./routes/admin-management.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
@@ -35,6 +36,7 @@ app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/quiz", quizRoutes);
 app.use("/api/v1/content", contentRoutes);
+app.use("/api/v1/admin", adminManagementRoutes);
 
 // Error Handler (must be after all routes)
 app.use(errorHandler);
