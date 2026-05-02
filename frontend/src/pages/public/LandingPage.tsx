@@ -1,9 +1,16 @@
-import { Link } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useMetrics } from "@/hooks/useMetrics"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function LandingPage() {
   const { data: metrics } = useMetrics()
+  const navigate = useNavigate()
+  const [showSupportModal, setShowSupportModal] = useState(false)
+  const hasSeenOnboarding = localStorage.getItem('nuru_has_seen_onboarding')
+
+  if (!hasSeenOnboarding) {
+    return <Navigate to="/onboarding" replace />
+  }
 
   useEffect(() => {
     const reveals = document.querySelectorAll(".reveal");
@@ -419,6 +426,51 @@ export default function LandingPage() {
           <span className="font-label-caps text-label-caps">Profile</span>
         </button>
       </nav>
+
+      {/* Floating Support Button */}
+      <button 
+        onClick={() => setShowSupportModal(true)}
+        className="fixed bottom-20 left-6 md:bottom-10 md:left-10 w-14 h-14 bg-primary text-on-primary rounded-full shadow-[0_8px_32px_rgba(0,88,190,0.3)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-50 border-4 border-surface-container-lowest">
+        <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'wght' 600" }}>question_mark</span>
+      </button>
+
+      {/* Support Modal */}
+      {showSupportModal && (
+        <div className="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setShowSupportModal(false)}>
+          <div className="bg-surface text-on-surface w-full max-w-sm rounded-[24px] p-6 shadow-xl relative animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowSupportModal(false)} className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-2 rounded-full hover:bg-surface-variant transition-colors">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <h2 className="font-h2 text-h2 mb-4 text-primary">Need Help?</h2>
+            <div className="flex flex-col gap-3">
+              <Link to="/about" className="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors active:scale-[0.98]">
+                <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+                  <span className="material-symbols-outlined">info</span>
+                </div>
+                <span className="font-button text-button text-on-surface">About Nuru</span>
+              </Link>
+              <Link to="/contact" className="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors active:scale-[0.98]">
+                <div className="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                  <span className="material-symbols-outlined">support_agent</span>
+                </div>
+                <span className="font-button text-button text-on-surface">Contact Support</span>
+              </Link>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem('nuru_has_seen_onboarding')
+                  navigate('/onboarding')
+                }}
+                className="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors text-left active:scale-[0.98]"
+              >
+                <div className="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+                  <span className="material-symbols-outlined">restart_alt</span>
+                </div>
+                <span className="font-button text-button text-on-surface">Revisit Onboarding</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

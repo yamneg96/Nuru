@@ -28,4 +28,4 @@ dist-ssr
 .env.development
 .env.local
 
-node_modules
+node_modules/
