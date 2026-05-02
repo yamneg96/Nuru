@@ -25,10 +25,21 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
 const app = express();
+app.set("etag", false); // Disable 304 caching for API responses
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(helmet());
-app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
+const allowedOrigins = [
+  env.CLIENT_URL,          // Frontend (http://localhost:5173)
+  "http://localhost:5000", // Swagger UI
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 app.use(cookieParser());
 
 // Correlation ID
@@ -67,14 +78,16 @@ app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/quiz", quizRoutes);
 app.use("/api/v1/content", contentRoutes);
+// ── Admin sub-routes MUST be mounted BEFORE base /admin ──────────────────────
+app.use("/api/v1/admin/professionals", adminProfessionalRoutes);
+app.use("/api/v1/admin/appointments", adminAppointmentRoutes);
+app.use("/api/v1/admin/events", adminEventRoutes);
+// ── Base admin (catch-all for /admin/* must come AFTER specific sub-paths) ────
 app.use("/api/v1/admin", adminManagementRoutes);
 app.use("/api/v1/progress", progressRouter);
 app.use("/api/v1/dashboard", dashboardRoutes);
-app.use("/api/v1/admin/professionals", adminProfessionalRoutes);
 app.use("/api/v1/professionals", professionalRoutes);
-app.use("/api/v1/admin/appointments", adminAppointmentRoutes);
 app.use("/api/v1/appointments", appointmentRoutes);
-app.use("/api/v1/admin/events", adminEventRoutes);
 app.use("/api/v1/events", eventRoutes);
 
 // Error Handler (must be after all routes)
