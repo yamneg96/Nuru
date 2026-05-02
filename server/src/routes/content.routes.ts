@@ -17,9 +17,9 @@ function toSlug(title: string): string {
 }
 
 // ── Validation Helpers ─────────────────────────────────────────────────────────
-// Zod v4-safe: coerces empty strings to undefined, handles form-data booleans
-const optionalStr = () => z.string().optional().transform((v) => (v === "" ? undefined : v));
-const optionalBool = z.preprocess((v) => v === "true" || v === true || v === 1, z.boolean());
+const coerceBool = z.preprocess((v) => v === "true" || v === true || v === 1 || v === "1", z.boolean());
+const coerceNumber = z.coerce.number();
+const optionalStr = z.string().optional().transform((v) => (v === "" ? undefined : v));
 
 // ── Validation Schemas ─────────────────────────────────────────────────────────
 const moduleBaseSchema = z.object({
@@ -27,18 +27,18 @@ const moduleBaseSchema = z.object({
   description: z.string().min(1),
   icon: z.string().min(1),
   color: z.enum(["primary", "secondary", "tertiary"]),
-  order: z.coerce.number().int(),
-  featured: optionalBool,
-  published: optionalBool,
-  content_markdown: optionalStr(),
+  order: coerceNumber.int(),
+  featured: coerceBool,
+  published: coerceBool,
+  content_markdown: optionalStr,
 });
 
 const moduleCreateSchema = moduleBaseSchema.extend({
   color: moduleBaseSchema.shape.color.default("primary"),
   order: moduleBaseSchema.shape.order.default(0),
-  featured: moduleBaseSchema.shape.featured.default(false),
-  published: moduleBaseSchema.shape.published.default(false),
-  content_markdown: optionalStr(),
+  featured: coerceBool.default(false),
+  published: coerceBool.default(false),
+  content_markdown: optionalStr.default(""),
 });
 
 const moduleUpdateSchema = moduleBaseSchema.partial();
@@ -48,19 +48,19 @@ const articleBaseSchema = z.object({
   title: z.string().min(1),
   content_markdown: z.string().min(1),
   summary: z.string().min(1),
-  badge: optionalStr(),
-  image_url: optionalStr(),
-  video_id: optionalStr(),
-  order: z.coerce.number().int(),
-  published: optionalBool,
+  badge: optionalStr,
+  image_url: optionalStr,
+  video_id: optionalStr,
+  order: coerceNumber.int(),
+  published: coerceBool,
 });
 
 const articleCreateSchema = articleBaseSchema.extend({
-  badge: optionalStr(),
-  image_url: optionalStr(),
-  video_id: optionalStr(),
+  badge: optionalStr.default(""),
+  image_url: optionalStr.default(""),
+  video_id: optionalStr.default(""),
   order: articleBaseSchema.shape.order.default(0),
-  published: articleBaseSchema.shape.published.default(false),
+  published: coerceBool.default(false),
 });
 
 const articleUpdateSchema = articleBaseSchema.partial();
@@ -73,8 +73,8 @@ const videoBaseSchema = z.object({
   source_url: z.string().min(1),
   thumbnail_url: z.string(),
   duration: z.string(),
-  order: z.number().int(),
-  published: z.boolean(),
+  order: coerceNumber.int(),
+  published: coerceBool,
 });
 
 const videoCreateSchema = videoBaseSchema.extend({

@@ -1,6 +1,6 @@
 import { env } from "../config/env.js";
 
-const SYSTEM_PROMPT = `
+const getSystemPrompt = (language: string) => `
 You are a supportive youth advisor for Ethiopian adolescents.
 
 Rules:
@@ -12,6 +12,7 @@ Rules:
 - Avoid medical diagnosis
 - Keep responses concise and actionable
 - Be culturally sensitive to Ethiopian context
+- IMPORTANT: You MUST respond exclusively in ${language.toUpperCase()}.
 
 Goal:
 Help users make safe and informed decisions.
@@ -40,7 +41,8 @@ const FALLBACK_RESPONSES: Record<string, string> = {
  */
 export async function generateResponse(
   prompt: string,
-  conversationHistory: ChatMessage[] = []
+  conversationHistory: ChatMessage[] = [],
+  language: string = "english"
 ): Promise<string> {
   // If no API key, use fallback
   if (!env.GROK_API_KEY) {
@@ -50,7 +52,7 @@ export async function generateResponse(
 
   try {
     const messages: ChatMessage[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: getSystemPrompt(language) },
       ...conversationHistory,
       { role: "user", content: prompt },
     ];
@@ -108,4 +110,40 @@ function getFallbackResponse(prompt: string): string {
   }
 
   return FALLBACK_RESPONSES.default;
+}
+
+/**
+ * Generate a short 3-5 word title for a conversation.
+ */
+export async function generateTitle(conversationHistory: ChatMessage[]): Promise<string> {
+  if (!env.GROK_API_KEY) return "New Conversation";
+
+  try {
+    const messages: ChatMessage[] = [
+      ...conversationHistory,
+      { role: "user", content: "Generate a short, 3 to 5 word title summarizing this conversation. Do not use quotes or prefixes, just the title itself." }
+    ];
+
+    const res = await fetch("https://api.x.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.GROK_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "grok-3-mini",
+        messages,
+        max_tokens: 20,
+        temperature: 0.5,
+      }),
+    });
+
+    if (!res.ok) return "New Conversation";
+
+    const data = (await res.json()) as { choices: Array<{ message: { content: string } }> };
+    return data.choices[0]?.message?.content?.trim().replace(/^["']|["']$/g, "") || "New Conversation";
+  } catch (error) {
+    console.error("Grok API title generation failed:", error);
+    return "New Conversation";
+  }
 }
