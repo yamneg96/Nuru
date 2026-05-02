@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import morgan from "morgan";
+import { v4 as uuidv4 } from "uuid";
+import pinoHttp from "pino-http";
+import { logger } from "./utils/logger.js";
 import { env } from "./config/env.js";
 import { connectDB } from "./config/db.js";
 import { authRoutes } from "./routes/auth.routes.js";
@@ -23,7 +25,29 @@ const app = express();
 // ── Middleware ────────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
-app.use(morgan("dev"));
+
+// Correlation ID
+app.use((req, res, next) => {
+  const correlationId = req.headers["x-correlation-id"] || uuidv4();
+  req.headers["x-correlation-id"] = correlationId;
+  res.setHeader("X-Correlation-ID", correlationId);
+  next();
+});
+
+// Pino Logger
+app.use(
+  pinoHttp({
+    logger,
+    genReqId: (req) => req.headers["x-correlation-id"] as string || uuidv4(),
+    customLogLevel: (req, res, err) => {
+      if (res.statusCode >= 400 && res.statusCode < 500) return "warn";
+      if (res.statusCode >= 500 || err) return "error";
+      if (req.url === "/health" || req.url === "/") return "silent";
+      return "info";
+    },
+  })
+);
+
 app.use(express.json({ limit: "1mb" }));
 
 // ── Swagger Documentation ─────────────────────────────────────
@@ -65,12 +89,15 @@ app.use("/", (_req, res) => {
 async function start() {
   await connectDB();
   app.listen(env.PORT, () => {
-    console.log(`🚀 Nuru API running on port ${env.PORT}`);
-    console.log(`   Environment: ${env.NODE_ENV}`);
-    console.log(`   AI Provider: ${env.AI_PROVIDER}`);
+    logger.info(`🚀 Nuru API running on port ${env.PORT}`);
+    logger.info(`   Environment: ${env.NODE_ENV}`);
+    logger.info(`   AI Provider: ${env.AI_PROVIDER}`);
   });
 }
 
-start().catch(console.error);
+start().catch((err) => {
+  logger.error(err, "Failed to start server");
+  process.exit(1);
+});
 
 export default app;

@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { logger } from "../utils/logger.js";
 
 export interface ApiError extends Error {
   statusCode?: number;
@@ -20,7 +21,7 @@ export function errorHandler(
   const message = err.message || "Internal Server Error";
   const code = err.code || "INTERNAL_ERROR";
 
-  console.error(`[${new Date().toISOString()}] ${req.method} ${req.url} - Error:`, err);
+  logger.error({ err, method: req.method, url: req.url }, "Unhandled Server Error");
 
   res.status(statusCode).json({
     error: {

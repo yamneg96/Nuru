@@ -10,7 +10,7 @@ export interface IUser extends Document {
   created_at: Date;
   last_active: Date;
   preferences: {
-    language: "english" | "amharic" | "oromo";
+    language: "english" | "amharic" | "oromo" | "somali";
     save_history: boolean;
   };
   toSafeJSON(): any;
@@ -26,7 +26,7 @@ const UserSchema = new Schema<IUser>({
   created_at: { type: Date, default: Date.now },
   last_active: { type: Date, default: Date.now },
   preferences: {
-    language: { type: String, enum: ["english", "amharic", "oromo"], default: "english" },
+    language: { type: String, enum: ["english", "amharic", "oromo", "somali"], default: "english" },
     save_history: { type: Boolean, default: true },
   },
 });

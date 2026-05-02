@@ -3,8 +3,10 @@ import rateLimit from "express-rate-limit";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { authMiddleware } from "../middleware/auth.middleware.js";
-import { generateResponse } from "../services/ai.service.js";
+import { generateResponse, generateTitle, streamResponse } from "../services/ai.service.js";
 import { ChatLog } from "../models/ChatLog.js";
+import { User } from "../models/User.js";
+import { logger } from "../utils/logger.js";
 
 export const chatRoutes = Router();
 
@@ -99,8 +101,19 @@ chatRoutes.post(
         content: m.content,
       }));
 
-      // Generate AI response
-      const aiReply = await generateResponse(message, historyForAI);
+      // Get user language preference
+      let language = "english";
+      if (req.anonymousId) {
+        const user = await User.findOne({ anonymous_id: req.anonymousId });
+        if (user) language = user.preferences.language;
+        else {
+          const admin = await User.findById(req.anonymousId).catch(() => null);
+          if (admin) language = admin.preferences.language;
+        }
+      }
+
+      // Generate AI response in preferred language
+      const aiReply = await generateResponse(message, historyForAI, language);
 
       // Add AI response
       chatLog.messages.push({
@@ -111,6 +124,13 @@ chatRoutes.post(
 
       await chatLog.save();
 
+      // Fire-and-forget title generation after 2nd user message
+      if (chatLog.messages.filter((m) => m.role === "user").length === 2 && (!chatLog.title || chatLog.title === "New Conversation")) {
+        generateTitle(historyForAI).then(async (title) => {
+          await ChatLog.updateOne({ _id: chatLog._id }, { $set: { title } });
+        }).catch(err => logger.error(err, "Failed to generate title"));
+      }
+
       res.json({
         data: {
           reply: aiReply,
@@ -119,6 +139,102 @@ chatRoutes.post(
       });
     } catch (error) {
       next(error);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/v1/chat/stream:
+ *   post:
+ *     summary: Send a message and stream the AI response (SSE)
+ *     description: Server-Sent Events endpoint. Streams the response text token by token.
+ *     tags: [Chat]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [message]
+ *             properties:
+ *               message: { type: string }
+ *               conversation_id: { type: string, format: uuid }
+ *     responses:
+ *       200:
+ *         description: Event stream of AI text chunks
+ */
+chatRoutes.post(
+  "/stream",
+  authMiddleware,
+  chatLimiter,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { message, conversation_id } = messageSchema.parse(req.body);
+
+      // Setup SSE Headers
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const convId = conversation_id || uuidv4();
+
+      let chatLog = await ChatLog.findOne({ conversation_id: convId, anonymous_id: req.anonymousId });
+      if (!chatLog) {
+        chatLog = new ChatLog({
+          anonymous_id: req.anonymousId!,
+          conversation_id: convId,
+          messages: [],
+        });
+      }
+
+      chatLog.messages.push({
+        role: "user",
+        content: message,
+        timestamp: new Date(),
+      });
+
+      const historyForAI = chatLog.messages.slice(-10).map((m) => ({
+        role: m.role as "user" | "assistant" | "system",
+        content: m.content,
+      }));
+
+      let language = "english";
+      if (req.anonymousId) {
+        const user = await User.findOne({ anonymous_id: req.anonymousId });
+        if (user) language = user.preferences.language;
+      }
+
+      // Stream the response
+      const aiReply = await streamResponse(message, historyForAI, language, (chunk) => {
+        // Send chunk to client
+        res.write(`data: ${JSON.stringify({ chunk, conversation_id: convId })}\n\n`);
+      });
+
+      // Done streaming
+      res.write("data: [DONE]\n\n");
+      res.end();
+
+      // Save to DB
+      chatLog.messages.push({
+        role: "assistant",
+        content: aiReply,
+        timestamp: new Date(),
+      });
+      await chatLog.save();
+
+      // Fire-and-forget title generation after 2nd user message
+      if (chatLog.messages.filter((m) => m.role === "user").length === 2 && (!chatLog.title || chatLog.title === "New Conversation")) {
+        generateTitle(historyForAI).then(async (title) => {
+          await ChatLog.updateOne({ _id: chatLog._id }, { $set: { title } });
+        }).catch(err => logger.error(err, "Failed to generate title for stream"));
+      }
+    } catch (error) {
+      logger.error(error, "Streaming error");
+      res.write(`data: ${JSON.stringify({ error: "Stream failed" })}\n\n`);
+      res.end();
     }
   }
 );

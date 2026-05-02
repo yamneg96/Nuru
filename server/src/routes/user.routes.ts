@@ -8,7 +8,7 @@ import { DecisionSession } from "../models/DecisionSession.js";
 export const userRoutes = Router();
 
 const preferencesSchema = z.object({
-  language: z.enum(["english", "amharic", "oromo"]).optional(),
+  language: z.enum(["english", "amharic", "oromo", "somali"]).optional(),
   save_history: z.boolean().optional(),
 });
 

@@ -1,4 +1,6 @@
 import { env } from "../config/env.js";
+import { logger } from "../utils/logger.js";
+
 
 const getSystemPrompt = (language: string) => `
 You are a supportive youth advisor for Ethiopian adolescents.
@@ -46,7 +48,7 @@ export async function generateResponse(
 ): Promise<string> {
   // If no API key, use fallback
   if (!env.GROK_API_KEY) {
-    console.warn("⚠️ No GROK_API_KEY set — using fallback responses");
+    logger.warn("⚠️ No GROK_API_KEY set — using fallback responses");
     return getFallbackResponse(prompt);
   }
 
@@ -73,7 +75,7 @@ export async function generateResponse(
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error(`Grok API error (${res.status}):`, errorText);
+      logger.error({ status: res.status, errorText }, "Grok API error");
       return getFallbackResponse(prompt);
     }
 
@@ -83,8 +85,88 @@ export async function generateResponse(
 
     return data.choices[0]?.message?.content || getFallbackResponse(prompt);
   } catch (error) {
-    console.error("Grok API call failed:", error);
+    logger.error(error, "Grok API call failed");
     return getFallbackResponse(prompt);
+  }
+}
+
+/**
+ * Stream a response using the Grok AI API.
+ */
+export async function streamResponse(
+  prompt: string,
+  conversationHistory: ChatMessage[] = [],
+  language: string = "english",
+  onChunk: (text: string) => void
+): Promise<string> {
+  if (!env.GROK_API_KEY) {
+    const fallback = getFallbackResponse(prompt);
+    onChunk(fallback);
+    return fallback;
+  }
+
+  try {
+    const messages: ChatMessage[] = [
+      { role: "system", content: getSystemPrompt(language) },
+      ...conversationHistory,
+      { role: "user", content: prompt },
+    ];
+
+    const res = await fetch("https://api.x.ai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.GROK_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "grok-3-mini",
+        messages,
+        max_tokens: 1024,
+        temperature: 0.7,
+        stream: true,
+      }),
+    });
+
+    if (!res.ok || !res.body) {
+      const fallback = getFallbackResponse(prompt);
+      onChunk(fallback);
+      return fallback;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let fullResponse = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split("\\n");
+
+      for (const line of lines) {
+        if (line.trim() === "" || line.trim() === "data: [DONE]") continue;
+        if (line.startsWith("data: ")) {
+          try {
+            const data = JSON.parse(line.substring(6));
+            const content = data.choices[0]?.delta?.content;
+            if (content) {
+              fullResponse += content;
+              onChunk(content);
+            }
+          } catch (e) {
+            // Ignore parse errors for incomplete chunks
+          }
+        }
+      }
+    }
+
+    return fullResponse;
+  } catch (error) {
+    logger.error(error, "Grok API stream failed");
+    const fallback = getFallbackResponse(prompt);
+    onChunk(fallback);
+    return fallback;
   }
 }
 
@@ -143,7 +225,7 @@ export async function generateTitle(conversationHistory: ChatMessage[]): Promise
     const data = (await res.json()) as { choices: Array<{ message: { content: string } }> };
     return data.choices[0]?.message?.content?.trim().replace(/^["']|["']$/g, "") || "New Conversation";
   } catch (error) {
-    console.error("Grok API title generation failed:", error);
+    logger.error(error, "Grok API title generation failed");
     return "New Conversation";
   }
 }
