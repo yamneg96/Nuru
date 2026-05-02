@@ -156,6 +156,10 @@ router.post("/:id/rate", authMiddleware, async (req: Request, res: Response, nex
       return res.status(400).json({ error: "Only completed appointments can be rated" });
     }
 
+    if (appointment.user_rating !== null) {
+      return res.status(400).json({ error: "Appointment already rated" });
+    }
+
     appointment.user_rating = rating;
     appointment.user_review = review || null;
     await appointment.save();

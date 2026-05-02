@@ -40,7 +40,7 @@ describe("Quiz Management System", () => {
       icon: "test",
       color: "primary"
     });
-    moduleId = mod._id as string;
+    moduleId = mod._id.toString();
   });
 
   afterAll(async () => {

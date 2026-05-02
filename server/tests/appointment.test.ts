@@ -48,7 +48,7 @@ describe.sequential("Appointment Booking API", () => {
       coordinates: { type: "Point", coordinates: [38.75, 9.03] },
       verification_status: "verified"
     });
-    profId = prof._id as string;
+    profId = prof._id.toString();
 
     // 3. Setup Regular User
     const regularUser = await User.create({
