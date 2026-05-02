@@ -19,6 +19,7 @@ import { adminManagementRoutes } from "./routes/admin-management.routes.js";
 import { progressRouter } from "./routes/progress.routes.js";
 import { dashboardRoutes } from "./routes/dashboard.routes.js";
 import { professionalRoutes, adminProfessionalRoutes } from "./routes/professional.routes.js";
+import appointmentRoutes, { adminAppointmentRoutes } from "./routes/appointment.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
@@ -70,6 +71,8 @@ app.use("/api/v1/progress", progressRouter);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/admin/professionals", adminProfessionalRoutes);
 app.use("/api/v1/professionals", professionalRoutes);
+app.use("/api/v1/admin/appointments", adminAppointmentRoutes);
+app.use("/api/v1/appointments", appointmentRoutes);
 
 // Error Handler (must be after all routes)
 app.use(errorHandler);
