@@ -105,6 +105,13 @@ dashboardRoutes.get("/config", authMiddleware, async (req: Request, res: Respons
  *     tags: [Admin - Dashboard]
  *     security:
  *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Platform-wide counters for users, professionals, and activity
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin access required
  */
 dashboardRoutes.get("/stats", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -143,10 +150,17 @@ dashboardRoutes.get("/stats", authMiddleware, isAdmin, async (req: Request, res:
  * @swagger
  * /api/v1/dashboard/engagement:
  *   get:
- *     summary: Get engagement trends (Admin)
+ *     summary: Get engagement trends for the past 30 days (Admin)
  *     tags: [Admin - Dashboard]
  *     security:
  *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Daily registration and message trend data
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin access required
  */
 dashboardRoutes.get("/engagement", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -194,8 +208,15 @@ dashboardRoutes.get("/engagement", authMiddleware, isAdmin, async (req: Request,
  *     tags: [Admin - Dashboard]
  *     security:
  *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Top performers and distribution by professional type
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - admin access required
  */
-dashboardRoutes.get("/analytics/professionals", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+dashboardRoutes.get("/professionals", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const topProfessionals = await Professional.find({ verification_status: "verified" })
       .sort({ rating: -1, sessions_completed: -1 })

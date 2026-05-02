@@ -28,7 +28,17 @@ const app = express();
 app.set("etag", false); // Disable 304 caching for API responses
 
 // ── Middleware ────────────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https:", "http:"],
+    },
+  },
+}));
 const allowedOrigins = [
   env.CLIENT_URL,          // Frontend (http://localhost:5173)
   "http://localhost:5000", // Swagger UI
