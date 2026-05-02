@@ -1,12 +1,15 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { z } from "zod";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+import { VALID_FLOW_TYPES } from "../config/constants.js";
 import { startDecisionFlow, submitDecisionStep, getDecisionResult } from "../services/decision.service.js";
 
 export const decisionRoutes = Router();
 
 const startFlowSchema = z.object({
-  flow_type: z.string().min(1, "flow_type is required"),
+  flow_type: z.enum(VALID_FLOW_TYPES, {
+    errorMap: () => ({ message: "Invalid flow_type" }),
+  }),
 });
 
 const submitStepSchema = z.object({
@@ -37,7 +40,8 @@ const sessionIdParamSchema = z.object({
  *             properties:
  *               flow_type:
  *                 type: string
- *                 description: Identifier for the flow (e.g. 'contraception')
+ *                 enum: [missed_period, relationship_pressure, contraception, sti_risk, pregnancy_options, mental_health_support]
+ *                 description: Identifier for the flow
  *     responses:
  *       200:
  *         description: Initial step data for the flow

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { DecisionSession } from "../models/DecisionSession.js";
 import { generateResponse } from "./ai.service.js";
+import { type FlowType } from "../config/constants.js";
 
 // ── Flow Definitions ─────────────────────────────────────────
 
@@ -232,11 +233,130 @@ const FLOWS: Record<string, { questions: FlowQuestion[]; computeResult: (answers
       };
     },
   },
+  sti_risk: {
+    questions: [
+      {
+        id: "exposure_type",
+        text: "Why are you concerned about an STI?",
+        type: "single_choice",
+        options: [
+          { value: "unprotected_sex", label: "I had sex without a condom" },
+          { value: "condom_broke", label: "The condom broke or slipped" },
+          { value: "partner_status", label: "My partner told me they have an STI" },
+          { value: "symptoms", label: "I am experiencing unusual symptoms" },
+        ],
+      },
+      {
+        id: "symptoms_list",
+        text: "Are you experiencing any of these?",
+        subtitle: "Select all that apply",
+        type: "multiple_choice",
+        options: [
+          { value: "pain_urination", label: "Pain when urinating", icon: "water_drop" },
+          { value: "unusual_discharge", label: "Unusual discharge", icon: "colorize" },
+          { value: "sores_bumps", label: "Sores, bumps or rashes", icon: "texture" },
+          { value: "itching_burning", label: "Itching or burning", icon: "warning" },
+          { value: "none", label: "None", icon: "done_all" },
+        ],
+      },
+      {
+        id: "last_exposure",
+        text: "When was your last potential exposure?",
+        type: "single_choice",
+        options: [
+          { value: "less_72h", label: "Less than 72 hours ago" },
+          { value: "3_14_days", label: "3 to 14 days ago" },
+          { value: "more_14_days", label: "More than 2 weeks ago" },
+          { value: "not_sure", label: "I'm not sure" },
+        ],
+      },
+    ],
+    computeResult: (answers) => {
+      let riskScore = 0;
+      if (answers.exposure_type === "unprotected_sex") riskScore += 3;
+      if (answers.exposure_type === "partner_status") riskScore += 4;
+      
+      const symptoms = Array.isArray(answers.symptoms_list) ? answers.symptoms_list : [];
+      if (symptoms.length > 0 && !symptoms.includes("none")) riskScore += 3;
+
+      const risk_level = riskScore >= 5 ? "high" : riskScore >= 3 ? "moderate" : "low";
+
+      const advice = [
+        "Many STIs don't show symptoms right away, so testing is the only way to be sure.",
+        "If your exposure was less than 72 hours ago, you might be eligible for PEP (Post-Exposure Prophylaxis) for HIV.",
+        "Avoid sexual contact until you have received your test results to protect others."
+      ];
+
+      if (answers.last_exposure === "less_72h" && risk_level !== "low") {
+        advice.unshift("⚠️ IMPORTANT: Since your exposure was within 72 hours, please visit a clinic immediately to discuss PEP.");
+      }
+
+      return {
+        risk_level,
+        summary: risk_level === "high" 
+          ? "Based on your answers, we strongly recommend getting tested at a clinic as soon as possible."
+          : "There is a possibility of exposure. It is better to get tested and be sure of your status.",
+        advice,
+        next_steps: [
+          { title: "Find a Clinic", description: "Free, confidential testing near you", icon: "location_on", action: "/services", action_type: "navigate" },
+          { title: "About STIs", description: "Common symptoms and treatments", icon: "info", action: "/explore", action_type: "navigate" },
+          { title: "PEP Information", description: "Emergency HIV prevention", icon: "emergency", action: "/explore", action_type: "navigate" }
+        ],
+      };
+    },
+  },
+  pregnancy_options: {
+    questions: [
+      {
+        id: "confirmed",
+        text: "Is the pregnancy confirmed by a test?",
+        type: "single_choice",
+        options: [
+          { value: "yes", label: "Yes, I took a test" },
+          { value: "no_symptoms", label: "No, but I have symptoms" },
+          { value: "no_worried", label: "No, I'm just worried" },
+        ],
+      },
+    ],
+    computeResult: () => ({
+      risk_level: "moderate",
+      summary: "We are here to support you through all your options.",
+      advice: ["You have time to think and explore your options.", "It's important to talk to a healthcare professional or a trusted adult."],
+      next_steps: [
+        { title: "Options Counseling", description: "Talk to a counselor anonymously", icon: "chat", action: "/chat", action_type: "navigate" },
+        { title: "Clinical Support", description: "Find a non-judgmental clinic", icon: "local_hospital", action: "/services", action_type: "navigate" }
+      ],
+    }),
+  },
+  mental_health_support: {
+    questions: [
+      {
+        id: "feeling",
+        text: "How have you been feeling lately regarding your sexual health?",
+        type: "single_choice",
+        options: [
+          { value: "anxious", label: "Very anxious or worried" },
+          { value: "confused", label: "Confused about my choices" },
+          { value: "pressured", label: "Pressured by others" },
+          { value: "fine", label: "I'm mostly okay, just curious" },
+        ],
+      },
+    ],
+    computeResult: () => ({
+      risk_level: "low",
+      summary: "Taking care of your mind is as important as taking care of your body.",
+      advice: ["It's normal to feel overwhelmed by these topics.", "Practice self-compassion and know that you are not alone."],
+      next_steps: [
+        { title: "Mindfulness Tools", description: "Exercises to help you stay calm", icon: "spa", action: "/explore", action_type: "navigate" },
+        { title: "Talk to Nuru", description: "Share what's on your mind", icon: "chat", action: "/chat", action_type: "navigate" }
+      ],
+    }),
+  },
 };
 
 // ── Service Functions ────────────────────────────────────────
 
-export async function startDecisionFlow(anonymousId: string, flowType: string) {
+export async function startDecisionFlow(anonymousId: string, flowType: FlowType) {
   const flow = FLOWS[flowType];
   if (!flow) throw new Error(`Unknown flow type: ${flowType}`);
 
