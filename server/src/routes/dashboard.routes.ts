@@ -1,7 +1,12 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
-import { authMiddleware } from "../middleware/auth.middleware.js";
+import { authMiddleware, isAdmin } from "../middleware/auth.middleware.js";
 import { Module } from "../models/Module.js";
 import { UserProgress } from "../models/UserProgress.js";
+import { User } from "../models/User.js";
+import { Appointment } from "../models/Appointment.js";
+import { Event } from "../models/Event.js";
+import { Professional } from "../models/Professional.js";
+import { ChatLog } from "../models/ChatLog.js";
 import mongoose from "mongoose";
 
 export const dashboardRoutes = Router();
@@ -83,6 +88,128 @@ dashboardRoutes.get("/config", authMiddleware, async (req: Request, res: Respons
         recommended_modules: recommended.slice(0, 3),
         continue_learning: continueLearning.slice(0, 3),
         quick_actions: quickActions
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ── 2.4.1 Endpoints: Admin Dashboard ──────────────────────────────────────────
+
+/**
+ * @swagger
+ * /api/v1/dashboard/stats:
+ *   get:
+ *     summary: Get high-level platform stats (Admin)
+ *     tags: [Admin - Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ */
+dashboardRoutes.get("/stats", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const [
+      totalUsers,
+      totalProfessionals,
+      totalAppointments,
+      totalEvents,
+      totalMessages
+    ] = await Promise.all([
+      User.countDocuments({ role: "user" }),
+      Professional.countDocuments({ verification_status: "verified" }),
+      Appointment.countDocuments(),
+      Event.countDocuments(),
+      ChatLog.countDocuments()
+    ]);
+
+    const activeProfessionals = await Professional.countDocuments({ 
+      verification_status: "verified", 
+      is_active: true 
+    });
+
+    res.json({
+      data: {
+        users: { total: totalUsers },
+        professionals: { total: totalProfessionals, active: activeProfessionals },
+        activity: { appointments: totalAppointments, events: totalEvents, messages: totalMessages }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/dashboard/engagement:
+ *   get:
+ *     summary: Get engagement trends (Admin)
+ *     tags: [Admin - Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ */
+dashboardRoutes.get("/engagement", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const userGrowth = await User.aggregate([
+      { $match: { created_at: { $gte: thirtyDaysAgo }, role: "user" } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    const messageTrends = await ChatLog.aggregate([
+      { $match: { created_at: { $gte: thirtyDaysAgo } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    res.json({
+      data: {
+        daily_registrations: userGrowth,
+        daily_messages: messageTrends
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/dashboard/professionals:
+ *   get:
+ *     summary: Get professional performance analytics (Admin)
+ *     tags: [Admin - Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ */
+dashboardRoutes.get("/analytics/professionals", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const topProfessionals = await Professional.find({ verification_status: "verified" })
+      .sort({ rating: -1, sessions_completed: -1 })
+      .limit(10)
+      .select("full_name type rating sessions_completed");
+
+    const statsByType = await Professional.aggregate([
+      { $group: { _id: "$type", count: { $sum: 1 }, avgRating: { $avg: "$rating" } } }
+    ]);
+
+    res.json({
+      data: {
+        top_performers: topProfessionals,
+        distribution_by_type: statsByType
       }
     });
   } catch (error) {

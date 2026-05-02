@@ -197,7 +197,7 @@ adminManagementRoutes.get("/profile", authMiddleware, isAdmin, async (req: Reque
   try {
     // Since we only have anonymousId in req for users, 
     // for admins it's the actual _id (sub from JWT)
-    const admin = await User.findById(req.anonymousId);
+    const admin = await User.findOne({ anonymous_id: req.anonymousId });
     if (!admin) {
       return res.status(404).json({ error: "Profile not found" });
     }
@@ -238,7 +238,11 @@ adminManagementRoutes.put("/profile", authMiddleware, isAdmin, async (req: Reque
     if (name) update.name = name;
     if (password) update.password_hash = await bcrypt.hash(password, 12);
 
-    const admin = await User.findByIdAndUpdate(req.anonymousId, { $set: update }, { new: true });
+    const admin = await User.findOneAndUpdate(
+      { anonymous_id: req.anonymousId }, 
+      { $set: update }, 
+      { new: true }
+    );
     if (!admin) return res.status(404).json({ error: "Profile not found" });
 
     res.json({ data: admin.toSafeJSON() });
