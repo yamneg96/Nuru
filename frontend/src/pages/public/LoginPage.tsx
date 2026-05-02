@@ -16,7 +16,7 @@ export default function LoginPage() {
     setError("")
     try {
       const data = await loginWithGoogle(response.credential)
-      login(data.token, data.anonymous_id)
+      login(data.token, data?.anonymous_id || "")
       navigate("/onboarding")
     } catch (err) {
       setError("Authentication failed. Please try again.")

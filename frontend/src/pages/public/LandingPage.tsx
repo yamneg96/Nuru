@@ -33,13 +33,6 @@ export default function LandingPage() {
 
   return (
     <div className="bg-background text-on-background font-body-md  pb-32">
-      {/* Mobile Header */}
-      <header className="md:hidden bg-surface-container-lowest flex justify-between items-center px-margin-mobile py-md sticky top-0 z-40 bg-opacity-90 backdrop-blur-sm border-b border-outline-variant">
-        <div className="font-h2 text-h2 text-primary font-bold tracking-tight">Nuru</div>
-        <Link to="/login" aria-label="Quick Exit" className="text-primary p-2 rounded-full hover:bg-surface-container transition-colors">
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>lock_person</span>
-        </Link>
-      </header>
 
       {/* 1. Hero Section */}
       <div className="bg-gradient-to-b from-surface-container-low to-background">

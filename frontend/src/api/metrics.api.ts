@@ -1,8 +1,7 @@
 import api from "./client"
-import type { PublicMetrics } from "../../../shared/types"
+import type { PublicMetrics } from "@/types"
 
 export async function getPublicMetrics(): Promise<PublicMetrics> {
-  const { data } = await api.get<PublicMetrics>("/metrics/public");
-  // console.log(data)
-  return data.data
+  const { data } = await api.get<PublicMetrics>("/metrics/public")
+  return data
 }

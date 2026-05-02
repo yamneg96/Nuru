@@ -14,9 +14,17 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Handle 401 responses globally
+// Unwrap the { data: ... } envelope from the backend
+// Backend always responds with { data: payload }, so after Axios unwraps
+// the HTTP response body into response.data, the actual payload is at
+// response.data.data. This interceptor hoists it so callers get it directly.
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === "object" && "data" in response.data) {
+      response.data = response.data.data
+    }
+    return response
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("nuru_token")

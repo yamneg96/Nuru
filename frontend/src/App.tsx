@@ -31,21 +31,25 @@ import ServicesPage from "@/pages/services/ServicesPage";
 // import VideoPage from "@/pages/content/VideoPage";
 // import QuizResultPage from "@/pages/content/Quiz/QuizResultPage";
 
-/* ───────── PHASE 2 (placeholders if not built yet) ───────── */
-// import ProfessionalsPage from "@/pages/professionals/ProfessionalsPage";
-// import ProfessionalDetailPage from "@/pages/professionals/ProfessionalDetailPage";
-// import EventsPage from "@/pages/events/EventsPage";
-// import EventDetailPage from "@/pages/events/EventDetailPage";
-// import MyAppointmentsPage from "@/pages/appointments/MyAppointmentsPage";
+/* ───────── PHASE 2 ───────── */
+import ProfessionalsPage from "@/pages/professionals/ProfessionalsPage";
+import ProfessionalDetailPage from "@/pages/professionals/ProfessionalDetailPage";
+import EventsPage from "@/pages/events/EventsPage";
+import MyAppointmentsPage from "@/pages/appointments/MyAppointmentsPage";
+import BookAppointmentPage from "@/pages/appointments/BookAppointmentPage";
+import ReportsPage from "@/pages/reports/ReportsPage";
 
-/* ───────── PHASE 3 (real-time) ───────── */
+/* ───────── PHASE 3 (real-time — deferred) ───────── */
 // import CommunitiesPage from "@/pages/community/CommunitiesPage";
 // import ConversationsPage from "@/pages/messaging/ConversationsPage";
 // import NotificationsPage from "@/pages/notifications/NotificationsPage";
 
 /* ───────── ADMIN ───────── */
-// import AdminLoginPage from "@/pages/admin/AdminLoginPage";
-// import AdminDashboardPage from "@/pages/admin/dashboard/AdminDashboardPage";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
+import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
+import AdminContentCMS from "@/pages/admin/AdminContentCMS";
+import AdminEventManagement from "@/pages/admin/AdminEventManagement";
+import AdminProfessionalVerification from "@/pages/admin/AdminProfessionalVerification";
 
 export default function App() {
   return (
@@ -174,21 +178,19 @@ export default function App() {
               }
             />
 
-            {/* ───────── FUTURE ROUTES (ENABLE WHEN READY) ───────── */}
+            {/* ───────── PHASE 2 ROUTES ───────── */}
 
+            <Route path="/professionals" element={<ProtectedRoute><ProfessionalsPage /></ProtectedRoute>} />
+            <Route path="/professionals/:id" element={<ProtectedRoute><ProfessionalDetailPage /></ProtectedRoute>} />
+
+            <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
+
+            <Route path="/appointments" element={<ProtectedRoute><MyAppointmentsPage /></ProtectedRoute>} />
+
+            <Route path="/reports" element={<ReportsPage />} />
+
+            {/* ───────── FUTURE (deferred) ───────── */}
             {/*
-            <Route path="/articles/:slug" element={<ArticlePage />} />
-            <Route path="/videos/:id" element={<VideoPage />} />
-            <Route path="/quiz/:id/result" element={<QuizResultPage />} />
-
-            <Route path="/professionals" element={<ProfessionalsPage />} />
-            <Route path="/professionals/:id" element={<ProfessionalDetailPage />} />
-
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/events/:id" element={<EventDetailPage />} />
-
-            <Route path="/appointments" element={<MyAppointmentsPage />} />
-
             <Route path="/communities" element={<CommunitiesPage />} />
             <Route path="/messages" element={<ConversationsPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
@@ -196,20 +198,16 @@ export default function App() {
 
           </Route>
 
-          {/* ───────── ADMIN (ISOLATED) ───────── */}
+          {/* ───────── ADMIN (ISOLATED — own layout) ───────── */}
 
-          {/*
           <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/content" element={<AdminContentCMS />} />
+          <Route path="/admin/events" element={<AdminEventManagement />} />
+          <Route path="/admin/professionals" element={<AdminProfessionalVerification />} />
 
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute roles={["admin"]}>
-                <AdminDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          */}
+          {/* Fullscreen flows outside app shell */}
+          <Route path="/appointments/book/:professionalId" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
 
           {/* ───────── FALLBACK ───────── */}
           <Route path="*" element={<Navigate to="/" replace />} />
