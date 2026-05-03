@@ -15,7 +15,7 @@ export const initTelegramBot = () => {
     polling: true,
   });
 
-  bot.on("message", async (msg) => {
+  bot.on("message", async (msg: TelegramBot.Message) => {
     const chatId = msg.chat.id;
     const text = msg.text || "";
 
