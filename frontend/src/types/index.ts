@@ -11,6 +11,7 @@ export interface AuthResponse {
 }
 
 export interface UserProfile {
+  _id?: string;
   anonymous_id: string;
   role: "user" | "admin" | "super_admin";
   name?: string;

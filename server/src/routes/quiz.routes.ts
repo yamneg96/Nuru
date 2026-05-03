@@ -106,6 +106,24 @@ quizRouter.post("/generate", authMiddleware, async (req: Request, res: Response,
 
 /**
  * @swagger
+ * /api/v1/quiz/all:
+ *   get:
+ *     summary: List all quizzes (admin)
+ *     tags: [Quiz]
+ *     security:
+ *       - bearerAuth: []
+ */
+quizRouter.get("/all", authMiddleware, isAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const quizzes = await Quiz.find().sort({ created_at: -1 });
+    res.json({ data: quizzes });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
  * /api/v1/quiz:
  *   post:
  *     summary: Create a new curated quiz (admin)

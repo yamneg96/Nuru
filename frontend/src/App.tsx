@@ -51,6 +51,9 @@ import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
 import AdminContentCMS from "@/pages/admin/AdminContentCMS";
 import AdminEventManagement from "@/pages/admin/AdminEventManagement";
 import AdminProfessionalVerification from "@/pages/admin/AdminProfessionalVerification";
+import AdminManagementPage from "@/pages/admin/AdminManagementPage";
+import AdminProfilePage from "@/pages/admin/AdminProfilePage";
+import AdminAppointmentsPage from "@/pages/admin/AdminAppointmentsPage";
 
 export default function App() {
   return (
@@ -206,6 +209,9 @@ export default function App() {
           <Route path="/admin/content" element={<AdminContentCMS />} />
           <Route path="/admin/events" element={<AdminEventManagement />} />
           <Route path="/admin/professionals" element={<AdminProfessionalVerification />} />
+          <Route path="/admin/appointments" element={<AdminAppointmentsPage />} />
+          <Route path="/admin/users" element={<AdminManagementPage />} />
+          <Route path="/admin/profile" element={<AdminProfilePage />} />
 
           {/* Fullscreen flows outside app shell */}
           <Route path="/appointments/book/:professionalId" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />

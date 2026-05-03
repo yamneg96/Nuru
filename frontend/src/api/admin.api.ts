@@ -213,6 +213,11 @@ export async function deleteVideo(id: string): Promise<MessageResponse> {
 
 // ── Admin Quiz ───────────────────────────────────────────────
 
+export async function getAllQuizzes(): Promise<Quiz[]> {
+  const { data } = await api.get<Quiz[]>("/quiz/all")
+  return data
+}
+
 export async function createQuiz(payload: Partial<Quiz>): Promise<Quiz> {
   const { data } = await api.post<Quiz>("/quiz", payload)
   return data
