@@ -1,32 +1,63 @@
-import TelegramBot from "node-telegram-bot-api";
 import { env } from "../../../config/env.js";
 import { logger } from "../../../utils/logger.js";
-import { handleTelegramMessage } from "./telegram.handler.js";
+import { processTelegramUpdate } from "./telegram.handler.js";
+import { getUpdates, deleteWebhook, type TelegramUpdate } from "./telegram.api.js";
 
-let bot: TelegramBot;
+let polling = false;
+let currentOffset: number | undefined;
 
-export const initTelegramBot = () => {
+export function initTelegramBot(): void {
   if (!env.TELEGRAM_BOT_TOKEN) {
-    logger.warn("Telegram bot token not set");
+    logger.warn("TELEGRAM_BOT_TOKEN not set — Telegram bot disabled");
     return;
   }
 
-  bot = new TelegramBot(env.TELEGRAM_BOT_TOKEN, {
-    polling: true,
-  });
+  startPolling();
+}
 
-  bot.on("message", async (msg: TelegramBot.Message) => {
-    const chatId = msg.chat.id;
-    const text = msg.text || "";
+async function startPolling(): Promise<void> {
+  if (polling) return;
+  polling = true;
 
+  try {
+    await deleteWebhook();
+  } catch {
+    logger.debug("No existing webhook to delete");
+  }
+
+  logger.info("✅ Telegram bot started (HTTP long-polling)");
+  pollLoop();
+}
+
+async function pollLoop(): Promise<void> {
+  while (polling) {
     try {
-      const response = await handleTelegramMessage(chatId, text);
-      await bot.sendMessage(chatId, response);
-    } catch (err) {
-      logger.error(err, "Telegram error");
-      bot.sendMessage(chatId, "⚠️ Error occurred.");
-    }
-  });
+      const updates = await getUpdates(currentOffset, 30);
 
-  logger.info("✅ Telegram bot started");
-};
+      for (const update of updates) {
+        currentOffset = update.update_id + 1;
+
+        try {
+          await processTelegramUpdate(update);
+        } catch (err) {
+          logger.error(
+            { err, updateId: update.update_id },
+            "Failed to process Telegram update"
+          );
+        }
+      }
+    } catch (err) {
+      logger.error(err, "Telegram polling error — retrying in 5s");
+      await sleep(5000);
+    }
+  }
+}
+
+export function stopTelegramBot(): void {
+  polling = false;
+  logger.info("Telegram bot polling stopped");
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

@@ -23,6 +23,7 @@ import { professionalRoutes, adminProfessionalRoutes } from "./routes/profession
 import appointmentRoutes, { adminAppointmentRoutes } from "./routes/appointment.routes.js";
 import eventRoutes, { adminEventRoutes } from "./routes/event.routes.js";
 import { reportRoutes, adminReportRoutes } from "./routes/report.routes.js";
+import { supportRoutes, adminSupportRoutes } from "./routes/support.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
@@ -63,6 +64,8 @@ app.use(helmet({
 const allowedOrigins = [
   env.CLIENT_URL,          // Frontend (http://localhost:5173)
   "http://localhost:5000", // Swagger UI
+  "http://localhost:5173", // Frontend
+  "https://nuru-mvp-v1.vercel.app"
 ];
 app.use(cors({
   origin: (origin, callback) => {
@@ -126,6 +129,10 @@ app.use("/api/v1/reports", reportRoutes);
 // Admin Routes (Grouped)
 app.use("/api/v1/admin/reports", adminReportRoutes);
 app.use("/api/v1/admin/events", adminEventRoutes);
+app.use("/api/v1/admin/support", adminSupportRoutes);
+
+// Support routes (public — no auth for ticket creation)
+app.use("/api/v1/support", supportRoutes);
 
 // Bots Route
 // WhatsApp webhook

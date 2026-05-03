@@ -1,22 +1,58 @@
 import { logger } from "../../../utils/logger.js";
-// later: import Professional model
+import type { Platform } from "../shared/constants.js";
 
-export const escalateToHuman = async (
+export interface EscalationRecord {
+  userId: string;
+  context: string;
+  platform: Platform;
+  timestamp: Date;
+  status: "pending" | "assigned" | "resolved";
+}
+
+const escalationQueue: EscalationRecord[] = [];
+
+export async function escalateToHuman(
   userId: string,
-  context: string
-) => {
+  context: string,
+  platform?: Platform
+): Promise<EscalationRecord> {
+  const record: EscalationRecord = {
+    userId,
+    context,
+    platform: platform ?? "web" as Platform,
+    timestamp: new Date(),
+    status: "pending",
+  };
+
   try {
+    escalationQueue.push(record);
+
     logger.info(
-      { userId, context },
-      "Escalation triggered (doctor/support)"
+      {
+        userId,
+        platform: record.platform,
+        context: context.substring(0, 100),
+        queueSize: escalationQueue.length,
+      },
+      "Escalation triggered — user requesting professional support"
     );
 
-    // TODO:
-    // 1. Save to DB
-    // 2. Notify admin/doctor
-    // 3. Create appointment / ticket
+    // TODO: Integrate with:
+    // 1. SupportTicket MongoDB model for persistence
+    // 2. Real-time notification to admin dashboard
+    // 3. Email/SMS notification to on-call professional
 
+    return record;
   } catch (err) {
     logger.error(err, "Escalation failed");
+    throw err;
   }
-};
+}
+
+export function getEscalationQueue(): readonly EscalationRecord[] {
+  return escalationQueue;
+}
+
+export function getEscalationQueueSize(): number {
+  return escalationQueue.length;
+}
