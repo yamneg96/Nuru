@@ -141,10 +141,24 @@ export interface ServiceLocation {
 
 // ── Metrics ──────────────────────────────────────────────────
 
+export interface Testimonial {
+  _id: string;
+  rating: number;
+  comment: string;
+  user_age?: number;
+  user_type?: string;
+  context: string;
+  created_at: string;
+}
+
 export interface PublicMetrics {
   total_users: number;
-  active_users: number;
+  active_users?: number;
   total_questions: number;
+  total_events: number;
+  upcoming_events?: NuruEvent[];
+  featured_videos?: Video[];
+  testimonials?: Testimonial[];
 }
 
 // ── Content (Modules, Articles, Videos) ──────────────────────

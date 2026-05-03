@@ -26,18 +26,18 @@ export default function OnboardingPage() {
 
   // --- Screens ---
   const renderWelcome = () => (
-    <main className="flex-grow flex flex-col items-center justify-center px-margin-mobile pt-24 pb-32 max-w-xl mx-auto w-full relative z-10 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div className="w-full aspect-square max-w-sm mb-lg rounded-[32px] overflow-hidden bg-surface-container-low shadow-[0_-4px_20px_rgba(59,130,246,0.08)] flex items-center justify-center">
-        <img alt="Warm Welcome Illustration" className="w-full h-full object-cover opacity-90 mix-blend-multiply dark:mix-blend-normal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRtfHkGQ9ovBomGQWXapmigdI2qgbA3kKcJyf-cgfMyfsxlmqLwzxwmPm63fK_zGOYxf7i1eih7zlFF2prBpSG7dhNI0lWBiAyCCvn6Zyo-Zit3SIDSRzi90425sA8PUZrrvb3YZ5x0Z1FAgvoaPBWfkBLBK36vEgB9FvXT2F69Gk7hhj4meo19jJDkKSTD6tt3Pm1BHDGYZ7aLhIGemxJHGtMQOHX9NwEQal0LsX09f8kcsRyboTJFp4siui95BHoMQ6AIY9L28U"/>
+    <main className="flex-grow flex flex-col items-center justify-center px-margin-mobile pt-24 pb-32 mx-auto w-full relative z-10 animate-in fade-in slide-in-from-right-4 duration-300">
+      <div className="w-full aspect-square mb-lg rounded-[32px] overflow-hidden bg-surface-container-low shadow-[0_-4px_20px_rgba(59,130,246,0.08)] flex items-center justify-center">
+        <img alt="Warm Welcome Illustration" className="w-full h-full object-cover opacity-90 mix-blend-multiply dark:mix-blend-normal" src="/Nuru_Logo.png"/>
       </div>
       <div className="text-center w-full mb-xl">
         <h1 className="font-h1 text-h1 text-primary mb-sm">Welcome to your safe space.</h1>
-        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto">
+        <p className="font-body-lg text-body-lg text-on-surface-variant mx-auto">
           Nuru is here to support you on your journey. We provide a private, trusted environment for you to explore and understand your health.
         </p>
       </div>
       <div className="w-full flex justify-center mt-auto">
-        <button onClick={handleNext} className="w-full max-w-xs bg-primary text-on-primary font-button text-button py-4 rounded-full shadow-[0_-4px_20px_rgba(59,130,246,0.08)] active:scale-[0.98] transition-transform duration-200 flex items-center justify-center gap-2">
+        <button onClick={handleNext} className="w-full bg-primary text-on-primary font-button text-button py-4 rounded-full shadow-[0_-4px_20px_rgba(59,130,246,0.08)] active:scale-[0.98] transition-transform duration-200 flex items-center justify-center gap-2">
           Get Started
           <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>arrow_forward</span>
         </button>
@@ -46,7 +46,7 @@ export default function OnboardingPage() {
   )
 
   const renderPrivacyFirst = () => (
-    <main className="flex-1 flex flex-col justify-center px-margin-mobile pt-[100px] pb-[140px] max-w-xl mx-auto w-full relative overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
+    <main className="flex-1 flex flex-col justify-center px-margin-mobile pt-[100px] pb-[140px] mx-auto w-full relative overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary-fixed/40 rounded-full blur-3xl -z-10 pointer-events-none"></div>
       <div className="flex flex-col items-center text-center space-y-xl">
         <div className="relative group">
@@ -59,14 +59,14 @@ export default function OnboardingPage() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col space-y-md max-w-sm mx-auto">
+        <div className="flex flex-col space-y-md mx-auto">
           <h1 className="font-h1 text-h1 text-on-surface">No names.<br/>No judgment.</h1>
           <h2 className="font-h2 text-h2 text-primary">Your secrets are safe with us.</h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant pt-sm">
             Nuru is completely anonymous. We never ask for your real name, and your personal data is never shared. This is a secure space designed just for you.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-gutter w-full max-w-sm mt-lg">
+        <div className="grid grid-cols-2 gap-gutter w-full mt-lg">
           <div className="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-[0_4px_16px_rgba(59,130,246,0.04)]">
             <span className="material-symbols-outlined text-secondary text-2xl mb-xs">visibility_off</span>
             <span className="font-label-caps text-label-caps text-on-surface-variant">Invisible</span>
@@ -81,15 +81,15 @@ export default function OnboardingPage() {
   )
 
   const renderHowNuruHelps = () => (
-    <main className="flex-grow w-full max-w-xl mx-auto px-margin-mobile pt-28 pb-40 flex flex-col gap-lg animate-in fade-in slide-in-from-right-4 duration-300">
+    <main className="flex-grow w-full xl mx-auto px-margin-mobile pt-28 pb-40 flex flex-col gap-lg animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="text-center mb-md">
         <h1 className="font-h1 text-h1 text-on-surface mb-sm">How Nuru Helps</h1>
-        <p className="font-body-lg text-body-lg text-on-surface-variant max-w-[280px] mx-auto">
+        <p className="font-body-lg text-body-lg text-on-surface-variant [280px] mx-auto">
           Your safe, private space to find answers and get care.
         </p>
       </div>
       <div className="w-full h-48 rounded-2xl bg-surface-container-high mb-sm overflow-hidden relative shadow-[0_-4px_20px_rgba(59,130,246,0.08)]">
-        <img alt="" className="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65DTxw82zD6IHmm9HW-LUl0FWrJnT1SjTitWb-F4VUdn0WEyfeBEdpLxywQw14JZEW5TUnSNOQrJMV53OFFMSFYSXIRCmF3BRbsNdMgn8gKMtJxRIDCxz8CLBKNsuQNCXmZpkB8v6FOILw1cm_0QlRtigJaFH0sCmDrwicdLou50Dy41curDzxIbxSrvQfdlh6OoYoUg1WSMeLCvBdPVRfE9JudpVdFOTAjr6Ua3hcsyQnULVAiPBorNA-mvPlea8rgFlbKcxS3Y"/>
+        <img alt="" className="w-full h-full object-cover opacity-90" src="/Nuru_Logo.png"/>
       </div>
       <div className="flex flex-col relative px-2">
         <div className="absolute top-[24px] bottom-[48px] left-[34px] w-[2px] bg-surface-variant z-0 rounded-full"></div>
@@ -131,7 +131,7 @@ export default function OnboardingPage() {
   )
 
   const renderCommunitySupport = () => (
-    <main className="flex-grow pt-24 px-margin-mobile w-full max-w-xl mx-auto flex flex-col gap-lg animate-in fade-in slide-in-from-right-4 duration-300">
+    <main className="flex-grow pt-24 px-margin-mobile w-full xl mx-auto flex flex-col gap-lg animate-in fade-in slide-in-from-right-4 duration-300">
       <section className="flex flex-col gap-sm text-center mb-md">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container mx-auto mb-sm">
           <span className="material-symbols-outlined text-[32px]" style={{fontVariationSettings: "'FILL' 1"}}>group</span>
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
         <div className="relative z-10 flex flex-col items-center gap-sm">
           <span className="material-symbols-outlined text-[40px]" style={{fontVariationSettings: "'FILL' 1"}}>support_agent</span>
           <h2 className="font-h2 text-h2 text-on-primary-container">Need more help?</h2>
-          <p className="font-body-md text-body-md text-on-primary-container/90 max-w-[280px]">
+          <p className="font-body-md text-body-md text-on-primary-container/90 [280px]">
             Professional counselors are available to chat privately and confidentially whenever you're ready.
           </p>
         </div>
@@ -191,7 +191,7 @@ export default function OnboardingPage() {
   const [interest, setInterest] = useState("Relationships")
 
   const renderPersonalize = () => (
-    <main className="max-w-xl mx-auto px-margin-mobile flex flex-col gap-10 pt-28 pb-32 animate-in fade-in slide-in-from-right-4 duration-300">
+    <main className="xl mx-auto px-margin-mobile flex flex-col gap-10 pt-28 pb-32 animate-in fade-in slide-in-from-right-4 duration-300">
       <section className="flex flex-col gap-3 mt-4">
         <div className="w-16 h-16 rounded-2xl mb-2 bg-gradient-to-br from-primary-fixed to-secondary-fixed opacity-60"></div>
         <h1 className="font-h1 text-h1 text-on-surface">Personalize Your Experience</h1>
@@ -238,16 +238,16 @@ export default function OnboardingPage() {
   )
 
   const renderReady = () => (
-    <main className="flex-1 flex flex-col justify-between px-margin-mobile py-xl max-w-md mx-auto w-full h-full relative z-10 pt-28 pb-10 animate-in fade-in slide-in-from-right-4 duration-300">
+    <main className="flex-1 flex flex-col justify-between px-margin-mobile py-xl md mx-auto w-full h-full relative z-10 pt-28 pb-10 animate-in fade-in slide-in-from-right-4 duration-300">
       <section className="flex flex-col items-center justify-center text-center flex-1 w-full mt-10">
         <div className="relative w-56 h-56 mb-xl group">
           <div className="absolute inset-0 bg-primary-fixed rounded-full blur-[40px] opacity-60 mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-700"></div>
-          <img className="relative w-full h-full object-cover rounded-full shadow-[0_12px_40px_rgba(0,88,190,0.12)] border-[6px] border-surface transition-transform duration-500 group-hover:-translate-y-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfZ2HpwmWSuQT-RIGMc72ISbrCaCrcGxwV-nRUcjUmrP8WjIYgb4QJ2KLCULEB-QQb1E33o1oONmYep81xbUEoAtapXB9ZpvdNwH0zpuiaCVbSDtfwpj5FZ7wed9zX7mTg0Gcj-mR4s7RCdxdElbXcD2hGZzqz1TyFAVRrv_Enoe496ZppsGb9aNQZVUD8EqhB0EL5AOAupXLXncwlzf7xXK5bY5aDK9pOz_OKmiDtLqyPxALI0hNTD01tzZbv5poYF_hcE6ofLoA"/>
+          <img className="relative w-full h-full object-cover rounded-full shadow-[0_12px_40px_rgba(0,88,190,0.12)] border-[6px] border-surface transition-transform duration-500 group-hover:-translate-y-2" src="/Nuru_Logo.png"/>
           <div className="absolute -bottom-2 -right-2 bg-secondary-container text-on-secondary-container rounded-full p-3 shadow-lg flex items-center justify-center border-4 border-surface">
             <span className="material-symbols-outlined text-2xl" style={{fontVariationSettings: "'FILL' 1"}}>verified</span>
           </div>
         </div>
-        <div className="space-y-sm max-w-[280px]">
+        <div className="space-y-sm [280px]">
           <h1 className="font-h1 text-h1 text-on-surface tracking-tight">You're all set!</h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant">Your journey to safe, informed choices starts now.</p>
         </div>
@@ -278,7 +278,7 @@ export default function OnboardingPage() {
     <div className="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed relative">
       {/* Top Header */}
       <header className="fixed w-full top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md">
-        <div className="flex justify-between items-center w-full px-6 py-4 max-w-xl mx-auto">
+        <div className="flex justify-between items-center w-full px-6 py-4 xl mx-auto">
           <span className="font-h1 text-2xl font-bold tracking-tight text-primary">Nuru</span>
           {step < 5 && (
             <button onClick={completeOnboarding} className="font-button text-primary hover:bg-surface-container-low px-4 py-2 rounded-full active:scale-95 transition-all">
@@ -294,35 +294,37 @@ export default function OnboardingPage() {
       {/* Ambient background for step 0 and 5 */}
       {(step === 0 || step === 5) && (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-          <div className="absolute w-[120vw] h-[120vw] max-w-[800px] max-h-[800px] bg-primary-fixed-dim/20 rounded-full blur-3xl -top-[20%] -right-[20%]"></div>
-          <div className="absolute w-[100vw] h-[100vw] max-w-[600px] max-h-[600px] bg-secondary-fixed-dim/10 rounded-full blur-3xl bottom-[0%] -left-[20%]"></div>
+          <div className="absolute w-[120vw] h-[120vw] [800px] max-h-[800px] bg-primary-fixed-dim/20 rounded-full blur-3xl -top-[20%] -right-[20%]"></div>
+          <div className="absolute w-[100vw] h-[100vw] [600px] max-h-[600px] bg-secondary-fixed-dim/10 rounded-full blur-3xl bottom-[0%] -left-[20%]"></div>
         </div>
       )}
 
       {/* Bottom Navigation for steps 1-4 */}
       {step > 0 && step < 5 && (
-        <nav className="fixed bottom-0 left-0 right-0 w-full z-50 rounded-t-[32px] bg-surface border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(59,130,246,0.08)] animate-in slide-in-from-bottom-full duration-300">
-          <div className="flex justify-around items-center px-4 pt-4 pb-safe max-w-xl mx-auto w-full">
-            <button onClick={handleBack} className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-6 py-2 active:scale-[0.98] transition-all duration-200">
-              <span className="material-symbols-outlined mb-1 text-[24px]">arrow_back</span>
-              <span className="font-label-caps font-medium">Back</span>
-            </button>
-
-            <div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
-              <div className="flex gap-2 items-center h-[24px]">
-                {[1, 2, 3, 4].map(idx => (
-                  <div key={idx} className={`h-2 rounded-full transition-all duration-300 ${step === idx ? 'w-6 bg-primary' : 'w-2 bg-surface-variant'}`}></div>
-                ))}
+        <div className="fixed bottom-0 left-0 right-0 w-full z-50 flex justify-center pointer-events-none px-0 sm:px-4">
+          <nav className="pointer-events-auto w-full sm:w-auto sm:min-w-[500px] rounded-t-[32px] sm:rounded-b-[32px] sm:mb-4 bg-surface border border-outline-variant/20 shadow-[0_-4px_20px_rgba(59,130,246,0.08)] animate-in slide-in-from-bottom-full duration-300">
+            <div className="flex justify-around items-center px-4 py-4 mx-auto w-full">
+              <button onClick={handleBack} className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-6 py-2 active:scale-[0.98] transition-all duration-200">
+                <span className="material-symbols-outlined mb-1 text-[24px]">arrow_back</span>
+                <span className="font-label-caps font-medium">Back</span>
+              </button>
+  
+              <div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
+                <div className="flex gap-2 items-center h-[24px]">
+                  {[1, 2, 3, 4].map(idx => (
+                    <div key={idx} className={`h-2 rounded-full transition-all duration-300 ${step === idx ? 'w-6 bg-primary' : 'w-2 bg-surface-variant'}`}></div>
+                  ))}
+                </div>
+                <span className="font-label-caps font-medium opacity-0">Progress</span>
               </div>
-              <span className="font-label-caps font-medium opacity-0">Progress</span>
+  
+              <button onClick={handleNext} className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-6 py-2 hover:bg-primary hover:text-on-primary active:scale-[0.98] transition-all duration-200">
+                <span className="material-symbols-outlined mb-1 text-[24px]">arrow_forward</span>
+                <span className="font-label-caps font-medium">Next</span>
+              </button>
             </div>
-
-            <button onClick={handleNext} className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-6 py-2 hover:bg-primary hover:text-on-primary active:scale-[0.98] transition-all duration-200">
-              <span className="material-symbols-outlined mb-1 text-[24px]">arrow_forward</span>
-              <span className="font-label-caps font-medium">Next</span>
-            </button>
-          </div>
-        </nav>
+          </nav>
+        </div>
       )}
     </div>
   )

@@ -18,6 +18,10 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email().optional(),
   ADMIN_PASSWORD: z.string().min(8).optional(),
   GOOGLE_MAPS_API_KEY: z.string().default(""),
+  TELEGRAM_BOT_TOKEN: z.string().default(""),
+  WHATSAPP_TOKEN: z.string().default(""),
+  WHATSAPP_PHONE_ID: z.string().default(""),
+  WHATSAPP_VERIFY_TOKEN: z.string().default("")
 });
 
 const parsed = envSchema.safeParse(process.env);

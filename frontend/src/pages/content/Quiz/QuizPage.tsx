@@ -84,7 +84,7 @@ export default function QuizPage() {
       </div>
 
       {!quiz ? (
-        <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center rounded-2xl bg-surface p-6 shadow-sm">
+        <div className="mx-auto flex w-full flex-col items-center justify-center rounded-2xl bg-surface p-6 shadow-sm">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <span className="text-3xl text-primary">🧠</span>
           </div>
@@ -118,7 +118,7 @@ export default function QuizPage() {
           </form>
         </div>
       ) : (
-        <div className="mx-auto flex w-full max-w-md flex-col space-y-6">
+        <div className="mx-auto flex w-full flex-col space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-primary">{quiz.title}</h2>
             <span className="rounded-full bg-surface px-3 py-1 text-sm font-medium text-foreground">

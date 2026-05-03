@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { getServices } from "@/api/services.api"
+import { NuruButton } from "@/components/shared/buttons/NuruButton"
 import type { ServiceLocation } from "@/types"
 
 const FILTERS = [
@@ -11,6 +12,7 @@ const FILTERS = [
 
 export default function ServicesPage() {
   const [services, setServices] = useState<ServiceLocation[]>([])
+  const [selectedService, setSelectedService] = useState<ServiceLocation | null>(null)
   const [activeFilter, setActiveFilter] = useState("")
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
@@ -23,8 +25,10 @@ export default function ServicesPage() {
         if (activeFilter) params.tag = activeFilter
         if (search) params.search = search
         const data = await getServices(params)
-        console.log(data)
         setServices(data)
+        if (data.length > 0 && !selectedService) {
+          setSelectedService(data[0])
+        }
       } catch {
         setServices([])
       } finally {
@@ -34,8 +38,13 @@ export default function ServicesPage() {
     load()
   }, [activeFilter, search])
 
+  const handleGetDirections = (svc: ServiceLocation) => {
+    setSelectedService(svc)
+    document.getElementById("services-map")?.scrollIntoView({ behavior: "smooth" })
+  }
+
   return (
-    <div className="mx-auto max-w-5xl px-5 py-6 md:px-8">
+    <div className="mx-auto max-w-5xl px-5 py-8 md:px-8">
       {/* Search */}
       <section className="mb-8">
         <div className="relative mb-4 w-full md:w-96">
@@ -79,7 +88,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Map Placeholder */}
-      <section className="relative mb-8 h-64 overflow-hidden rounded-[24px] border border-outline-variant/20 shadow-[0_8px_30px_rgba(59,130,246,0.12)] md:h-80">
+      <section id="services-map" className="relative mb-8 h-64 overflow-hidden rounded-[24px] border border-outline-variant/20 shadow-[0_8px_30px_rgba(59,130,246,0.12)] md:h-80">
         <div className="absolute inset-0 flex items-center justify-center bg-surface-container">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn4iEXwaN2fcAMyoxD7jmyIAdBiHujlws1iwjqL3vfrRLtM251LTQgMQqB295xugyb97YkMBix1I0soxnjCzVFauuEXRat_MpPw0qjEJVjC9NI12KnprQUax5htODoCKskmuyOAkYC3VEMb7oRZIAATljRZaSoLNgKinUIPT6rm6g248_qJH0mOOU8ROMnRM6o2eOEW5tyK_7tAjYg1hSaNCMX1Qwyt3v4olnNFqw3gcg3v9IgQVSUi1homcLN1W55rDdyS_EtXgg"
@@ -91,10 +100,10 @@ export default function ServicesPage() {
         <div className="absolute right-4 bottom-4 left-4 flex items-end justify-between">
           <div className="rounded-xl border border-outline-variant/30 bg-surface/90 px-4 py-2 shadow-sm backdrop-blur-md">
             <p className="mb-1 text-xs font-semibold tracking-wider text-outline uppercase">
-              Showing
+              {selectedService ? "Directions to" : "Showing"}
             </p>
             <p className="font-semibold text-on-surface">
-              {services.length} clinics near you
+              {selectedService ? `${selectedService.name} (${selectedService.distance})` : `${services.length} clinics near you`}
             </p>
           </div>
           <button className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg transition-transform hover:scale-105">
@@ -163,23 +172,24 @@ export default function ServicesPage() {
                   ))}
                 </div>
               </div>
-              <div className="mt-auto flex gap-2 border-t border-outline-variant/20 pt-4">
-                <button className="hover:bg-surface-tint flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-on-primary transition-colors">
-                  <span className="material-symbols-outlined text-[20px]">
-                    directions
-                  </span>
+              <div className="mt-auto flex flex-wrap gap-2 border-t border-outline-variant/20 pt-4">
+                <NuruButton 
+                  className="flex-1"
+                  variant="primary"
+                  onClick={() => handleGetDirections(svc)}
+                  leftIcon={<span className="material-symbols-outlined text-[20px]">directions</span>}
+                >
                   Get Directions
-                </button>
+                </NuruButton>
                 {svc.phone && (
-                  <a
-                    href={`tel:${svc.phone}`}
-                    className="hover:bg-surface-variant flex flex-1 items-center justify-center gap-2 rounded-full border border-outline-variant/20 bg-surface-container-high py-3 font-semibold text-primary transition-colors"
+                  <NuruButton
+                    className="flex-1"
+                    variant="secondary"
+                    onClick={() => window.location.href = `tel:${svc.phone}`}
+                    leftIcon={<span className="material-symbols-outlined text-[20px]">call</span>}
                   >
-                    <span className="material-symbols-outlined text-[20px]">
-                      call
-                    </span>
                     Call
-                  </a>
+                  </NuruButton>
                 )}
               </div>
             </article>

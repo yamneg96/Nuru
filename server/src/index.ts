@@ -15,6 +15,7 @@ import { metricsRoutes } from "./routes/metrics.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { quizRouter as quizRoutes } from "./routes/quiz.routes.js";
 import { contentRoutes } from "./routes/content.routes.js";
+import { feedbackRoutes } from "./routes/feedback.routes.js";
 import { adminManagementRoutes } from "./routes/admin-management.routes.js";
 import { progressRouter } from "./routes/progress.routes.js";
 import { dashboardRoutes } from "./routes/dashboard.routes.js";
@@ -25,10 +26,18 @@ import { reportRoutes, adminReportRoutes } from "./routes/report.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { setupSwagger } from "./config/swagger.js";
 
+// Bots
+import { initTelegramBot } from "./services/messaging/telegram/telegram.bot.js";
+import whatsappWebhook from "./services/messaging/whatsapp/whatsapp.webhook.js";
+
 
 // ── Start Server ─────────────────────────────────────────────
 async function start() {
   await connectDB();
+
+  // Start Telegram Bot
+  initTelegramBot();
+
   app.listen(env.PORT, () => {
     logger.info(`🚀 Nuru API running on port ${env.PORT}`);
     logger.info(`   Environment: ${env.NODE_ENV}`);
@@ -100,6 +109,7 @@ app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/quiz", quizRoutes);
 app.use("/api/v1/content", contentRoutes);
+app.use("/api/v1/feedback", feedbackRoutes);
 // ── Admin sub-routes MUST be mounted BEFORE base /admin ──────────────────────
 app.use("/api/v1/admin/professionals", adminProfessionalRoutes);
 app.use("/api/v1/admin/appointments", adminAppointmentRoutes);
@@ -116,6 +126,11 @@ app.use("/api/v1/reports", reportRoutes);
 // Admin Routes (Grouped)
 app.use("/api/v1/admin/reports", adminReportRoutes);
 app.use("/api/v1/admin/events", adminEventRoutes);
+
+// Bots Route
+// WhatsApp webhook
+app.use("/api/v1/webhooks/whatsapp", whatsappWebhook);
+
 
 // Error Handler (must be after all routes)
 app.use(errorHandler);

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
 import { sendMessage } from "@/api/chat.api"
+import { FeedbackModal } from "@/components/shared/FeedbackModal"
 
 interface Message {
   role: "user" | "assistant"
@@ -26,6 +27,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [convId, setConvId] = useState<string | undefined>()
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -70,10 +72,25 @@ export default function ChatPage() {
           </h1>
           <span className="text-on-surface-variant opacity-70">Assistant</span>
         </div>
-        <span className="material-symbols-outlined text-blue-600">
-          lock_person
-        </span>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setIsFeedbackOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-variant transition-colors text-sm font-medium text-on-surface-variant"
+          >
+            <span className="material-symbols-outlined text-[18px]">rate_review</span>
+            Feedback
+          </button>
+          <span className="material-symbols-outlined text-blue-600 ml-2">
+            lock_person
+          </span>
+        </div>
       </header>
+
+      <FeedbackModal 
+        isOpen={isFeedbackOpen} 
+        onClose={() => setIsFeedbackOpen(false)} 
+        context="chat" 
+      />
 
       <main
         ref={scrollRef}

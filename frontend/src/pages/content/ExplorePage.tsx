@@ -64,7 +64,7 @@ export default function ExplorePage() {
             <h2 className="mb-3 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
               Healthy Relationships
             </h2>
-            <p className="mb-6 max-w-md text-on-surface-variant">
+            <p className="mb-6 text-on-surface-variant">
               Understanding boundaries, communication, and mutual respect in all
               types of relationships.
             </p>
