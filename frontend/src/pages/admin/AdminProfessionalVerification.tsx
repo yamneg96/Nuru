@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import { getAdminProfessionals, verifyProfessional } from "@/api/admin.api"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import type { Professional } from "@/types"
@@ -11,7 +10,6 @@ const STATUS_TABS = [
 ]
 
 export default function AdminProfessionalVerification() {
-  const navigate = useNavigate()
   const [professionals, setProfessionals] = useState<Professional[]>([])
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState("pending")

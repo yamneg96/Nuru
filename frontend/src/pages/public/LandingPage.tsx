@@ -1,38 +1,74 @@
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useMetrics } from "@/hooks/useMetrics"
 import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { getVideos } from "@/api/content.api"
+import { getEvents } from "@/api/events.api"
 import { useAuthStore } from "@/store/authStore"
+
+function getEmbedUrl(url?: string) {
+  if (!url) return undefined;
+  // Handle youtube.com/watch?v=VIDEO_ID format
+  const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+  if (watchMatch && watchMatch[1]) {
+    return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1`;
+  }
+  return url;
+}
 
 export default function LandingPage() {
   const { data: metrics } = useMetrics()
   const navigate = useNavigate()
   const [showSupportModal, setShowSupportModal] = useState(false)
+  const [activeVideo, setActiveVideo] = useState<string | null>(null)
+  const [activeEvent, setActiveEvent] = useState<any>(null)
   const hasSeenOnboarding = localStorage.getItem('nuru_has_seen_onboarding');
   const {isAuthenticated} = useAuthStore();
 
-  const upcomingEvents = metrics?.upcoming_events && metrics.upcoming_events.length > 0 
-    ? metrics.upcoming_events.map(e => ({
+  const { data: realVideos } = useQuery({
+    queryKey: ["published_videos"],
+    queryFn: () => getVideos()
+  })
+
+  const { data: realEvents } = useQuery({
+    queryKey: ["upcoming_events"],
+    queryFn: () => getEvents()
+  })
+
+  const eventSource = (realEvents && realEvents.length > 0) ? realEvents : metrics?.upcoming_events;
+
+  const upcomingEvents = eventSource && eventSource.length > 0 
+    ? eventSource.slice(0, 3).map((e: any) => ({
         title: e.title,
         location: e.location_name,
         icon: e.is_online ? "videocam" : "location_on",
-        time: e?.date ? new Date(e.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "TBA"
+        time: e?.date ? new Date(e.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "TBA",
+        description: e.description,
+        is_online: e.is_online,
+        meeting_link: e.meeting_link,
+        image_url: e.image_url,
+        type: e.type,
+        category: e.category
       }))
     : [
-        { title: "Youth Health Seminar", location: "Addis Ababa Community Center", icon: "location_on", time: "Oct 15, 2:00 PM" },
-        { title: "Online Q&A Session", location: "Virtual (Zoom)", icon: "videocam", time: "Oct 18, 5:00 PM" },
-        { title: "Wellness Workshop", location: "Youth Hub", icon: "location_on", time: "Oct 22, 10:00 AM" }
+        { title: "Youth Health Seminar", location: "Addis Ababa Community Center", icon: "location_on", time: "Oct 15, 2:00 PM", description: "A comprehensive seminar covering essential health topics for today's youth.", is_online: false, type: "workshop", category: "health" },
+        { title: "Online Q&A Session", location: "Virtual (Zoom)", icon: "videocam", time: "Oct 18, 5:00 PM", description: "Join our health professionals for an open Q&A session. Ask anything anonymously.", is_online: true, meeting_link: "https://zoom.us", type: "talk", category: "education" },
+        { title: "Wellness Workshop", location: "Youth Hub", icon: "location_on", time: "Oct 22, 10:00 AM", description: "A hands-on workshop focused on mental wellness and stress management techniques.", is_online: false, type: "workshop", category: "health" }
       ];
 
-  const featuredVideos = metrics?.featured_videos && metrics.featured_videos.length > 0
-    ? metrics.featured_videos.map(v => ({
+  const videoSource = (realVideos && realVideos.length > 0) ? realVideos : metrics?.featured_videos;
+
+  const featuredVideos = videoSource && videoSource.length > 0
+    ? videoSource.slice(0, 3).map((v: any) => ({
         title: v.title,
         duration: v.duration || "N/A",
-        thumbnail: v.thumbnail_url
+        thumbnail: v.thumbnail_url,
+        url: getEmbedUrl(v?.source_url)
       }))
     : [
-        { title: "What happens during puberty?", duration: "3:45", thumbnail: undefined },
-        { title: "Understanding menstrual cycles", duration: "5:12", thumbnail: undefined },
-        { title: "How to talk about boundaries", duration: "4:20", thumbnail: undefined }
+        { title: "What happens during puberty?", duration: "3:45", thumbnail: undefined, url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { title: "Understanding menstrual cycles", duration: "5:12", thumbnail: undefined, url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { title: "How to talk about boundaries", duration: "4:20", thumbnail: undefined, url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
       ];
 
   const testimonials = metrics?.testimonials && metrics.testimonials.length > 0
@@ -234,9 +270,15 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
             {upcomingEvents.map((event, i) => (
               <div key={i} className="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-                <div className="h-40 bg-surface-container flex items-center justify-center text-outline">
-                  <span className="material-symbols-outlined text-4xl">event</span>
-                </div>
+                {event.icon ? (
+                  <div className="h-40 bg-surface-container relative">
+                    <img src={event.icon} alt={event.title} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="h-40 bg-surface-container flex items-center justify-center text-outline">
+                    <span className="material-symbols-outlined text-4xl">event</span>
+                  </div>
+                )}
                 <div className="p-6 flex flex-col flex-grow gap-4">
                   <div className="space-y-2 flex-grow">
                     <h3 className="font-h2 text-xl text-on-surface">{event.title}</h3>
@@ -249,7 +291,7 @@ export default function LandingPage() {
                       <span>{event.time}</span>
                     </div>
                   </div>
-                  <button className="w-full text-center border border-outline text-on-surface font-button py-2 rounded-full hover:bg-surface-container transition-colors">View Details</button>
+                  <button onClick={() => setActiveEvent(event)} className="w-full text-center border border-outline text-on-surface font-button py-2 rounded-full hover:bg-surface-container transition-colors">View Details</button>
                 </div>
               </div>
             ))}
@@ -268,7 +310,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
             {featuredVideos.map((video, i) => (
-              <div key={i} className="group cursor-pointer">
+              <div key={i} className="group cursor-pointer" onClick={() => setActiveVideo(video.url || null)}>
                 <div 
                   className="relative bg-surface-variant rounded-2xl overflow-hidden aspect-video flex items-center justify-center mb-4 bg-cover bg-center"
                   style={video.thumbnail ? { backgroundImage: `url(${video.thumbnail})` } : undefined}
@@ -447,6 +489,101 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+
+      {/* Video Modal */}
+      {activeVideo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
+            <button 
+              onClick={() => setActiveVideo(null)}
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black text-white p-2 rounded-full transition-colors backdrop-blur-md"
+            >
+              <span className="material-symbols-outlined block">close</span>
+            </button>
+            <iframe 
+              src={activeVideo} 
+              title="Video player"
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
+
+      {/* Event Modal */}
+      {activeEvent && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="relative w-full max-w-2xl bg-surface-container-lowest rounded-2xl overflow-hidden shadow-2xl my-8">
+            {activeEvent.image_url ? (
+              <div className="w-full h-48 sm:h-64 bg-surface-variant relative">
+                <img src={activeEvent.image_url} alt={activeEvent.title} className="w-full h-full object-cover" />
+                <button onClick={() => setActiveEvent(null)} className="absolute top-4 right-4 bg-black/50 hover:bg-black text-white p-2 rounded-full transition-colors backdrop-blur-md">
+                  <span className="material-symbols-outlined block text-[20px]">close</span>
+                </button>
+              </div>
+            ) : (
+              <div className="w-full h-32 bg-surface-container flex justify-between items-start p-4 relative">
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="material-symbols-outlined text-[100px]">event</span>
+                </div>
+                <div />
+                <button onClick={() => setActiveEvent(null)} className="bg-surface/50 hover:bg-surface text-on-surface p-2 rounded-full transition-colors backdrop-blur-md z-10">
+                  <span className="material-symbols-outlined block text-[20px]">close</span>
+                </button>
+              </div>
+            )}
+            
+            <div className="p-6 md:p-8 space-y-6">
+              <div>
+                <div className="flex gap-2 mb-3">
+                  {activeEvent.is_online && <span className="text-xs font-bold uppercase tracking-wider bg-primary-container text-primary px-2.5 py-1 rounded-full">Online</span>}
+                  {activeEvent.type && <span className="text-xs font-bold uppercase tracking-wider bg-surface-variant text-on-surface-variant px-2.5 py-1 rounded-full">{activeEvent.type}</span>}
+                  {activeEvent.category && <span className="text-xs font-bold uppercase tracking-wider bg-tertiary-container text-tertiary px-2.5 py-1 rounded-full">{activeEvent.category}</span>}
+                </div>
+                <h2 className="font-h1 text-2xl md:text-3xl text-on-surface font-bold">{activeEvent.title}</h2>
+              </div>
+
+              <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/30">
+                <div className="flex items-start gap-3 text-on-surface-variant">
+                  <span className="material-symbols-outlined text-primary mt-0.5">calendar_today</span>
+                  <div>
+                    <p className="font-semibold text-on-surface">Date & Time</p>
+                    <p>{activeEvent.time}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 text-on-surface-variant">
+                  <span className="material-symbols-outlined text-primary mt-0.5">{activeEvent.icon}</span>
+                  <div>
+                    <p className="font-semibold text-on-surface">Location</p>
+                    <p>{activeEvent.location}</p>
+                    {activeEvent.meeting_link && (
+                      <a href={activeEvent.meeting_link} target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm font-medium mt-1 inline-block">Join Meeting Link</a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {activeEvent.description && (
+                <div>
+                  <h3 className="font-semibold text-on-surface mb-2">About this event</h3>
+                  <p className="text-on-surface-variant leading-relaxed whitespace-pre-wrap">{activeEvent.description}</p>
+                </div>
+              )}
+
+              <div className="pt-4 flex flex-col sm:flex-row gap-3 border-t border-outline-variant/30">
+                <button onClick={() => setActiveEvent(null)} className="px-6 py-3 border border-outline-variant rounded-full font-button text-on-surface hover:bg-surface-variant transition-colors flex-1">
+                  Close
+                </button>
+                <button className="px-6 py-3 bg-primary text-on-primary rounded-full font-button hover:bg-on-primary-fixed-variant transition-colors flex-1 shadow-sm">
+                  Register Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

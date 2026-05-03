@@ -6,7 +6,7 @@ import {
   getAllVideos, createVideo, updateVideo, deleteVideo,
   getAllQuizzes, createQuiz, updateQuiz, deleteQuiz
 } from "@/api/admin.api"
-import type { Module, Article, Video, Quiz, QuizQuestion } from "@/types"
+import type { Module, Article, Video, Quiz } from "@/types"
 
 type Tab = "modules" | "articles" | "videos" | "quizzes"
 
