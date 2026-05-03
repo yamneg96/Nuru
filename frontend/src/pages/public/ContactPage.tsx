@@ -78,7 +78,7 @@ export function ContactPage() {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <a href="https://t.me/NuruBot" target="_blank" rel="noopener noreferrer" className="bg-primary text-on-primary font-['Inter'] font-semibold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-surface-tint transition-all active:scale-[0.98] shadow-sm">
+              <a href="https://t.me/nuru_tg_bot" target="_blank" rel="noopener noreferrer" className="bg-primary text-on-primary font-['Inter'] font-semibold px-8 py-4 rounded-full flex items-center gap-2 hover:bg-surface-tint transition-all active:scale-[0.98] shadow-sm">
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>chat_bubble</span>
                 Chat Now
               </a>
@@ -126,7 +126,7 @@ export function ContactPage() {
                     <span className="font-['Inter'] text-xs font-semibold uppercase text-on-surface-variant bg-surface-container px-3 py-1 rounded-full flex items-center gap-1">
                       <span className="w-2 h-2 rounded-full bg-secondary"></span> 24/7 Available
                     </span>
-                    <a href="https://t.me/NuruBot" target="_blank" rel="noopener noreferrer" className="bg-[#0088cc]/10 text-[#0088cc] hover:bg-[#0088cc]/20 font-['Inter'] font-semibold px-6 py-3 rounded-full transition-colors inline-block">Start Chat</a>
+                    <a href="https://t.me/nuru_tg_bot" target="_blank" rel="noopener noreferrer" className="bg-[#0088cc]/10 text-[#0088cc] hover:bg-[#0088cc]/20 font-['Inter'] font-semibold px-6 py-3 rounded-full transition-colors inline-block">Start Chat</a>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export function ContactPage() {
                     <span className="font-['Inter'] text-xs font-semibold uppercase tracking-widest text-on-primary-fixed">Live Now</span>
                   </div>
                   <h3 className="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-on-primary-fixed mb-2">Nuru Support Team</h3>
-                  <p className="font-['Inter'] text-base text-on-surface-variant mb-6">Our trained support staff are online and ready to listen. We provide a safe space to discuss anything that's on your mind.</p>
+                  <p className="font-['Inter'] text-base text-on-surface mb-6">Our trained support staff are online and ready to listen. We provide a safe space to discuss anything that's on your mind.</p>
                   <div className="flex flex-wrap gap-4">
                     <a href="tel:8222" className="bg-primary text-on-primary font-['Inter'] font-semibold px-6 py-3 rounded-full flex items-center gap-2 hover:bg-surface-tint transition-all">
                       <span className="material-symbols-outlined text-[20px]">phone_in_talk</span>
