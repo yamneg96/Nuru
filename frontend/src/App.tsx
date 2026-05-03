@@ -7,7 +7,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import LandingPage from "@/pages/public/LandingPage";
 import LoginPage from "@/pages/public/LoginPage";
 import OnboardingPage from "@/pages/public/OnboardingPage";
-import { PrivacyPolicyPage, TermsPage, ContactPage } from "@/pages/public/StaticPages";
+import { PrivacyPolicyPage, TermsPage } from "@/pages/public/StaticPages";
+import { ContactPage } from "@/pages/public/ContactPage";
 
 /* ───────── CORE ───────── */
 import DashboardPage from "@/pages/dashboard/DashboardPage";
