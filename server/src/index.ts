@@ -154,6 +154,7 @@ app.use("/", (_req, res) => {
       <h1>Nuru API</h1>
       <p>Welcome to the Nuru API</p>
       <a href="/health">Health Check</a>
+      <a href="/api-docs">Swagger Docs</a>
     </div>
   `);
 });
