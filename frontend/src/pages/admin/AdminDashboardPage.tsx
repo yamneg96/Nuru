@@ -84,10 +84,10 @@ export default function AdminDashboardPage() {
         {/* KPI Cards */}
         {stats && (
           <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <KpiCard label="Total Users" value={stats.users.total.toLocaleString()} icon="group" iconBg="bg-primary-container/20" iconColor="text-primary" />
-            <KpiCard label="Messages Logged" value={stats.activity.messages.toLocaleString()} icon="forum" iconBg="bg-secondary-container/30" iconColor="text-secondary" />
-            <KpiCard label="Total Events" value={stats.activity.events.toLocaleString()} icon="event" iconBg="bg-tertiary-container/20" iconColor="text-tertiary" />
-            <KpiCard label="Active Professionals" value={stats.professionals.active.toLocaleString()} icon="local_hospital" iconBg="bg-primary-fixed/50" iconColor="text-primary" subtext={`${stats.professionals.total} total`} />
+            <KpiCard label="Total Users" value={(stats.users?.total ?? 0).toLocaleString()} icon="group" iconBg="bg-primary-container/20" iconColor="text-primary" />
+            <KpiCard label="Messages Logged" value={(stats.activity?.messages ?? 0).toLocaleString()} icon="forum" iconBg="bg-secondary-container/30" iconColor="text-secondary" />
+            <KpiCard label="Total Events" value={(stats.activity?.events ?? 0).toLocaleString()} icon="event" iconBg="bg-tertiary-container/20" iconColor="text-tertiary" />
+            <KpiCard label="Active Professionals" value={(stats.professionals?.active ?? 0).toLocaleString()} icon="local_hospital" iconBg="bg-primary-fixed/50" iconColor="text-primary" subtext={`${stats.professionals?.total ?? 0} total`} />
           </div>
         )}
 

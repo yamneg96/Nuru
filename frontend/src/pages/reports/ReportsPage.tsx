@@ -61,7 +61,7 @@ export default function ReportsPage() {
                 </div>
                 <span className="relative z-10 text-xs font-semibold tracking-wider text-on-primary-container/80 uppercase">Total Youth Served</span>
                 <span className="relative z-10 mt-1 block font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-primary-container">
-                  {reports[0].metrics.users_served.toLocaleString()}
+                  {(reports[0].metrics?.users_served ?? 0).toLocaleString()}
                 </span>
               </div>
               <div className="relative overflow-hidden rounded-2xl bg-secondary-container p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1">
@@ -70,7 +70,7 @@ export default function ReportsPage() {
                 </div>
                 <span className="relative z-10 text-xs font-semibold tracking-wider text-on-secondary-container/80 uppercase">Conversations Held</span>
                 <span className="relative z-10 mt-1 block font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-secondary-container">
-                  {reports[0].metrics.conversations_held.toLocaleString()}
+                  {(reports[0].metrics?.conversations_held ?? 0).toLocaleString()}
                 </span>
               </div>
               <div className="relative overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-high p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1">
@@ -79,7 +79,7 @@ export default function ReportsPage() {
                 </div>
                 <span className="relative z-10 text-xs font-semibold tracking-wider text-on-surface/70 uppercase">Active Professionals</span>
                 <span className="relative z-10 mt-1 block font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">
-                  {reports[0].metrics.professionals_active.toLocaleString()}
+                  {(reports[0].metrics?.professionals_active ?? 0).toLocaleString()}
                 </span>
               </div>
             </section>

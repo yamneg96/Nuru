@@ -15,7 +15,7 @@ export default function LandingPage() {
         title: e.title,
         location: e.location_name,
         icon: e.is_online ? "videocam" : "location_on",
-        time: new Date(e.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+        time: e?.date ? new Date(e.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : "TBA"
       }))
     : [
         { title: "Youth Health Seminar", location: "Addis Ababa Community Center", icon: "location_on", time: "Oct 15, 2:00 PM" },
@@ -124,7 +124,7 @@ export default function LandingPage() {
             </div>
             <div>
               <div className="text-4xl font-bold text-on-surface mb-1">
-                {metrics ? metrics.total_users.toLocaleString() + "+" : "5,000+"}
+                {metrics ? (metrics.total_users ?? 0).toLocaleString() + "+" : "5,000+"}
               </div>
               <div className="font-body-md text-on-surface-variant">Youth supported</div>
             </div>
@@ -135,7 +135,7 @@ export default function LandingPage() {
             </div>
             <div>
               <div className="text-4xl font-bold text-on-surface mb-1">
-                {metrics ? metrics.total_questions.toLocaleString() + "+" : "12,000+"}
+                {metrics ? (metrics.total_questions ?? 0).toLocaleString() + "+" : "12,000+"}
               </div>
               <div className="font-body-md text-on-surface-variant">Questions answered</div>
             </div>
@@ -146,7 +146,7 @@ export default function LandingPage() {
             </div>
             <div>
               <div className="text-4xl font-bold text-on-surface mb-1">
-                {metrics ? metrics.total_events.toLocaleString() + "+" : "15,000+"}
+                {metrics ? (metrics.total_events ?? 0).toLocaleString() + "+" : "15,000+"}
               </div>
               <div className="font-body-md text-on-surface-variant">Active Events</div>
             </div>
