@@ -10,7 +10,7 @@ export function PrivacyModal({ open, onClose }: PrivacyModalProps) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-surface-dim/60 p-5 backdrop-blur-md">
-      <div className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl border border-outline-variant/30 bg-surface-container-lowest shadow-[0_10px_40px_-10px_rgba(59,130,246,0.08),0_4px_12px_-4px_rgba(59,130,246,0.04)]">
+      <div className="flex max-h-[90vh] w-full flex-col rounded-xl border border-outline-variant/30 bg-surface-container-lowest shadow-[0_10px_40px_-10px_rgba(59,130,246,0.08),0_4px_12px_-4px_rgba(59,130,246,0.04)]">
         {/* Header */}
         <div className="flex shrink-0 items-center gap-4 border-b border-outline-variant/50 p-6">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-on-primary-container">

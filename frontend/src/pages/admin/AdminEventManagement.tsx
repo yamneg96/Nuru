@@ -106,7 +106,7 @@ export default function AdminEventManagement() {
         {/* Create Modal */}
         {showCreate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div className="mx-4 w-full max-w-lg rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+            <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
               <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">Create Event</h3>
               <div className="space-y-3">
                 <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Event title" className="w-full rounded-lg border border-outline-variant bg-surface-container-low p-3 text-on-surface outline-none focus:border-primary" />

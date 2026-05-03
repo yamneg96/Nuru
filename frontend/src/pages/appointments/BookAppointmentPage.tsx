@@ -43,7 +43,7 @@ export default function BookAppointmentPage() {
   if (step === 3) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-6">
-        <div className="max-w-md space-y-6 text-center">
+        <div className=" space-y-6 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
             <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
@@ -70,7 +70,7 @@ export default function BookAppointmentPage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-2xl grow px-5 py-6 pb-32 md:pb-6">
+      <main className="mx-auto w-full grow px-5 py-6 pb-32 md:pb-6">
         {/* Title */}
         <div className="mb-6 mt-4 text-center">
           <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">Book a Session</h1>
