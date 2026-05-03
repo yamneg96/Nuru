@@ -1,12 +1,47 @@
 import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useMetrics } from "@/hooks/useMetrics"
 import { useEffect, useState } from "react"
+import { useAuthStore } from "@/store/authStore"
 
 export default function LandingPage() {
   const { data: metrics } = useMetrics()
   const navigate = useNavigate()
   const [showSupportModal, setShowSupportModal] = useState(false)
-  const hasSeenOnboarding = localStorage.getItem('nuru_has_seen_onboarding')
+  const hasSeenOnboarding = localStorage.getItem('nuru_has_seen_onboarding');
+  const {isAuthenticated} = useAuthStore();
+
+  const upcomingEvents = metrics?.upcoming_events && metrics.upcoming_events.length > 0 
+    ? metrics.upcoming_events.map(e => ({
+        title: e.title,
+        location: e.location_name,
+        icon: e.is_online ? "videocam" : "location_on",
+        time: new Date(e.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      }))
+    : [
+        { title: "Youth Health Seminar", location: "Addis Ababa Community Center", icon: "location_on", time: "Oct 15, 2:00 PM" },
+        { title: "Online Q&A Session", location: "Virtual (Zoom)", icon: "videocam", time: "Oct 18, 5:00 PM" },
+        { title: "Wellness Workshop", location: "Youth Hub", icon: "location_on", time: "Oct 22, 10:00 AM" }
+      ];
+
+  const featuredVideos = metrics?.featured_videos && metrics.featured_videos.length > 0
+    ? metrics.featured_videos.map(v => ({
+        title: v.title,
+        duration: v.duration || "N/A",
+        thumbnail: v.thumbnail_url
+      }))
+    : [
+        { title: "What happens during puberty?", duration: "3:45", thumbnail: undefined },
+        { title: "Understanding menstrual cycles", duration: "5:12", thumbnail: undefined },
+        { title: "How to talk about boundaries", duration: "4:20", thumbnail: undefined }
+      ];
+
+  const testimonials = metrics?.testimonials && metrics.testimonials.length > 0
+    ? metrics.testimonials
+    : [
+        { _id: "1", comment: "I was so scared when I missed my period. Nuru helped me understand my options without making me feel judged.", user_age: 19, user_type: "Youth", rating: 5, context: "decision", created_at: new Date().toISOString() },
+        { _id: "2", comment: "The relationship advice helped me set better boundaries. I feel much safer now.", user_age: 22, user_type: "Youth", rating: 5, context: "chat", created_at: new Date().toISOString() },
+        { _id: "3", comment: "Finally a place where I can get real answers to the questions I'm too embarrassed to ask anyone else.", user_age: 17, user_type: "Youth", rating: 4, context: "video", created_at: new Date().toISOString() }
+      ];
 
   if (!hasSeenOnboarding) {
     return <Navigate to="/onboarding" replace />
@@ -110,8 +145,10 @@ export default function LandingPage() {
               <span className="material-symbols-outlined text-[32px]">trending_up</span>
             </div>
             <div>
-              <div className="text-4xl font-bold text-on-surface mb-1">15,000+</div>
-              <div className="font-body-md text-on-surface-variant">Active daily users</div>
+              <div className="text-4xl font-bold text-on-surface mb-1">
+                {metrics ? metrics.total_events.toLocaleString() + "+" : "15,000+"}
+              </div>
+              <div className="font-body-md text-on-surface-variant">Active Events</div>
             </div>
           </div>
         </section>
@@ -195,26 +232,7 @@ export default function LandingPage() {
             <button className="text-primary font-button hover:underline hidden md:block">View all events</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-            {[
-              {
-                title: "Youth Health Seminar",
-                location: "Addis Ababa Community Center",
-                icon: "location_on",
-                time: "Oct 15, 2:00 PM"
-              },
-              {
-                title: "Online Q&A Session",
-                location: "Virtual (Zoom)",
-                icon: "videocam",
-                time: "Oct 18, 5:00 PM"
-              },
-              {
-                title: "Wellness Workshop",
-                location: "Youth Hub",
-                icon: "location_on",
-                time: "Oct 22, 10:00 AM"
-              }
-            ].map((event, i) => (
+            {upcomingEvents.map((event, i) => (
               <div key={i} className="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
                 <div className="h-40 bg-surface-container flex items-center justify-center text-outline">
                   <span className="material-symbols-outlined text-4xl">event</span>
@@ -249,23 +267,13 @@ export default function LandingPage() {
             <button className="text-primary font-button hover:underline hidden md:block">More videos</button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
-            {[
-              {
-                title: "What happens during puberty?",
-                duration: "3:45"
-              },
-              {
-                title: "Understanding menstrual cycles",
-                duration: "5:12"
-              },
-              {
-                title: "How to talk about boundaries",
-                duration: "4:20"
-              }
-            ].map((video, i) => (
+            {featuredVideos.map((video, i) => (
               <div key={i} className="group cursor-pointer">
-                <div className="relative bg-surface-variant rounded-2xl overflow-hidden aspect-video flex items-center justify-center mb-4">
-                  <span className="material-symbols-outlined text-4xl text-on-surface-variant opacity-50">smart_display</span>
+                <div 
+                  className="relative bg-surface-variant rounded-2xl overflow-hidden aspect-video flex items-center justify-center mb-4 bg-cover bg-center"
+                  style={video.thumbnail ? { backgroundImage: `url(${video.thumbnail})` } : undefined}
+                >
+                  {!video.thumbnail && <span className="material-symbols-outlined text-4xl text-on-surface-variant opacity-50">smart_display</span>}
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
                     <div className="bg-surface/90 rounded-full p-3 backdrop-blur-sm group-hover:scale-110 transition-transform">
                       <span className="material-symbols-outlined text-on-surface" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
@@ -365,21 +373,17 @@ export default function LandingPage() {
           </div>
           <h2 className="font-h1 text-4xl text-on-surface font-bold text-center mb-12">What others say</h2>
           <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 gap-6 snap-x no-scrollbar">
-            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
-              <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-              <p className="font-body-lg text-on-surface italic flex-grow">"I was so scared when I missed my period. Nuru helped me understand my options without making me feel judged."</p>
-              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 19</div>
-            </div>
-            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
-              <span className="material-symbols-outlined text-tertiary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-              <p className="font-body-lg text-on-surface italic flex-grow">"The relationship advice helped me set better boundaries. I feel much safer now."</p>
-              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 22</div>
-            </div>
-            <div className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
-              <span className="material-symbols-outlined text-secondary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
-              <p className="font-body-lg text-on-surface italic flex-grow">"Finally a place where I can get real answers to the questions I'm too embarrassed to ask anyone else."</p>
-              <div className="font-label-caps text-on-surface-variant mt-4">- Anonymous, 17</div>
-            </div>
+            {testimonials.map((testimonial, i) => {
+              const colors = ["text-primary", "text-tertiary", "text-secondary"];
+              const quoteColor = colors[i % colors.length];
+              return (
+                <div key={testimonial._id} className="min-w-[300px] md:min-w-[400px] bg-surface rounded-3xl p-8 shadow-sm flex flex-col gap-4 snap-center relative">
+                  <span className={`material-symbols-outlined ${quoteColor} text-3xl`} style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
+                  <p className="font-body-lg text-on-surface italic flex-grow">"{testimonial.comment}"</p>
+                  <div className="font-label-caps text-on-surface-variant mt-4">- {testimonial.user_type === "Anonymous" ? "Anonymous" : "Anonymous"}{testimonial.user_age ? `, ${testimonial.user_age}` : ""}</div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -392,33 +396,12 @@ export default function LandingPage() {
       </main>
 
       {/* Floating Chat Action Button */}
-      <button className="fixed bottom-24 right-margin-mobile md:bottom-10 md:right-xl bg-primary text-on-primary p-4 rounded-2xl shadow-[0_4px_14px_rgba(0,88,190,0.39)] hover:bg-surface-tint transition-all hover:scale-105 z-40 flex items-center justify-center active:scale-95 duration-200">
+      {isAuthenticated && <button 
+      onClick={() => navigate('/chat')}
+      className="fixed bottom-24 right-margin-mobile md:bottom-10 md:right-xl bg-primary text-on-primary p-4 rounded-2xl shadow-[0_4px_14px_rgba(0,88,190,0.39)] hover:bg-surface-tint transition-all hover:scale-105 z-40 flex items-center justify-center active:scale-95 duration-200">
         <span className="material-symbols-outlined text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>chat</span>
-      </button>
+      </button>}
 
-      {/* BottomNavBar */}
-      <nav className="bg-surface-container-lowest font-plus-jakarta-sans text-[11px] font-medium fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.08)] md:hidden rounded-t-[24px] border-t border-outline-variant">
-        <button className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>home</span>
-          <span className="font-label-caps text-label-caps">Home</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>explore</span>
-          <span className="font-label-caps text-label-caps">Explore</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>chat</span>
-          <span className="font-label-caps text-label-caps">Chat</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>medical_services</span>
-          <span className="font-label-caps text-label-caps">Services</span>
-        </button>
-        <button className="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1">
-          <span className="material-symbols-outlined mb-1" style={{ fontVariationSettings: "'FILL' 0" }}>person</span>
-          <span className="font-label-caps text-label-caps">Profile</span>
-        </button>
-      </nav>
 
       {/* Floating Support Button */}
       <button 
@@ -430,7 +413,7 @@ export default function LandingPage() {
       {/* Support Modal */}
       {showSupportModal && (
         <div className="fixed inset-0 bg-on-background/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={() => setShowSupportModal(false)}>
-          <div className="bg-surface text-on-surface w-full max-w-sm rounded-[24px] p-6 shadow-xl relative animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+          <div className="bg-surface text-on-surface w-[calc(100vw-32px)] sm:w-auto sm:min-w-[400px] rounded-[24px] p-6 shadow-xl relative animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
             <button onClick={() => setShowSupportModal(false)} className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-2 rounded-full hover:bg-surface-variant transition-colors">
               <span className="material-symbols-outlined">close</span>
             </button>

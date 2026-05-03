@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { usePreferencesStore } from "@/store/preferencesStore"
 import { useAuthStore } from "@/store/authStore"
 import { useThemeStore } from "@/store/themeStore"
@@ -56,12 +56,12 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 p-6 md:p-8">
+    <div className="mx-auto flex w-full flex-col gap-8 p-6 md:p-8">
       <div className="pt-2 pb-1">
         <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-[38px] font-bold text-on-surface">
           Privacy &amp; Settings
         </h1>
-        <p className="mt-2 max-w-xl text-on-surface-variant">
+        <p className="mt-2 text-on-surface-variant">
           Manage your app preferences and control how your data is handled. We
           prioritize your anonymity and safety above all else.
         </p>
@@ -84,15 +84,15 @@ export default function SettingsPage() {
               your conversations, searches, or clinic visits to your personal
               identity.
             </p>
-            <a
+            <Link
               className="inline-flex items-center gap-1 font-semibold text-primary transition-colors hover:text-primary-container"
-              href="#"
+              to="/privacy"
             >
               Read full Privacy Policy
               <span className="material-symbols-outlined text-sm">
                 arrow_outward
               </span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -110,8 +110,8 @@ export default function SettingsPage() {
           </div>
 
           {/* Save History Toggle */}
-          <div className="border-surface-variant flex items-center justify-between border-b py-1 pb-4">
-            <div className="pr-4">
+          <div className="border-surface-variant flex flex-wrap items-center justify-between gap-4 border-b py-1 pb-4">
+            <div className="pr-4 md:pr-0">
               <div className="mb-1 font-semibold text-on-surface">
                 Save chat history
               </div>

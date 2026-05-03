@@ -1,9 +1,12 @@
+import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
+import { FeedbackModal } from "@/components/shared/FeedbackModal"
 
 export default function ModulePage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
 
   // Placeholder static content since we don't have a CMS yet
   const title = id ? id.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()) : "Module"
@@ -20,7 +23,7 @@ export default function ModulePage() {
         <h1 className="text-2xl font-bold text-foreground">Explore</h1>
       </div>
 
-      <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-3xl bg-surface shadow-sm">
+      <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-3xl bg-surface shadow-sm mb-6">
         <div className="h-48 w-full bg-primary/20 flex items-center justify-center">
            <span className="text-5xl">📚</span>
         </div>
@@ -43,6 +46,23 @@ export default function ModulePage() {
           </div>
         </div>
       </div>
+
+      <div className="mx-auto w-full max-w-2xl">
+        <button
+          onClick={() => setIsFeedbackOpen(true)}
+          className="group flex w-full items-center justify-center gap-2 rounded-2xl border border-outline-variant bg-surface p-4 text-center transition-colors hover:bg-surface-container"
+        >
+          <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">rate_review</span>
+          <span className="font-semibold text-on-surface">Was this module helpful? Leave Feedback</span>
+        </button>
+      </div>
+
+      <FeedbackModal 
+        isOpen={isFeedbackOpen} 
+        onClose={() => setIsFeedbackOpen(false)} 
+        context="blog"
+        contextId={id}
+      />
     </div>
   )
 }

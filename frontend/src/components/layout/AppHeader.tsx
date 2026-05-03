@@ -1,22 +1,13 @@
 import { Link, useLocation } from "react-router-dom"
 import { useThemeStore } from "@/store/themeStore"
 import { useTranslation } from "react-i18next"
-import { usePreferencesStore } from "@/store/preferencesStore"
-
-const NAV_LINKS = [
-  { path: "/dashboard", label: "Home" },
-  { path: "/explore", label: "Explore" },
-  { path: "/chat", label: "Chat" },
-  { path: "/services", label: "Services" },
-  { path: "/settings", label: "Profile" },
-]
+import { usePreferencesStore } from "@/store/preferencesStore";
 
 export function AppHeader() {
   const location = useLocation()
   const { theme, setTheme } = useThemeStore()
   const { t, i18n } = useTranslation()
   const { language, setLanguage } = usePreferencesStore()
-  
   const isDark =
     theme === "dark" ||
     (theme === "system" &&
@@ -51,7 +42,7 @@ export function AppHeader() {
         <span>{t("nuru")}</span>
       </Link>
       <nav className="flex gap-6">
-        {isLanding ? (
+        {isLanding && (
           <>
             <a className="rounded-lg px-3 py-2 font-semibold text-gray-500 transition-colors hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800" href="#how-it-works">
               {t("landing.how_it_works", "How it works")}
@@ -63,23 +54,6 @@ export function AppHeader() {
               {t("common.about_us", "About us")}
             </a>
           </>
-        ) : (
-          NAV_LINKS.map((link) => {
-            const isActive = location.pathname === link.path
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`rounded-lg px-3 py-2 transition-colors ${
-                  isActive
-                    ? "font-semibold text-blue-700 dark:text-blue-300"
-                    : "text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800"
-                }`}
-              >
-                {t(`nav.${link.label.toLowerCase()}`, link.label)}
-              </Link>
-            )
-          })
         )}
       </nav>
       <div className="flex items-center gap-2">
@@ -125,7 +99,7 @@ export function AppHeader() {
   )
 }
 
-export function MobileHeader({ title }: { title?: string }) {
+export function MobileHeader({ title, onMenuClick }: { title?: string; onMenuClick?: () => void }) {
   const location = useLocation()
   const { theme, setTheme } = useThemeStore()
   const { t, i18n } = useTranslation()
@@ -153,8 +127,19 @@ export function MobileHeader({ title }: { title?: string }) {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between bg-surface/90 px-5 py-3 backdrop-blur-sm md:hidden dark:bg-gray-900/90">
-      <div className="font-['Plus_Jakarta_Sans'] text-2xl font-bold tracking-tight text-primary">
-        {title || t("nuru")}
+      <div className="flex items-center gap-3">
+        {!isLanding && onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="rounded-full p-2 text-primary transition-colors hover:bg-surface-container-high dark:text-blue-400 dark:hover:bg-gray-800"
+            aria-label="Open Menu"
+          >
+            <span className="material-symbols-outlined">menu</span>
+          </button>
+        )}
+        <div className="font-['Plus_Jakarta_Sans'] text-2xl font-bold tracking-tight text-primary">
+          {title || t("nuru")}
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <button
@@ -184,26 +169,14 @@ export function MobileHeader({ title }: { title?: string }) {
             <span className="material-symbols-outlined">login</span>
           </Link>
         ) : (
-          <QuickExitButton />
+          <Link
+            to="/settings"
+            className="rounded-full p-2 text-blue-600 transition-colors hover:bg-gray-50 dark:text-blue-400 dark:hover:bg-gray-800"
+          >
+            <span className="material-symbols-outlined">lock_person</span>
+          </Link>
         )}
       </div>
     </header>
-  )
-}
-
-export function QuickExitButton() {
-  const handleQuickExit = () => {
-    // Navigate to a safe, innocuous website
-    window.location.href = "https://www.google.com"
-  }
-
-  return (
-    <button
-      onClick={handleQuickExit}
-      className="rounded-full p-2 text-primary transition-colors hover:bg-surface-container-high"
-      aria-label="Quick Exit"
-    >
-      <span className="material-symbols-outlined">lock_person</span>
-    </button>
   )
 }

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getEvents, registerForEvent } from "@/api/events.api"
+import { FeedbackModal } from "@/components/shared/FeedbackModal"
 import type { NuruEvent } from "@/types"
 
 const CATEGORY_FILTERS = [
@@ -22,6 +23,7 @@ const TYPE_ICONS: Record<string, string> = {
 export default function EventsPage() {
   const [category, setCategory] = useState("")
   const [registering, setRegistering] = useState<string | null>(null)
+  const [feedbackContextId, setFeedbackContextId] = useState<string | null>(null)
 
   const { data: events = [], isLoading: loading } = useQuery<NuruEvent[]>({
     queryKey: ["events", category],
@@ -41,6 +43,8 @@ export default function EventsPage() {
       queryClient.setQueryData<NuruEvent[]>(["events", category], (old) =>
         (old || []).map((e) => e._id === id ? { ...e, attendee_count: res.attendee_count } : e)
       )
+      // Open feedback modal for the event we just joined
+      setFeedbackContextId(id)
     } catch { /* */ }
     finally { setRegistering(null) }
   }
@@ -127,6 +131,13 @@ export default function EventsPage() {
           })}
         </div>
       )}
+
+      <FeedbackModal 
+        isOpen={!!feedbackContextId} 
+        onClose={() => setFeedbackContextId(null)} 
+        context="event"
+        contextId={feedbackContextId || undefined}
+      />
     </div>
   )
 }

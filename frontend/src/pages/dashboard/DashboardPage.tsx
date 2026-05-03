@@ -81,12 +81,12 @@ export default function DashboardPage() {
       </section>
 
       {/* Quick Actions */}
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <section className="flex flex-wrap gap-4 sm:grid sm:grid-cols-2 md:grid-cols-2">
         {QUICK_ACTIONS.map((action) => (
           <button
             key={action.flow}
             onClick={() => handleQuickAction(action.flow)}
-            className="group flex flex-col items-start gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-6 text-left shadow-sm transition-colors duration-200 hover:bg-surface-container active:scale-95"
+            className="group flex flex-1 min-w-[140px] flex-col items-start gap-4 rounded-2xl border border-outline-variant bg-surface-container-low p-6 text-left shadow-sm transition-colors duration-200 hover:bg-surface-container active:scale-95 sm:flex-none"
           >
             <div
               className={`${action.bgIcon} rounded-full p-3 ${action.hoverBg} transition-colors`}
@@ -107,11 +107,11 @@ export default function DashboardPage() {
         <h2 className="font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
           {t("dashboard.recommended")}
         </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="flex flex-wrap gap-4 md:grid md:grid-cols-2">
           {LEARNING_CARDS.map((card) => (
             <div
               key={card.titleKey}
-              className="flex flex-col overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm"
+              className="flex w-full flex-col overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm md:w-auto"
             >
               <div className="relative h-40 bg-surface-container-highest">
                 <img
@@ -143,7 +143,7 @@ export default function DashboardPage() {
       {/* Floating Chat Button */}
       <button
         onClick={() => navigate("/chat")}
-        className="hover:bg-surface-tint fixed right-5 bottom-24 z-40 flex items-center justify-center rounded-2xl bg-primary p-4 text-on-primary shadow-[0_4px_14px_rgba(0,88,190,0.39)] transition-colors duration-200 active:scale-95 md:right-8 md:bottom-10"
+        className="hover:bg-surface-tint fixed right-5 bottom-6 z-40 flex items-center justify-center rounded-2xl bg-primary p-4 text-on-primary shadow-[0_4px_14px_rgba(0,88,190,0.39)] transition-colors duration-200 active:scale-95 md:right-8 md:bottom-10"
       >
         <span className="material-symbols-outlined fill text-[28px]">chat</span>
       </button>

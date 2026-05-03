@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { startFlow, submitStep, getResult } from "@/api/decision.api"
+import { FeedbackModal } from "@/components/shared/FeedbackModal"
 import type {
   DecisionQuestion,
   DecisionResult,
@@ -20,6 +21,7 @@ export default function DecisionFlowPage() {
   const [selected, setSelected] = useState<string | string[]>("")
   const [loading, setLoading] = useState(false)
   const [started, setStarted] = useState(false)
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
 
   const handleStart = async () => {
     setLoading(true)
@@ -61,7 +63,7 @@ export default function DecisionFlowPage() {
   if (!started) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-6">
-        <div className="max-w-md space-y-6 text-center">
+        <div className="space-y-6 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
             <span className="material-symbols-outlined fill text-[40px]">
               psychology
@@ -98,7 +100,7 @@ export default function DecisionFlowPage() {
         <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 px-5 font-['Plus_Jakarta_Sans'] shadow-sm backdrop-blur-md">
           <div className="text-xl font-bold text-blue-600">Nuru</div>
         </header>
-        <main className="mx-auto max-w-2xl space-y-6 px-5 py-6">
+        <main className="mx-auto space-y-6 px-5 py-6">
           <div className="rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-sm">
             <div className="mb-4 flex items-center gap-3">
               <span
@@ -160,8 +162,22 @@ export default function DecisionFlowPage() {
                 </span>
               </button>
             ))}
+
+            <button
+              onClick={() => setIsFeedbackOpen(true)}
+              className="group flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface-container-low p-4 text-center transition-colors hover:bg-surface-container mt-4"
+            >
+              <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">rate_review</span>
+              <span className="font-semibold text-on-surface">Leave Feedback</span>
+            </button>
           </div>
         </main>
+        
+        <FeedbackModal 
+          isOpen={isFeedbackOpen} 
+          onClose={() => setIsFeedbackOpen(false)} 
+          context="decision" 
+        />
       </div>
     )
   }
@@ -180,7 +196,7 @@ export default function DecisionFlowPage() {
           <div className="text-xl font-bold text-blue-600">Nuru</div>
         </div>
       </header>
-      <main className="mx-auto max-w-lg px-5 pt-6">
+      <main className="mx-auto px-5 pt-6">
         {/* Progress */}
         <div className="mb-8">
           <span className="text-xs font-semibold tracking-wider text-secondary uppercase">
@@ -260,7 +276,7 @@ export default function DecisionFlowPage() {
         )}
 
         <div className="fixed bottom-0 left-0 z-40 w-full bg-gradient-to-t from-background via-background to-transparent p-5">
-          <div className="mx-auto max-w-lg">
+          <div className="mx-auto">
             <button
               onClick={handleNext}
               disabled={

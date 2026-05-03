@@ -7,22 +7,27 @@ export function AppFooter() {
   const { t } = useTranslation()
 
   return (
-    <footer className="bg-inverse-surface px-8 py-16 text-inverse-on-surface">
-      <div className="mx-auto flex w-full flex-col items-center justify-between md:flex-row">
-        <div className="flex items-center justify-center-safe mb-4 lg:mb-0">
+    <footer className="bg-inverse-surface px-4 py-12 text-inverse-on-surface sm:px-6 md:py-16">
+      <div className="mx-auto flex w-full flex-col items-center gap-10 md:flex-row md:items-start md:justify-between">
+        {/* Brand */}
+        <div className="flex w-full items-center justify-center md:w-auto md:justify-start">
           <Link
             to={isLanding ? "/" : "/dashboard"}
-            className="text-xl font-bold text-blue-600 dark:text-blue-400 mr-2 flex items-center gap-2"
+            className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400"
           >
             <img
               src="/Nuru_Logo.png"
               alt="Nuru Logo"
               className="h-10 w-10 rounded-full"
             />
-            <span className="text-2xl font-bold text-inverse-primary">{t("nuru")}</span>
+            <span className="text-2xl font-bold text-inverse-primary">
+              {t("nuru")}
+            </span>
           </Link>
         </div>
-        <div className="flex gap-8">
+
+        {/* Links */}
+        <div className="flex w-full flex-wrap items-center justify-center gap-x-6 gap-y-3 md:w-auto md:justify-center">
           <Link
             className="transition-colors hover:text-inverse-primary"
             to="/privacy"
@@ -42,8 +47,13 @@ export function AppFooter() {
             {t("common.contact", "Contact")}
           </Link>
         </div>
-        <div className="text-sm opacity-70 mt-8 md:mt-0">
-          {t("common.copyright", "© 2024 Nuru. Trusted companion for Ethiopian youth.")}
+
+        {/* Copyright */}
+        <div className="text-center text-sm opacity-70 md:text-right md:mt-2">
+          {t(
+            "common.copyright",
+            "© 2024 Nuru. Trusted companion for Ethiopian youth."
+          )}
         </div>
       </div>
     </footer>
