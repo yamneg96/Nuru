@@ -115,7 +115,7 @@ export default function AdminContentCMS() {
         {/* Create Modal */}
         {showCreate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+            <div className="mx-4 w-auto rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
               <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">New {tab.slice(0, -1)}</h3>
               <div className="space-y-4">
                 <div>
