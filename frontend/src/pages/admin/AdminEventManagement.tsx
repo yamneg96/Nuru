@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import { getEvents } from "@/api/events.api"
 import { createEvent, updateEvent, deleteEvent } from "@/api/admin.api"
 import type { NuruEvent } from "@/types"
 
+import { AdminSidebar } from "@/components/layout/AdminSidebar"
+
 export default function AdminEventManagement() {
-  const navigate = useNavigate()
   const [events, setEvents] = useState<NuruEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -44,20 +44,7 @@ export default function AdminEventManagement() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
-      <nav className="fixed left-0 top-0 z-50 hidden h-screen w-72 flex-col border-r border-slate-100 bg-white p-6 shadow-sm md:flex">
-        <div className="mb-8 flex items-center gap-3 px-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container"><span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span></div>
-          <div><h1 className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight text-blue-600">Nuru</h1><p className="text-sm text-slate-500">Admin Panel</p></div>
-        </div>
-        <div className="flex flex-1 flex-col gap-1">
-          {[{ l: "Dashboard", i: "home", p: "/admin" }, { l: "Content CMS", i: "menu_book", p: "/admin/content" }, { l: "Professionals", i: "medical_services", p: "/admin/professionals" }, { l: "Events", i: "event", p: "/admin/events", a: true }].map((x) => (
-            <button key={x.l} onClick={() => navigate(x.p)} className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${x.a ? "bg-blue-50/50 font-bold text-blue-600" : "text-slate-500 hover:bg-slate-50 hover:text-blue-600"}`}>
-              <span className="material-symbols-outlined" style={x.a ? { fontVariationSettings: "'FILL' 1" } : undefined}>{x.i}</span>{x.l}
-            </button>
-          ))}
-        </div>
-      </nav>
+      <AdminSidebar />
 
       <main className="ml-0 flex-1 p-6 md:ml-72">
         <div className="mb-6 flex items-center justify-between">
@@ -106,7 +93,7 @@ export default function AdminEventManagement() {
         {/* Create Modal */}
         {showCreate && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div className="mx-4 w-full max-w-lg rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+            <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
               <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">Create Event</h3>
               <div className="space-y-3">
                 <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Event title" className="w-full rounded-lg border border-outline-variant bg-surface-container-low p-3 text-on-surface outline-none focus:border-primary" />

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import { getAdminProfessionals, verifyProfessional } from "@/api/admin.api"
 import type { Professional } from "@/types"
 
@@ -9,8 +8,9 @@ const STATUS_TABS = [
   { label: "Rejected", value: "rejected" },
 ]
 
+import { AdminSidebar } from "@/components/layout/AdminSidebar"
+
 export default function AdminProfessionalVerification() {
-  const navigate = useNavigate()
   const [professionals, setProfessionals] = useState<Professional[]>([])
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState("pending")
@@ -36,8 +36,7 @@ export default function AdminProfessionalVerification() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
-      <AdminSidebar active="Professionals" onNavigate={navigate} />
+      <AdminSidebar />
 
       <main className="ml-0 flex-1 overflow-y-auto p-6 md:ml-72">
         <div className="mb-6">
@@ -107,38 +106,4 @@ export default function AdminProfessionalVerification() {
   )
 }
 
-function AdminSidebar({ active, onNavigate }: { active: string; onNavigate: (path: string) => void }) {
-  const items = [
-    { label: "Dashboard", icon: "home", path: "/admin" },
-    { label: "Content CMS", icon: "menu_book", path: "/admin/content" },
-    { label: "Professionals", icon: "medical_services", path: "/admin/professionals" },
-    { label: "Events", icon: "event", path: "/admin/events" },
-    { label: "Reports", icon: "analytics", path: "/admin/reports" },
-  ]
-  return (
-    <nav className="fixed left-0 top-0 z-50 hidden h-screen w-72 flex-col border-r border-slate-100 bg-white p-6 shadow-sm md:flex">
-      <div className="mb-8 flex items-center gap-3 px-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-container">
-          <span className="material-symbols-outlined text-on-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span>
-        </div>
-        <div>
-          <h1 className="font-['Plus_Jakarta_Sans'] text-2xl font-black tracking-tight text-blue-600">Nuru</h1>
-          <p className="text-sm text-slate-500">Admin Panel</p>
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col gap-1">
-        {items.map((item) => (
-          <button key={item.label} onClick={() => onNavigate(item.path)}
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${active === item.label ? "bg-blue-50/50 font-bold text-blue-600" : "text-slate-500 hover:bg-slate-50 hover:text-blue-600"}`}>
-            <span className="material-symbols-outlined" style={active === item.label ? { fontVariationSettings: "'FILL' 1" } : undefined}>{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
-      </div>
-      <button onClick={() => { localStorage.removeItem("nuru_token"); localStorage.removeItem("nuru_admin"); onNavigate("/admin/login") }}
-        className="mt-auto flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-slate-500 transition-colors hover:bg-red-50 hover:text-error">
-        <span className="material-symbols-outlined">logout</span> Sign Out
-      </button>
-    </nav>
-  )
-}
+
