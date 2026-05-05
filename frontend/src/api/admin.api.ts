@@ -380,3 +380,64 @@ export async function markComplete(payload: {
   const { data } = await api.post("/progress/complete", payload)
   return data
 }
+
+// ── Admin Support Tickets ────────────────────────────────────
+
+export interface AdminTicketFilters {
+  status?: string
+  category?: string
+  page?: number
+  limit?: number
+}
+
+export interface AdminTicketListResponse {
+  tickets: {
+    _id: string
+    ticketId: string
+    name?: string
+    email?: string
+    subject: string
+    message: string
+    category: string
+    status: string
+    priority: string
+    source: string
+    responses: { responderName: string; message: string; createdAt: string }[]
+    assignedTo?: { name: string; specialization: string }
+    createdAt: string
+    updatedAt: string
+  }[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    pages: number
+  }
+}
+
+export async function getAdminTickets(
+  filters?: AdminTicketFilters
+): Promise<AdminTicketListResponse> {
+  const { data } = await api.get<AdminTicketListResponse>(
+    "/admin/support/tickets",
+    { params: filters }
+  )
+  return data
+}
+
+export async function updateAdminTicket(
+  ticketId: string,
+  updates: {
+    status?: "open" | "in_progress" | "resolved" | "closed"
+    priority?: "low" | "medium" | "high" | "urgent"
+    assignedTo?: string
+    response?: { responderName: string; message: string }
+  }
+): Promise<unknown> {
+  const { data } = await api.patch(
+    `/admin/support/tickets/${ticketId}`,
+    updates
+  )
+  return data
+}
+

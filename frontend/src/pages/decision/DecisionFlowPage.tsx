@@ -1,14 +1,18 @@
 import { useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
-import { startFlow, submitStep, getResult } from "@/api/decision.api"
+import { useTranslation } from "react-i18next"
+import { startFlow, submitStep, getResult, createReferral, getDecisionResources } from "@/api/decision.api"
 import { FeedbackModal } from "@/components/shared/FeedbackModal"
 import type {
   DecisionQuestion,
   DecisionResult,
+  DecisionReferralResult,
+  DecisionResourceCategory,
   FlowType,
 } from "@/types"
 
 export default function DecisionFlowPage() {
+  const { t } = useTranslation()
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const flowType = (params.get("flow") || "missed_period") as FlowType
@@ -22,6 +26,13 @@ export default function DecisionFlowPage() {
   const [loading, setLoading] = useState(false)
   const [started, setStarted] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
+
+  // Enhanced DSS state
+  const [referralData, setReferralData] = useState<DecisionReferralResult | null>(null)
+  const [resourcesData, setResourcesData] = useState<DecisionResourceCategory[] | null>(null)
+  const [referralLoading, setReferralLoading] = useState(false)
+  const [showResources, setShowResources] = useState(false)
+  const [showReferrals, setShowReferrals] = useState(false)
 
   const handleStart = async () => {
     setLoading(true)
@@ -59,6 +70,29 @@ export default function DecisionFlowPage() {
     }
   }
 
+  const handleGetReferrals = async () => {
+    setReferralLoading(true)
+    setShowReferrals(true)
+    try {
+      const data = await createReferral(flowType)
+      setReferralData(data)
+    } catch {
+      setReferralData(null)
+    } finally {
+      setReferralLoading(false)
+    }
+  }
+
+  const handleGetResources = async () => {
+    setShowResources(true)
+    try {
+      const data = await getDecisionResources(flowType)
+      setResourcesData(data)
+    } catch {
+      setResourcesData(null)
+    }
+  }
+
   // Not started yet — show intro
   if (!started) {
     return (
@@ -70,18 +104,17 @@ export default function DecisionFlowPage() {
             </span>
           </div>
           <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">
-            Let's figure this out together
+            {t("decision.intro_title")}
           </h1>
           <p className="text-lg text-on-surface-variant">
-            We'll ask a few private questions to help guide you. Everything
-            stays anonymous.
+            {t("decision.intro_desc")}
           </p>
           <button
             onClick={handleStart}
             disabled={loading}
             className="w-full rounded-full bg-primary py-4 font-semibold text-on-primary shadow-[0_4px_20px_rgba(0,88,190,0.2)] transition-transform active:scale-[0.98] disabled:opacity-50"
           >
-            {loading ? "Starting..." : "Begin Assessment"}
+            {loading ? t("decision.starting") : t("decision.begin")}
           </button>
         </div>
       </div>
@@ -109,7 +142,7 @@ export default function DecisionFlowPage() {
                 assessment
               </span>
               <h1 className="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-on-surface">
-                Your Results
+                {t("decision.results")}
               </h1>
             </div>
             <p className="mb-4 text-lg text-on-surface-variant">
@@ -136,8 +169,9 @@ export default function DecisionFlowPage() {
               ))}
             </div>
           </div>
+
           <h3 className="text-xs font-semibold tracking-wider text-outline uppercase">
-            What would you like to do next?
+            {t("decision.what_next")}
           </h3>
           <div className="flex flex-col gap-3">
             {result.next_steps?.map((step: { icon: string; action: string; title: string; description: string }, i: number) => (
@@ -163,14 +197,135 @@ export default function DecisionFlowPage() {
               </button>
             ))}
 
+            {/* Get Professional Help */}
+            <button
+              onClick={handleGetReferrals}
+              className="group flex w-full items-center rounded-xl border border-secondary/30 bg-secondary-container/10 p-4 text-left transition-colors hover:bg-secondary-container/20"
+            >
+              <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
+                <span className="material-symbols-outlined">medical_services</span>
+              </div>
+              <div className="flex-grow">
+                <span className="block font-semibold text-on-surface">{t("decision.get_help")}</span>
+                <span className="block text-sm text-on-surface-variant">{t("decision.matched_professionals")}</span>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant group-hover:text-secondary">chevron_right</span>
+            </button>
+
+            {/* Find Resources */}
+            <button
+              onClick={handleGetResources}
+              className="group flex w-full items-center rounded-xl border border-tertiary/30 bg-tertiary-container/10 p-4 text-left transition-colors hover:bg-tertiary-container/20"
+            >
+              <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container">
+                <span className="material-symbols-outlined">local_library</span>
+              </div>
+              <div className="flex-grow">
+                <span className="block font-semibold text-on-surface">{t("decision.find_resources")}</span>
+                <span className="block text-sm text-on-surface-variant">{t("decision.resources_title")}</span>
+              </div>
+              <span className="material-symbols-outlined text-outline-variant group-hover:text-tertiary">chevron_right</span>
+            </button>
+
+            {/* Leave Feedback */}
             <button
               onClick={() => setIsFeedbackOpen(true)}
               className="group flex w-full items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface-container-low p-4 text-center transition-colors hover:bg-surface-container mt-4"
             >
               <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">rate_review</span>
-              <span className="font-semibold text-on-surface">Leave Feedback</span>
+              <span className="font-semibold text-on-surface">{t("decision.leave_feedback")}</span>
             </button>
           </div>
+
+          {/* Referrals Panel */}
+          {showReferrals && (
+            <div className="rounded-3xl border border-secondary/20 bg-surface-container-lowest p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined text-secondary">group</span>
+                <h3 className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-on-surface">{t("decision.matched_professionals")}</h3>
+              </div>
+              {referralLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-secondary border-t-transparent" />
+                  <span className="ml-3 text-sm text-on-surface-variant">{t("decision.referral_loading")}</span>
+                </div>
+              ) : referralData && referralData.professionals.length > 0 ? (
+                <div className="space-y-3">
+                  {referralData.professionals.map((p) => (
+                    <div key={p._id} className="flex items-center gap-4 rounded-xl border border-outline-variant/20 bg-surface-container-low p-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
+                        {p.photo_url ? (
+                          <img src={p.photo_url} alt={p.full_name} className="h-12 w-12 rounded-full object-cover" />
+                        ) : (
+                          <span className="material-symbols-outlined">person</span>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-semibold text-on-surface">{p.full_name}</h4>
+                        <p className="text-xs text-on-surface-variant">{p.type} • {p.institution || p.city}</p>
+                        {p.specializations?.length > 0 && (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {p.specializations.slice(0, 3).map((s, i) => (
+                              <span key={i} className="rounded-full bg-secondary-container/30 px-2 py-0.5 text-[10px] font-medium text-secondary">{s}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => navigate(`/appointments/book/${p._id}`)}
+                        className="shrink-0 rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-on-secondary transition-all hover:shadow-md"
+                      >
+                        {t("decision.book_appointment")}
+                      </button>
+                    </div>
+                  ))}
+                  <p className="text-center text-xs text-on-surface-variant">{referralData.message}</p>
+                </div>
+              ) : (
+                <p className="py-4 text-center text-sm text-on-surface-variant">{t("decision.no_professionals")}</p>
+              )}
+            </div>
+          )}
+
+          {/* Resources Panel */}
+          {showResources && resourcesData && (
+            <div className="rounded-3xl border border-tertiary/20 bg-surface-container-lowest p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined text-tertiary">local_library</span>
+                <h3 className="font-['Plus_Jakarta_Sans'] text-lg font-bold text-on-surface">{t("decision.resources_title")}</h3>
+              </div>
+              <div className="space-y-5">
+                {resourcesData.map((cat) => (
+                  <div key={cat.category}>
+                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-outline">{cat.title}</h4>
+                    <div className="space-y-2">
+                      {cat.items.map((item, i) => (
+                        <div key={i} className="flex items-start gap-3 rounded-xl bg-surface-container-low p-3">
+                          <span className="material-symbols-outlined mt-0.5 text-[20px] text-tertiary">
+                            {cat.category === "hotlines" ? "call" : cat.category === "clinics" ? "location_on" : "info"}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <h5 className="font-semibold text-on-surface">{item.name}</h5>
+                            <p className="text-xs text-on-surface-variant">{item.description}</p>
+                            {item.phone && (
+                              <a href={`tel:${item.phone}`} className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+                                <span className="material-symbols-outlined text-[14px]">call</span> {item.phone}
+                              </a>
+                            )}
+                            {item.website && (
+                              <a href={item.website} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+                                <span className="material-symbols-outlined text-[14px]">open_in_new</span> Visit Website
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </main>
         
         <FeedbackModal 
@@ -200,7 +355,7 @@ export default function DecisionFlowPage() {
         {/* Progress */}
         <div className="mb-8">
           <span className="text-xs font-semibold tracking-wider text-secondary uppercase">
-            Step {currentStep + 1} of {totalSteps}
+            {t("decision.step_of", { current: currentStep + 1, total: totalSteps })}
           </span>
           <div className="bg-surface-variant mt-2 h-2 w-full overflow-hidden rounded-full">
             <div
@@ -286,7 +441,7 @@ export default function DecisionFlowPage() {
               }
               className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-semibold text-on-primary shadow-[0_4px_20px_rgba(59,130,246,0.2)] transition-transform active:scale-[0.98] disabled:opacity-50"
             >
-              {loading ? "Processing..." : "Next Step"}
+              {loading ? t("decision.processing") : t("decision.next_step")}
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>

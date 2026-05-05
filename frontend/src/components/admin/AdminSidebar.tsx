@@ -14,6 +14,7 @@ export function AdminSidebar({ active }: AdminSidebarProps) {
     { label: "Appointments", icon: "event_note", path: "/admin/appointments" },
     { label: "Events", icon: "event", path: "/admin/events" },
     { label: "Reports", icon: "analytics", path: "/admin/reports" },
+    { label: "Support Tickets", icon: "support_agent", path: "/admin/support" },
     { label: "Admins", icon: "manage_accounts", path: "/admin/users" },
     { label: "Profile", icon: "person", path: "/admin/profile" },
   ]

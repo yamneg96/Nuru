@@ -1,7 +1,17 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute, PublicRoute } from "@/components/guards";
 import { ThemeProvider } from "@/components/ThemeProvider";
+
+/* ───────── SCROLL TO TOP ON ROUTE CHANGE ───────── */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 /* ───────── PUBLIC ───────── */
 import LandingPage from "@/pages/public/LandingPage";
@@ -54,11 +64,13 @@ import AdminProfessionalVerification from "@/pages/admin/AdminProfessionalVerifi
 import AdminManagementPage from "@/pages/admin/AdminManagementPage";
 import AdminProfilePage from "@/pages/admin/AdminProfilePage";
 import AdminAppointmentsPage from "@/pages/admin/AdminAppointmentsPage";
+// import AdminSupportPage from "@/pages/admin/AdminSupportPage";
 
 export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
 
           {/* ───────── PUBLIC ROUTES (NO LAYOUT) ───────── */}
@@ -212,6 +224,7 @@ export default function App() {
           <Route path="/admin/appointments" element={<AdminAppointmentsPage />} />
           <Route path="/admin/users" element={<AdminManagementPage />} />
           <Route path="/admin/profile" element={<AdminProfilePage />} />
+          {/* <Route path="/admin/support" element={<AdminSupportPage />} /> */}
 
           {/* Fullscreen flows outside app shell */}
           <Route path="/appointments/book/:professionalId" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />

@@ -63,6 +63,55 @@ export async function sendTextMessage(
   });
 }
 
+export async function sendMessageWithButtons(
+  chatId: number,
+  text: string,
+  inlineKeyboard: any[][]
+): Promise<void> {
+  await telegramSend("sendMessage", {
+    chat_id: chatId,
+    text,
+    parse_mode: "Markdown",
+    reply_markup: {
+      inline_keyboard: inlineKeyboard,
+    },
+  });
+}
+
+export async function editMessageText(
+  chatId: number,
+  messageId: number,
+  text: string,
+  inlineKeyboard?: any[][]
+): Promise<void> {
+  const payload: Record<string, unknown> = {
+    chat_id: chatId,
+    message_id: messageId,
+    text,
+    parse_mode: "Markdown",
+  };
+  
+  if (inlineKeyboard) {
+    payload.reply_markup = {
+      inline_keyboard: inlineKeyboard,
+    };
+  }
+  
+  await telegramSend("editMessageText", payload);
+}
+
+export async function answerCallbackQuery(
+  callbackQueryId: string,
+  text?: string,
+  showAlert = false
+): Promise<void> {
+  await telegramSend("answerCallbackQuery", {
+    callback_query_id: callbackQueryId,
+    text,
+    show_alert: showAlert,
+  });
+}
+
 export async function sendTypingIndicator(chatId: number): Promise<void> {
   try {
     await telegramSend("sendChatAction", {
@@ -100,6 +149,22 @@ export interface TelegramUpdate {
     date: number;
     text?: string;
   };
+  callback_query?: {
+    id: string;
+    from: {
+      id: number;
+      first_name?: string;
+      username?: string;
+    };
+    message?: {
+      message_id: number;
+      chat: {
+        id: number;
+        type: string;
+      };
+    };
+    data?: string;
+  };
 }
 
 export async function getUpdates(
@@ -108,7 +173,7 @@ export async function getUpdates(
 ): Promise<TelegramUpdate[]> {
   const payload: Record<string, unknown> = {
     timeout,
-    allowed_updates: ["message"],
+    allowed_updates: ["message", "callback_query"],
   };
 
   if (offset !== undefined) {

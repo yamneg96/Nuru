@@ -5,7 +5,7 @@ export interface CreateTicketPayload {
   email?: string
   subject: string
   message: string
-  category: "general" | "medical" | "technical"
+  category: "general" | "medical" | "technical" | "escalation"
 }
 
 export interface TicketResponse {

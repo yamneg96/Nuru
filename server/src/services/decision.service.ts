@@ -3,6 +3,11 @@ import { DecisionSession } from "../models/DecisionSession.js";
 import { generateResponse } from "./ai.service.js";
 import { type FlowType } from "../config/constants.js";
 
+// ── Import Professional model for referral matching ──
+let Professional: any;
+import("../models/Professional.js").then(m => Professional = m.Professional).catch(() => {});
+
+
 // ── Flow Definitions ─────────────────────────────────────────
 
 interface FlowQuestion {
@@ -442,3 +447,338 @@ export async function getDecisionResult(sessionId: string) {
     ...session.result,
   };
 }
+
+// ── Ethiopia-Specific Legal Context ──────────────────────────────────────────
+
+const ETHIOPIA_LEGAL_CONTEXT: Record<string, { summary: string; considerations: string[] }> = {
+  missed_period: {
+    summary: "In Ethiopia, access to reproductive health services is a legal right. The Federal Ministry of Health provides free maternal health services at public facilities.",
+    considerations: [
+      "Free pregnancy testing is available at public health centers",
+      "Prenatal care is provided free of charge at government facilities",
+      "Youth-friendly service centers exist in major cities for confidential care",
+    ],
+  },
+  relationship_pressure: {
+    summary: "Ethiopian law protects individuals from coercion and violence. The 2004 Criminal Code criminalizes sexual coercion and domestic violence.",
+    considerations: [
+      "Sexual coercion is a criminal offense under Ethiopian law",
+      "The Ethiopian Women Lawyers Association (EWLA) provides free legal aid",
+      "Police Women and Children's Affairs desks exist for reporting abuse",
+      "The legal age of consent in Ethiopia is 18",
+    ],
+  },
+  contraception: {
+    summary: "Contraception is legal and widely available in Ethiopia. The government actively supports family planning as part of its health strategy.",
+    considerations: [
+      "Contraceptives are available free of charge at public health facilities",
+      "Long-acting methods (implants, IUDs) are widely accessible",
+      "Health Extension Workers can provide basic contraceptive methods at community level",
+    ],
+  },
+  sti_risk: {
+    summary: "Ethiopia has comprehensive STI/HIV testing and treatment programs. Testing is confidential and often free at public facilities.",
+    considerations: [
+      "Free HIV testing and counseling (HTC) is available nationwide",
+      "PEP (Post-Exposure Prophylaxis) is available within 72 hours at hospitals",
+      "ART (Antiretroviral Therapy) is provided free for those who need it",
+      "Confidentiality of test results is legally protected",
+    ],
+  },
+  pregnancy_options: {
+    summary: "The 2005 revised Criminal Code permits safe termination of pregnancy under specific circumstances, including cases involving minors and sexual assault.",
+    considerations: [
+      "Safe services are available at approved health facilities",
+      "Confidential counseling is available before any decision",
+      "Post-procedure care is guaranteed at public facilities",
+      "No one can force you to make a decision — the choice is yours",
+    ],
+  },
+  mental_health_support: {
+    summary: "Ethiopia's National Mental Health Strategy aims to integrate mental health into primary care. Services are expanding across the country.",
+    considerations: [
+      "Mental health support is available at select health centers",
+      "The St. Paul's Hospital Millennium Medical College has a dedicated psychiatric unit",
+      "Community-based mental health services are expanding",
+      "Stigma-free support is a priority in the national health strategy",
+    ],
+  },
+};
+
+// ── Analyze Decision ─────────────────────────────────────────────────────────
+
+export async function analyzeDecision(situationType: FlowType, context?: string, sessionId?: string) {
+  const legalContext = ETHIOPIA_LEGAL_CONTEXT[situationType] || {
+    summary: "Please consult a healthcare professional for specific guidance.",
+    considerations: [],
+  };
+
+  // Fetch session data if a session ID was provided
+  let sessionData: any = null;
+  if (sessionId) {
+    const session = await DecisionSession.findOne({ session_id: sessionId });
+    if (session && session.completed) {
+      sessionData = {
+        risk_level: session.risk_level,
+        flow_type: session.flow_type,
+        result: session.result,
+      };
+    }
+  }
+
+  // Build AI analysis prompt
+  const riskLevel = sessionData?.risk_level || "unknown";
+  const aiPrompt = `You are a supportive health advisor for young Ethiopian women. Analyze this situation with a non-judgmental, culturally sensitive tone.
+
+Situation type: "${situationType}"
+${context ? `User's context: "${context}"` : ""}
+${sessionData ? `Assessment risk level: "${riskLevel}"` : ""}
+
+Provide a brief, empathetic analysis in 3-4 sentences covering:
+1. Emotional validation
+2. What this situation commonly means
+3. One practical next step
+
+Do NOT provide medical diagnoses. Keep it supportive and hopeful.`;
+
+  let aiAnalysis = "";
+  try {
+    aiAnalysis = await generateResponse(aiPrompt);
+  } catch {
+    aiAnalysis = "We understand this may be a difficult time. Whatever you're going through, you're not alone, and there are people and resources ready to help you.";
+  }
+
+  // Build psychological considerations
+  const psychologicalConsiderations = getPsychologicalConsiderations(situationType);
+
+  return {
+    situation_type: situationType,
+    ai_analysis: aiAnalysis,
+    legal_context: legalContext,
+    psychological_considerations: psychologicalConsiderations,
+    session_data: sessionData ? { risk_level: riskLevel } : null,
+  };
+}
+
+function getPsychologicalConsiderations(situationType: string): string[] {
+  const base = [
+    "It's completely normal to feel anxious or overwhelmed in this situation",
+    "Taking time to process your feelings before making decisions is healthy",
+    "Talking to someone you trust can help you feel less alone",
+  ];
+
+  const specific: Record<string, string[]> = {
+    missed_period: [
+      ...base,
+      "Uncertainty about a missed period is one of the most common concerns among young women",
+      "Whatever the outcome, you have options and support available to you",
+    ],
+    relationship_pressure: [
+      "You have the right to say no at any time — this is not negotiable",
+      "Feeling pressured does not mean something is wrong with you",
+      "Healthy relationships are built on mutual respect and communication",
+      "If you feel unsafe, reaching out for help is a sign of strength, not weakness",
+    ],
+    contraception: [
+      ...base,
+      "Choosing to use contraception is a responsible and empowering decision",
+      "There is no 'one size fits all' — finding the right method takes time",
+    ],
+    sti_risk: [
+      "Worrying about STI exposure is understandable and shows you care about your health",
+      "Getting tested is a responsible step — it does not reflect on your character",
+      ...base.slice(1),
+    ],
+    pregnancy_options: [
+      "This is a deeply personal decision and there is no 'right' answer for everyone",
+      "You deserve time and space to consider all your options without pressure",
+      ...base.slice(1),
+    ],
+    mental_health_support: [
+      "Your mental health matters just as much as your physical health",
+      "Seeking support is a sign of courage, not weakness",
+      ...base,
+    ],
+  };
+
+  return specific[situationType] || base;
+}
+
+// ── Decision Options Catalog ─────────────────────────────────────────────────
+
+export function getDecisionOptions() {
+  return [
+    {
+      flow_type: "missed_period",
+      title: "I missed my period",
+      description: "Get guidance on what a missed period could mean and what to do next.",
+      icon: "calendar_month",
+      color: "tertiary",
+    },
+    {
+      flow_type: "relationship_pressure",
+      title: "I feel pressure in a relationship",
+      description: "Get support for navigating pressure, setting boundaries, and staying safe.",
+      icon: "favorite",
+      color: "error",
+    },
+    {
+      flow_type: "contraception",
+      title: "I want to avoid pregnancy",
+      description: "Learn about contraception methods available to you and find what works best.",
+      icon: "shield",
+      color: "primary",
+    },
+    {
+      flow_type: "sti_risk",
+      title: "I'm worried about an STI",
+      description: "Understand your risk and find free, confidential testing near you.",
+      icon: "health_and_safety",
+      color: "secondary",
+    },
+    {
+      flow_type: "pregnancy_options",
+      title: "I may be pregnant",
+      description: "Explore your options in a safe, non-judgmental space.",
+      icon: "pregnancy",
+      color: "tertiary",
+    },
+    {
+      flow_type: "mental_health_support",
+      title: "I need emotional support",
+      description: "Talk about your feelings and find mental health resources.",
+      icon: "spa",
+      color: "secondary",
+    },
+  ];
+}
+
+// ── Decision Resources (Ethiopia-Specific) ───────────────────────────────────
+
+export function getDecisionResources(situationType?: string) {
+  const allResources = [
+    {
+      category: "hotlines",
+      title: "Emergency Hotlines",
+      items: [
+        { name: "Ethiopian Women Lawyers Association (EWLA)", phone: "+251-111-550-413", description: "Free legal aid for women and girls", situation_types: ["relationship_pressure", "pregnancy_options"] },
+        { name: "National Mental Health Hotline", phone: "953", description: "24/7 mental health crisis support", situation_types: ["mental_health_support", "relationship_pressure"] },
+        { name: "Addis Ababa Police — Women & Children Desk", phone: "+251-111-580-280", description: "Report violence or abuse", situation_types: ["relationship_pressure"] },
+        { name: "HIV/AIDS Hotline", phone: "8335", description: "Free HIV/AIDS information and support", situation_types: ["sti_risk"] },
+      ],
+    },
+    {
+      category: "clinics",
+      title: "Youth-Friendly Health Facilities",
+      items: [
+        { name: "Marie Stopes Ethiopia", description: "Reproductive health services across Ethiopia", website: "https://mariestopes.org.et", situation_types: ["missed_period", "contraception", "pregnancy_options", "sti_risk"] },
+        { name: "Family Guidance Association of Ethiopia (FGAE)", description: "Youth-friendly SRH services in 300+ outlets", website: "https://fgaeet.org", situation_types: ["missed_period", "contraception", "pregnancy_options", "sti_risk"] },
+        { name: "DKT Ethiopia", description: "Affordable contraceptives and health products", website: "https://dktethiopia.org", situation_types: ["contraception"] },
+        { name: "Amanuel Mental Specialized Hospital", description: "Specialized mental health care — Addis Ababa", situation_types: ["mental_health_support"] },
+      ],
+    },
+    {
+      category: "information",
+      title: "Trusted Information Sources",
+      items: [
+        { name: "Federal Ministry of Health — Ethiopia", description: "Official health guidelines and service locations", website: "https://www.moh.gov.et", situation_types: ["missed_period", "contraception", "sti_risk", "pregnancy_options", "mental_health_support"] },
+        { name: "UNFPA Ethiopia", description: "Reproductive health education and resources", website: "https://ethiopia.unfpa.org", situation_types: ["missed_period", "contraception", "pregnancy_options"] },
+        { name: "UNICEF Ethiopia — Adolescent Health", description: "Youth health programs and resources", website: "https://www.unicef.org/ethiopia", situation_types: ["mental_health_support", "contraception"] },
+      ],
+    },
+  ];
+
+  if (!situationType) return allResources;
+
+  // Filter items within each category by situation_type
+  return allResources.map(cat => ({
+    ...cat,
+    items: cat.items.filter(item => item.situation_types.includes(situationType)),
+  })).filter(cat => cat.items.length > 0);
+}
+
+// ── Decision Referral (Professional Matching) ────────────────────────────────
+
+const SITUATION_TO_PROFESSIONAL_MAP: Record<string, { types: string[]; specializations: string[] }> = {
+  missed_period: { types: ["medical"], specializations: ["gynecology", "obstetrics", "reproductive health", "family planning"] },
+  relationship_pressure: { types: ["counselor", "therapist", "psychiatrist"], specializations: ["counseling", "psychology", "gender-based violence", "youth counseling"] },
+  contraception: { types: ["medical"], specializations: ["family planning", "reproductive health", "gynecology"] },
+  sti_risk: { types: ["medical"], specializations: ["sexual health", "infectious disease", "reproductive health", "HIV/AIDS"] },
+  pregnancy_options: { types: ["medical", "counselor"], specializations: ["gynecology", "obstetrics", "counseling", "reproductive health"] },
+  mental_health_support: { types: ["therapist", "psychiatrist", "counselor"], specializations: ["psychology", "psychiatry", "counseling", "mental health"] },
+};
+
+export async function createDecisionReferral(situationType: FlowType, preferredType?: string, specialization?: string) {
+  const mapping = SITUATION_TO_PROFESSIONAL_MAP[situationType];
+  if (!mapping) {
+    return { professionals: [], message: "No matching professionals found for this situation type." };
+  }
+
+  // Build query filter
+  const filter: Record<string, any> = {
+    verification_status: "verified",
+    is_active: true,
+  };
+
+  // Filter by type
+  if (preferredType) {
+    filter.type = preferredType;
+  } else {
+    filter.type = { $in: mapping.types };
+  }
+
+  // Filter by specialization (search in the specializations array)
+  const specSearch = specialization ? [specialization.toLowerCase()] : mapping.specializations;
+  filter.specializations = {
+    $elemMatch: { $regex: specSearch.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|"), $options: "i" },
+  };
+
+  let professionals: any[] = [];
+  try {
+    if (Professional) {
+      professionals = await Professional.find(filter)
+        .select("full_name type specializations institution city availability rating sessions_completed photo_url")
+        .sort({ rating: -1, sessions_completed: -1 })
+        .limit(5)
+        .lean();
+    }
+  } catch {
+    // Fallback if Professional model is unavailable
+  }
+
+  // If strict specialization match found nothing, broaden to type-only
+  if (professionals.length === 0 && Professional) {
+    try {
+      const broadFilter = { ...filter };
+      delete broadFilter.specializations;
+      professionals = await Professional.find(broadFilter)
+        .select("full_name type specializations institution city availability rating sessions_completed photo_url")
+        .sort({ rating: -1, sessions_completed: -1 })
+        .limit(5)
+        .lean();
+    } catch {
+      // Fallback
+    }
+  }
+
+  return {
+    situation_type: situationType,
+    professionals: professionals.map((p: any) => ({
+      _id: p._id,
+      full_name: p.full_name,
+      type: p.type,
+      specializations: p.specializations,
+      institution: p.institution,
+      city: p.city,
+      availability: p.availability,
+      rating: p.rating,
+      sessions_completed: p.sessions_completed,
+      photo_url: p.photo_url,
+    })),
+    recommended_types: mapping.types,
+    message: professionals.length > 0
+      ? `Found ${professionals.length} matched professional(s) for your situation.`
+      : "No professionals are currently available for this specialization. Please try the chat or visit a nearby clinic.",
+  };
+}
+

@@ -59,7 +59,7 @@ export default function MyAppointmentsPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-8 md:px-8">
+    <div className="mx-auto w-full px-5 py-8 md:px-8">
       {/* Header */}
       <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
@@ -82,7 +82,7 @@ export default function MyAppointmentsPage() {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <span className="material-symbols-outlined mb-4 text-[48px] text-outline">calendar_month</span>
           <h3 className="mb-2 text-lg font-semibold text-on-surface">No {tab} appointments</h3>
-          <p className="mb-4 max-w-xs text-sm text-on-surface-variant">
+          <p className="mb-4 text-sm text-on-surface-variant">
             {tab === "upcoming" ? "Book a session with a professional to get started." : "Your past appointments will appear here."}
           </p>
           {tab === "upcoming" && (
@@ -154,7 +154,7 @@ export default function MyAppointmentsPage() {
       {/* Rating Modal */}
       {ratingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-sm rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+          <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
             <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">Rate Your Experience</h3>
             <div className="mb-6 flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((s) => (

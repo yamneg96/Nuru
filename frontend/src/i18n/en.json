@@ -8,7 +8,13 @@
     "profile": "Profile",
     "login": "Login",
     "logout": "Logout",
-    "back": "Back"
+    "back": "Back",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "professionals": "Professionals",
+    "events": "Events",
+    "appointments": "Appointments",
+    "reports": "Reports"
   },
   "landing": {
     "hero_title": "Your life. Your choices. Your future.",
@@ -145,10 +151,82 @@
     "intro_title": "Let's figure this out together",
     "intro_desc": "We'll ask a few private questions to help guide you. Everything stays anonymous.",
     "begin": "Begin Assessment",
+    "starting": "Starting...",
     "step_of": "Step {{current}} of {{total}}",
     "next_step": "Next Step",
+    "processing": "Processing...",
     "results": "Your Results",
-    "what_next": "What would you like to do next?"
+    "what_next": "What would you like to do next?",
+    "leave_feedback": "Leave Feedback",
+    "get_help": "Get Professional Help",
+    "find_resources": "Find Resources",
+    "view_analysis": "View Detailed Analysis",
+    "legal_context": "Legal Information (Ethiopia)",
+    "psychological": "Emotional Support",
+    "matched_professionals": "Matched Professionals",
+    "no_professionals": "No professionals currently available",
+    "book_appointment": "Book Appointment",
+    "referral_loading": "Finding professionals...",
+    "resources_title": "Helpful Resources",
+    "analysis_title": "Detailed Analysis"
+  },
+  "professionals": {
+    "title": "Find a Professional",
+    "subtitle": "Connect with verified health and counseling professionals.",
+    "search": "Search professionals...",
+    "filter_all": "All",
+    "filter_medical": "Medical",
+    "filter_counselor": "Counselor",
+    "filter_therapist": "Therapist",
+    "verified": "Verified",
+    "book": "Book Appointment",
+    "view_profile": "View Profile",
+    "sessions": "sessions completed",
+    "available_online": "Available Online",
+    "available_offline": "In-Person"
+  },
+  "appointments": {
+    "title": "My Appointments",
+    "subtitle": "View and manage your scheduled appointments.",
+    "no_appointments": "No appointments yet",
+    "book_new": "Book New Appointment",
+    "cancel": "Cancel",
+    "rate": "Rate",
+    "status_pending": "Pending",
+    "status_confirmed": "Confirmed",
+    "status_completed": "Completed",
+    "status_cancelled": "Cancelled"
+  },
+  "events": {
+    "title": "Community Events",
+    "subtitle": "Join workshops, talks, and gatherings in your community.",
+    "register": "Register",
+    "registered": "Registered",
+    "attendees": "attendees",
+    "online": "Online",
+    "in_person": "In Person",
+    "no_events": "No upcoming events"
+  },
+  "reports": {
+    "title": "Transparency Reports",
+    "subtitle": "See how Nuru is making a difference in the community.",
+    "no_reports": "No reports published yet",
+    "users_served": "Users Served",
+    "conversations": "Conversations",
+    "events_held": "Events Held"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with the Nuru team. We're here to help.",
+    "name": "Your Name",
+    "email": "Email Address",
+    "subject": "Subject",
+    "message": "Your Message",
+    "category": "Category",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "success": "Your message has been sent successfully!",
+    "ticket_id": "Your ticket ID"
   },
   "privacy_policy": {
     "title": "Privacy Policy",
@@ -158,13 +236,15 @@
     "title": "Terms of Service",
     "effective": "Effective Date: January 1, 2024"
   },
-  "contact": {
-    "title": "Contact Us",
-    "subtitle": "Get in touch with the Nuru team. We're here to help."
-  },
   "common": {
     "loading": "Loading...",
     "error": "Something went wrong",
+    "retry": "Try Again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
     "privacy_policy": "Privacy Policy",
     "terms": "Terms of Service",
     "faq": "FAQ",

@@ -146,7 +146,7 @@ export default function AdminManagementPage() {
         {/* Modal for Create/Edit */}
         {(showCreate || showEdit) && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-            <div className="mx-4 w-full max-w-md rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+            <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
               <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">
                 {showCreate ? "Create Admin" : "Edit Admin"}
               </h3>

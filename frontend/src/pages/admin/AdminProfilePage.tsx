@@ -70,7 +70,7 @@ export default function AdminProfilePage() {
         {loading ? (
           <div className="flex justify-center py-16"><div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
         ) : profile ? (
-          <div className="max-w-2xl rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-sm md:p-8">
+          <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-sm md:p-8">
             <div className="mb-8 flex items-center gap-6">
               <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container shadow-inner">
                 <span className="material-symbols-outlined text-[40px]">person</span>

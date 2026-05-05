@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
       <div className="pointer-events-none absolute inset-0 z-0 opacity-20" style={{ background: "radial-gradient(ellipse at 30% 40%, rgba(0,88,190,0.15), transparent 60%), radial-gradient(ellipse at 70% 60%, rgba(108,248,187,0.1), transparent 50%)" }} />
 
       {/* Login Card */}
-      <main className="relative z-10 flex w-full max-w-[420px] flex-col gap-8 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 shadow-[0_8px_32px_rgba(0,88,190,0.06)] md:p-8">
+      <main className="relative z-10 flex w-full flex-col gap-8 rounded-xl border border-outline-variant bg-surface-container-lowest p-6 shadow-[0_8px_32px_rgba(0,88,190,0.06)] md:p-8">
         {/* Header */}
         <header className="flex flex-col items-center gap-1 text-center">
           <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full border border-outline-variant bg-surface-container-low shadow-inner">

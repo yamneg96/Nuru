@@ -124,6 +124,57 @@ export interface NextStep {
   action_type: "navigate" | "external" | "chat";
 }
 
+export interface DecisionAnalysis {
+  situation_type: FlowType;
+  ai_analysis: string;
+  legal_context: {
+    summary: string;
+    considerations: string[];
+  };
+  psychological_considerations: string[];
+  session_data: { risk_level: string } | null;
+}
+
+export interface DecisionOptionItem {
+  flow_type: FlowType;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+}
+
+export interface DecisionResourceItem {
+  name: string;
+  description: string;
+  phone?: string;
+  website?: string;
+  situation_types: string[];
+}
+
+export interface DecisionResourceCategory {
+  category: string;
+  title: string;
+  items: DecisionResourceItem[];
+}
+
+export interface DecisionReferralResult {
+  situation_type: FlowType;
+  professionals: {
+    _id: string;
+    full_name: string;
+    type: string;
+    specializations: string[];
+    institution: string;
+    city: string;
+    availability: { online: boolean; offline: boolean; schedule?: string };
+    rating: number;
+    sessions_completed: number;
+    photo_url?: string;
+  }[];
+  recommended_types: string[];
+  message: string;
+}
+
 // ── Services ─────────────────────────────────────────────────
 
 export interface ServiceLocation {

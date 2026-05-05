@@ -355,7 +355,7 @@ export default function AdminContentCMS() {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 overflow-y-auto py-10">
-            <div className="my-auto w-full max-w-3xl rounded-2xl bg-surface-container-lowest p-6 shadow-xl max-h-full overflow-y-auto">
+            <div className="my-auto w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl max-h-full overflow-y-auto">
               <h3 className="mb-6 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
                 {editingId ? `Edit ${activeTab.slice(0,-1)}` : `Create ${activeTab.slice(0,-1)}`}
               </h3>

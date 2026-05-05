@@ -154,7 +154,7 @@ export default function AdminEventManagement() {
         {/* Create/Edit Modal */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4 overflow-y-auto">
-            <div className="my-auto w-full max-w-2xl rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
+            <div className="my-auto w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
               <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">
                 {editingId ? "Edit Event" : "Create Event"}
               </h3>

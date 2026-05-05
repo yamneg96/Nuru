@@ -2,7 +2,7 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import { z } from "zod";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { VALID_FLOW_TYPES } from "../config/constants.js";
-import { startDecisionFlow, submitDecisionStep, getDecisionResult } from "../services/decision.service.js";
+import { startDecisionFlow, submitDecisionStep, getDecisionResult, analyzeDecision, getDecisionOptions, getDecisionResources, createDecisionReferral } from "../services/decision.service.js";
 
 export const decisionRoutes = Router();
 
@@ -19,6 +19,19 @@ const submitStepSchema = z.object({
 
 const sessionIdParamSchema = z.object({
   sessionId: z.string().min(1, "sessionId is required"),
+});
+
+const analyzeSchema = z.object({
+  situation_type: z.enum(VALID_FLOW_TYPES as unknown as [string, ...string[]]),
+  context: z.string().max(2000).optional(),
+  session_id: z.string().optional(),
+});
+
+const referralSchema = z.object({
+  session_id: z.string().optional(),
+  situation_type: z.enum(VALID_FLOW_TYPES as unknown as [string, ...string[]]),
+  preferred_type: z.enum(["medical", "counselor", "therapist", "psychiatrist"]).optional(),
+  specialization: z.string().optional(),
 });
 
 /**
@@ -133,3 +146,135 @@ decisionRoutes.get(
     }
   }
 );
+
+/**
+ * @swagger
+ * /api/v1/decision/analyze:
+ *   post:
+ *     summary: Analyze a situation and return structured guidance
+ *     description: >
+ *       Accepts a situation type and optional context. Returns a structured analysis
+ *       including legal context (Ethiopia-specific), psychological considerations,
+ *       risk/benefit analysis, and recommended next steps. Designed for sensitive,
+ *       non-judgmental support for teenage users.
+ *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [situation_type]
+ *             properties:
+ *               situation_type:
+ *                 type: string
+ *                 enum: [missed_period, relationship_pressure, contraception, sti_risk, pregnancy_options, mental_health_support]
+ *               context:
+ *                 type: string
+ *                 description: Optional free-text context (max 2000 chars)
+ *               session_id:
+ *                 type: string
+ *                 description: Optional link to a prior decision session
+ *     responses:
+ *       200:
+ *         description: Structured situation analysis
+ */
+decisionRoutes.post("/analyze", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = analyzeSchema.parse(req.body);
+    const result = await analyzeDecision(payload.situation_type as any, payload.context, payload.session_id);
+    res.json({ data: result });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/decision/options:
+ *   get:
+ *     summary: Get available decision options catalog
+ *     description: Returns a catalog of available decision support flows, each with a title, description, icon, and flow_type identifier.
+ *     tags: [Decision]
+ *     responses:
+ *       200:
+ *         description: Decision options catalog
+ */
+decisionRoutes.get("/options", async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const options = getDecisionOptions();
+    res.json({ data: options });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/decision/resources:
+ *   get:
+ *     summary: Get curated resources by situation type
+ *     description: Returns Ethiopia-specific hotlines, clinics, informational links, and support contacts organized by situation type.
+ *     tags: [Decision]
+ *     parameters:
+ *       - in: query
+ *         name: situation_type
+ *         schema:
+ *           type: string
+ *           enum: [missed_period, relationship_pressure, contraception, sti_risk, pregnancy_options, mental_health_support]
+ *         description: Filter resources by situation type
+ *     responses:
+ *       200:
+ *         description: Curated resource list
+ */
+decisionRoutes.get("/resources", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const situationType = req.query.situation_type as string | undefined;
+    const resources = getDecisionResources(situationType);
+    res.json({ data: resources });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/decision/referral:
+ *   post:
+ *     summary: Create a referral to a matched professional
+ *     description: Based on the situation type and optional specialization, matches the user with appropriate verified professionals.
+ *     tags: [Decision]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [situation_type]
+ *             properties:
+ *               session_id: { type: string }
+ *               situation_type:
+ *                 type: string
+ *                 enum: [missed_period, relationship_pressure, contraception, sti_risk, pregnancy_options, mental_health_support]
+ *               preferred_type:
+ *                 type: string
+ *                 enum: [medical, counselor, therapist, psychiatrist]
+ *               specialization:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Matched professionals for referral
+ */
+decisionRoutes.post("/referral", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = referralSchema.parse(req.body);
+    const result = await createDecisionReferral(payload.situation_type as any, payload.preferred_type, payload.specialization);
+    res.json({ data: result });
+  } catch (error) {
+    next(error);
+  }
+});
