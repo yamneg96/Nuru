@@ -30,6 +30,7 @@ import { setupSwagger } from "./config/swagger.js";
 // Bots
 import { initTelegramBot } from "./services/messaging/telegram/telegram.bot.js";
 import whatsappWebhook from "./services/messaging/whatsapp/whatsapp.webhook.js";
+import { telegramWebhookRoutes } from "./routes/telegram-webhook.routes.js";
 
 
 // ── Start Server ─────────────────────────────────────────────
@@ -137,6 +138,9 @@ app.use("/api/v1/support", supportRoutes);
 // Bots Route
 // WhatsApp webhook
 app.use("/api/v1/webhooks/whatsapp", whatsappWebhook);
+
+// Telegram webhook
+app.use("/api/telegram/webhook", telegramWebhookRoutes);
 
 
 // Error Handler (must be after all routes)

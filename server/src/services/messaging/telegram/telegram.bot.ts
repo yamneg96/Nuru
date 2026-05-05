@@ -1,7 +1,7 @@
 import { env } from "../../../config/env.js";
 import { logger } from "../../../utils/logger.js";
 import { processTelegramUpdate } from "./telegram.handler.js";
-import { getUpdates, deleteWebhook, type TelegramUpdate } from "./telegram.api.js";
+import { getUpdates, deleteWebhook, setWebhook, type TelegramUpdate } from "./telegram.api.js";
 
 let polling = false;
 let currentOffset: number | undefined;
@@ -12,7 +12,21 @@ export function initTelegramBot(): void {
     return;
   }
 
-  startPolling();
+  if (env.TELEGRAM_BASE_URL) {
+    startWebhook();
+  } else {
+    startPolling();
+  }
+}
+
+async function startWebhook(): Promise<void> {
+  const webhookUrl = `${env.TELEGRAM_BASE_URL}/api/telegram/webhook`;
+  try {
+    await setWebhook(webhookUrl);
+    logger.info(`✅ Telegram bot started (Webhook mode: ${webhookUrl})`);
+  } catch (err) {
+    logger.error(err, "Failed to set Telegram webhook");
+  }
 }
 
 async function startPolling(): Promise<void> {
