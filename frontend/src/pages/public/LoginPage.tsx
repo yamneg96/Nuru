@@ -4,6 +4,7 @@ import { loginWithGoogle, loginAnonymous } from "@/api/auth.api"
 import { useAuthStore } from "@/store/authStore"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { toast } from "sonner"
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -19,6 +20,7 @@ export default function LoginPage() {
     try {
       const data = await loginWithGoogle(response.credential)
       login(data.token, data?.anonymous_id || "")
+      toast.success(t('login.success', "Logged in successfully!"))
       navigate("/onboarding")
     } catch (err) {
       setError("Authentication failed. Please try again.")
@@ -33,6 +35,7 @@ export default function LoginPage() {
     try {
       const data = await loginAnonymous()
       login(data.token, data?.anonymous_id || "")
+      toast.success(t('login.success', "Logged in successfully!"))
       navigate("/dashboard")
     } catch (err) {
       setError("Anonymous login failed. Please try again.")

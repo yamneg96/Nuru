@@ -61,7 +61,8 @@
     "trust_1": "We do <strong>NOT</strong> store your name or email",
     "trust_2": "You will be anonymous inside the app",
     "trust_3": "Your conversations are private",
-    "footer": "We only use Google to verify you are real. You will not be identified."
+    "footer": "We only use Google to verify you are real. You will not be identified.",
+    "success": "Logged in successfully!"
   },
   "onboarding": {
     "welcome": "Welcome to Nuru",
@@ -150,7 +151,9 @@
     "language_title": "Language Preference",
     "language_desc": "Choose the language you prefer. Nuru will adapt its responses.",
     "logout": "Log out",
-    "logout_desc": "Sign out and return to the welcome page."
+    "logout_desc": "Sign out and return to the welcome page.",
+    "logout_success": "Logged out successfully!",
+    "delete_success": "Your data has been permanently deleted."
   },
   "decision": {
     "intro_title": "Let's figure this out together",

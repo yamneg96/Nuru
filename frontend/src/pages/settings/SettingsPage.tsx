@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/authStore"
 import { useThemeStore } from "@/store/themeStore"
 import { updatePreferences, deleteUserData } from "@/api/user.api"
 import { useTranslation } from "react-i18next"
+import { toast } from "sonner"
 
 export default function SettingsPage() {
   const { t } = useTranslation()
@@ -18,6 +19,7 @@ export default function SettingsPage() {
 
   const handleSoftLogout = () => {
     softLogout()
+    toast.success(t('settings.logout_success', "Logged out successfully!"))
     navigate("/")
   }
 
@@ -49,6 +51,7 @@ export default function SettingsPage() {
     try {
       await deleteUserData()
       logout()
+      toast.success(t('settings.delete_success', "Your data has been permanently deleted."))
       navigate("/")
     } catch {
       /* fallback */

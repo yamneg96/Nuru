@@ -61,7 +61,8 @@
     "trust_1": "Maqaa kee ykn imeelii kee <strong>HIN kuusnu</strong>",
     "trust_2": "Appii keessatti maqaa malee taata",
     "trust_3": "Haasawaan kee iccitiidhaan eegama",
-    "footer": "Google kan fayyadamnu dhugaa ta'uu kee mirkaneessuuf qofa. Hin adda baafamtu."
+    "footer": "Google kan fayyadamnu dhugaa ta'uu kee mirkaneessuuf qofa. Hin adda baafamtu.",
+    "success": "Milkaa'inaan seenteetta!"
   },
   "onboarding": {
     "welcome": "Baga gara Nuru dhuftan",
@@ -150,7 +151,9 @@
     "language_title": "Filannoo Afaanii",
     "language_desc": "Afaan filattu filadhu. Nuru deebii isaa ni madaqsa.",
     "logout": "Ba'i",
-    "logout_desc": "Ba'ii fi gara fuula baga nagaan dhuftan deebi'i."
+    "logout_desc": "Ba'ii fi gara fuula baga nagaan dhuftan deebi'i.",
+    "logout_success": "Milkaa'inaan baateetta!",
+    "delete_success": "Dataan kee dhaabbataaf haqameera."
   },
   "decision": {
     "intro_title": "Waliin furmaata haa barbaannu",
