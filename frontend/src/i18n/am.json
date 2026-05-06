@@ -74,7 +74,8 @@
     "title": "ገብተዋል — በደህንነት",
     "subtitle": "አሁን ስም ሳይገለጽ ነዎት። ማንም ማን እንደሆኑ አያውቅም።",
     "your_id": "ስም-ሳይገለጽ መታወቂያዎ",
-    "start_exploring": "ማሰስ ይጀምሩ"
+    "start_exploring": "ማሰስ ይጀምሩ",
+    "welcome_toast": "እንኳን ደህና መጡ! ጉዞዎ እዚህ ይጀምራል::"
   },
   "dashboard": {
     "greeting": "ዛሬ እንዴት ልንረዳዎ?",

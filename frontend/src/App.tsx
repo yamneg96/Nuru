@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute, PublicRoute } from "@/components/guards";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 /* ───────── SCROLL TO TOP ON ROUTE CHANGE ───────── */
 function ScrollToTop() {
@@ -70,6 +71,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <Toaster />
         <ScrollToTop />
         <Routes>
 

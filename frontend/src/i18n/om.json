@@ -74,7 +74,8 @@
     "title": "Seente — Nagaan",
     "subtitle": "Amma maqaa malee taateerta. Namni eenyu akka taate hin beeku.",
     "your_id": "ID Maqaa Malee Kee",
-    "start_exploring": "Qorachuu jalqabi"
+    "start_exploring": "Qorachuu jalqabi",
+    "welcome_toast": "Baga nagaan dhuftan! Imalli keessan asitti jalqaba."
   },
   "dashboard": {
     "greeting": "Har'a akkamiin si gargaaruu?",

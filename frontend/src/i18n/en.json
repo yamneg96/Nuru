@@ -74,7 +74,8 @@
     "title": "You're In — Safely",
     "subtitle": "You're now anonymous. No one knows who you are.",
     "your_id": "Your Anonymous ID",
-    "start_exploring": "Start exploring"
+    "start_exploring": "Start exploring",
+    "welcome_toast": "Welcome! Your journey starts here."
   },
   "dashboard": {
     "greeting": "How can we help you today?",

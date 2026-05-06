@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "@/store/authStore"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { ArrowLeft } from "lucide-react"
+import { toast } from "sonner"
 
 export default function SafelyPage() {
   const navigate = useNavigate()
@@ -27,11 +29,23 @@ export default function SafelyPage() {
 
   const handleStart = () => {
     setOnboarded(true)
+    toast.success(t('safely.welcome_toast', "Welcome! Your journey starts here."))
     navigate("/dashboard")
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-surface to-surface-container-low p-6 antialiased">
+      {/* Back Button */}
+      <div className="absolute top-6 left-6">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant transition-all hover:bg-surface-container-highest hover:text-on-surface active:scale-95 shadow-sm"
+          aria-label="Back to dashboard"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+      </div>
+
       <main className="w-full max-w-120">
         <div className="border-surface-variant/50 flex flex-col items-center rounded-3xl border bg-surface-container-lowest p-8 text-center shadow-[0_8px_40px_rgba(0,88,190,0.06)] md:p-10">
           {/* Icon */}
