@@ -3,22 +3,29 @@ import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getProfessionals } from "@/api/professional.api"
 import type { Professional } from "@/types"
+import { useTranslation } from "react-i18next"
 
-const TYPE_FILTERS = [
-  { label: "All Types", value: "" },
-  { label: "Medical Doctor", value: "medical" },
-  { label: "Counselor", value: "counselor" },
-  { label: "Therapist", value: "therapist" },
-  { label: "Psychiatrist", value: "psychiatrist" },
-]
+export default function ProfessionalsPage() {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const [typeFilter, setTypeFilter] = useState("")
+  const [cityFilter, setCityFilter] = useState("")
 
-const CITY_FILTERS = [
-  { label: "All Locations", value: "" },
-  { label: "Addis Ababa", value: "Addis Ababa" },
-  { label: "Dire Dawa", value: "Dire Dawa" },
-  { label: "Bahir Dar", value: "Bahir Dar" },
-  { label: "Hawassa", value: "Hawassa" },
-]
+  const TYPE_FILTERS = [
+    { label: t('professionals.all_types', 'All Types'), value: "" },
+    { label: t('professionals.medical', 'Medical Doctor'), value: "medical" },
+    { label: t('professionals.counselor', 'Counselor'), value: "counselor" },
+    { label: t('professionals.therapist', 'Therapist'), value: "therapist" },
+    { label: t('professionals.psychiatrist', 'Psychiatrist'), value: "psychiatrist" },
+  ]
+
+  const CITY_FILTERS = [
+    { label: t('professionals.all_locations', 'All Locations'), value: "" },
+    { label: "Addis Ababa", value: "Addis Ababa" },
+    { label: "Dire Dawa", value: "Dire Dawa" },
+    { label: "Bahir Dar", value: "Bahir Dar" },
+    { label: "Hawassa", value: "Hawassa" },
+  ]
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -46,10 +53,7 @@ function StarRating({ rating }: { rating: number }) {
   )
 }
 
-export default function ProfessionalsPage() {
-  const navigate = useNavigate()
-  const [typeFilter, setTypeFilter] = useState("")
-  const [cityFilter, setCityFilter] = useState("")
+
 
   const filters: Record<string, string> = {}
   if (typeFilter) filters.type = typeFilter
@@ -66,15 +70,14 @@ export default function ProfessionalsPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] px-5 py-8 md:px-8">
+    <div className="mx-auto w-full max-w-350 px-5 py-8 md:px-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-[38px] tracking-[-0.02em] text-on-background">
-          Find a Professional
+        <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-9.5 tracking-[-0.02em] text-on-background">
+          {t('professionals.title', 'Find a Professional')}
         </h1>
         <p className="max-w-2xl text-lg leading-7 text-on-surface-variant">
-          Connect with trusted healthcare providers, counselors, and specialists
-          in your area. Safe, confidential, and supportive.
+          {t('professionals.subtitle', 'Connect with trusted healthcare providers, counselors, and specialists in your area. Safe, confidential, and supportive.')}
         </p>
       </div>
 
@@ -84,11 +87,11 @@ export default function ProfessionalsPage() {
           <span className="material-symbols-outlined text-[20px]">
             filter_list
           </span>
-          <span className="text-base font-semibold">Filters:</span>
+          <span className="text-base font-semibold">{t('professionals.filters', 'Filters:')}</span>
         </div>
         <div className="flex w-full flex-wrap gap-3">
           {/* Type Filter */}
-          <div className="relative min-w-[150px] flex-1">
+          <div className="relative min-w-37.5 flex-1">
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
@@ -105,7 +108,7 @@ export default function ProfessionalsPage() {
             </span>
           </div>
           {/* City Filter */}
-          <div className="relative min-w-[150px] flex-1">
+          <div className="relative min-w-37.5 flex-1">
             <select
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
@@ -126,7 +129,7 @@ export default function ProfessionalsPage() {
           onClick={clearFilters}
           className="whitespace-nowrap rounded-lg bg-surface-variant px-6 py-2 text-base font-semibold text-on-surface-variant transition-colors hover:bg-surface-dim"
         >
-          Clear All
+          {t('professionals.clear_all', 'Clear All')}
         </button>
       </div>
 
@@ -141,10 +144,10 @@ export default function ProfessionalsPage() {
             person_search
           </span>
           <h3 className="mb-2 text-lg font-semibold text-on-surface">
-            No professionals found
+            {t('professionals.no_found', 'No professionals found')}
           </h3>
           <p className="max-w-xs text-sm text-on-surface-variant">
-            Try adjusting your filters or search in a different location.
+            {t('professionals.no_found_desc', 'Try adjusting your filters or search in a different location.')}
           </p>
         </div>
       ) : (
@@ -190,7 +193,7 @@ export default function ProfessionalsPage() {
                 <div className="mb-4 flex items-center gap-1">
                   <StarRating rating={pro.rating} />
                   <span className="ml-2 mt-0.5 text-xs font-semibold tracking-wider text-on-surface-variant uppercase">
-                    {pro.rating.toFixed(1)} ({pro.rating_count} reviews)
+                    {pro.rating.toFixed(1)} ({pro.rating_count} {t('professionals.reviews', 'reviews')})
                   </span>
                 </div>
 
@@ -217,7 +220,7 @@ export default function ProfessionalsPage() {
                   onClick={() => navigate(`/professionals/${pro._id}`)}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-base font-semibold text-on-primary transition-colors active:scale-[0.98] hover:bg-on-primary-fixed-variant"
                 >
-                  <span>Book Session</span>
+                  <span>{t('professionals.book_session', 'Book Session')}</span>
                   <span className="material-symbols-outlined text-[20px]">
                     calendar_month
                   </span>

@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getProfessionalById } from "@/api/professional.api"
-// import type { Professional } from "@/types"
+import { useTranslation } from "react-i18next"
 
 export default function ProfessionalDetailPage() {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { data: pro, isLoading: loading } = useQuery({
@@ -21,8 +22,8 @@ export default function ProfessionalDetailPage() {
   if (!pro) return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
       <span className="material-symbols-outlined mb-4 text-[48px] text-outline">person_off</span>
-      <h2 className="mb-2 text-lg font-semibold text-on-surface">Professional not found</h2>
-      <button onClick={() => navigate("/professionals")} className="mt-4 rounded-full bg-primary px-6 py-2 font-semibold text-on-primary">Back to Directory</button>
+      <h2 className="mb-2 text-lg font-semibold text-on-surface">{t('professionals.detail_not_found', 'Professional not found')}</h2>
+      <button onClick={() => navigate("/professionals")} className="mt-4 rounded-full bg-primary px-6 py-2 font-semibold text-on-primary">{t('professionals.detail_back', 'Back to Directory')}</button>
     </div>
   )
 
@@ -30,7 +31,7 @@ export default function ProfessionalDetailPage() {
     <div className="mx-auto w-full max-w-5xl px-5 py-6 md:px-8">
       {/* Breadcrumb */}
       <nav className="mb-4 flex items-center gap-1 text-sm text-on-surface-variant">
-        <button onClick={() => navigate("/professionals")} className="transition-colors hover:text-primary">Professionals</button>
+        <button onClick={() => navigate("/professionals")} className="transition-colors hover:text-primary">{t('professionals.breadcrumb', 'Professionals')}</button>
         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
         <span className="font-medium text-on-surface">{pro.full_name}</span>
       </nav>
@@ -53,10 +54,10 @@ export default function ProfessionalDetailPage() {
           )}
         </div>
         <div className="z-10 flex flex-1 flex-col items-center text-center md:items-start md:text-left">
-          <h1 className="mb-1 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-[38px] text-on-surface">{pro.full_name}</h1>
+          <h1 className="mb-1 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-9.5 text-on-surface">{pro.full_name}</h1>
           <p className="mb-4 flex items-center gap-1 text-lg text-primary">
             <span className="material-symbols-outlined text-[20px]">medical_services</span>
-            {pro.type.charAt(0).toUpperCase() + pro.type.slice(1)} • {pro.years_of_experience}y exp
+            {pro.type.charAt(0).toUpperCase() + pro.type.slice(1)} • {pro.years_of_experience}{t('professionals.detail_exp', 'y exp')}
           </p>
           <div className="mb-4 flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1.5">
@@ -73,7 +74,7 @@ export default function ProfessionalDetailPage() {
         </div>
         <div className="z-10 w-full shrink-0 pt-4 md:ml-auto md:w-auto md:pt-0">
           <button onClick={() => navigate(`/appointments/book/${pro._id}`)} className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-on-primary shadow-sm transition-all active:scale-95 hover:bg-on-primary-fixed-variant md:w-auto">
-            <span className="material-symbols-outlined">calendar_month</span> Book Appointment
+            <span className="material-symbols-outlined">calendar_month</span> {t('professionals.detail_book', 'Book Appointment')}
           </button>
         </div>
       </section>
@@ -82,12 +83,12 @@ export default function ProfessionalDetailPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="flex flex-col gap-6 md:col-span-2">
           <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
-            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">About</h2>
+            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">{t('professionals.detail_about', 'About')}</h2>
             <p className="leading-relaxed text-on-surface-variant">{pro.bio}</p>
           </section>
           <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
             <h2 className="mb-4 flex items-center gap-2 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">
-              <span className="material-symbols-outlined text-secondary">psychiatry</span> Specializations
+              <span className="material-symbols-outlined text-secondary">psychiatry</span> {t('professionals.detail_specializations', 'Specializations')}
             </h2>
             <div className="flex flex-wrap gap-2">
               {pro.specializations.map((s: string) => (
@@ -98,16 +99,16 @@ export default function ProfessionalDetailPage() {
         </div>
         <div className="md:col-span-1">
           <section className="sticky top-24 rounded-xl border border-outline-variant bg-surface-container-lowest p-6">
-            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">Availability</h2>
+            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">{t('professionals.detail_availability', 'Availability')}</h2>
             <div className="flex items-center gap-3 rounded-lg bg-surface-container-low p-3">
               <span className="material-symbols-outlined text-secondary">{pro.availability?.online ? "video_camera_front" : "location_on"}</span>
               <p className="font-semibold text-on-surface">
-                {pro.availability?.online && pro.availability?.offline ? "Online & In-Person" : pro.availability?.online ? "Online Only" : "In-Person Only"}
+                {pro.availability?.online && pro.availability?.offline ? t('professionals.availability_both', "Online & In-Person") : pro.availability?.online ? t('professionals.availability_online', "Online Only") : t('professionals.availability_offline', "In-Person Only")}
               </p>
             </div>
             <div className="mt-6 flex items-start gap-2 rounded-lg bg-surface-container-low p-3">
               <span className="material-symbols-outlined mt-0.5 text-[18px] text-secondary">lock</span>
-              <p className="text-xs leading-tight text-on-surface-variant">Your booking details are encrypted and strictly confidential.</p>
+              <p className="text-xs leading-tight text-on-surface-variant">{t('professionals.detail_encryption_notice', 'Your booking details are encrypted and strictly confidential.')}</p>
             </div>
           </section>
         </div>

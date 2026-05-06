@@ -3,14 +3,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getEvents, registerForEvent } from "@/api/events.api"
 import { FeedbackModal } from "@/components/shared/FeedbackModal"
 import type { NuruEvent } from "@/types"
+import { useTranslation } from "react-i18next"
 
-const CATEGORY_FILTERS = [
-  { label: "All", value: "" },
-  { label: "Health", value: "health" },
-  { label: "Career", value: "career" },
-  { label: "Social", value: "social" },
-  { label: "Education", value: "education" },
-]
+export default function EventsPage() {
+  const { t } = useTranslation()
+
+  const CATEGORY_FILTERS = [
+    { label: t('events.filter_all', 'All'), value: "" },
+    { label: t('events.filter_health', 'Health'), value: "health" },
+    { label: t('events.filter_career', 'Career'), value: "career" },
+    { label: t('events.filter_social', 'Social'), value: "social" },
+    { label: t('events.filter_education', 'Education'), value: "education" },
+  ]
 
 const TYPE_ICONS: Record<string, string> = {
   workshop: "build",
@@ -20,7 +24,7 @@ const TYPE_ICONS: Record<string, string> = {
   other: "event",
 }
 
-export default function EventsPage() {
+
   const [category, setCategory] = useState("")
   const [registering, setRegistering] = useState<string | null>(null)
   const [feedbackContextId, setFeedbackContextId] = useState<string | null>(null)
@@ -53,11 +57,11 @@ export default function EventsPage() {
     <div className="mx-auto w-full max-w-5xl px-5 py-8 md:px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-[38px] tracking-[-0.02em] text-on-background">
-          Events & Workshops
+        <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-9.5 tracking-[-0.02em] text-on-background">
+          {t('events.title', 'Events & Workshops')}
         </h1>
         <p className="max-w-2xl text-lg leading-7 text-on-surface-variant">
-          Join workshops, talks, and community gatherings designed for young people.
+          {t('events.subtitle', 'Join workshops, talks, and community gatherings designed for young people.')}
         </p>
       </div>
 
@@ -76,8 +80,8 @@ export default function EventsPage() {
       ) : events.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <span className="material-symbols-outlined mb-4 text-[48px] text-outline">event_busy</span>
-          <h3 className="mb-2 text-lg font-semibold text-on-surface">No events found</h3>
-          <p className="max-w-xs text-sm text-on-surface-variant">Check back later for upcoming events.</p>
+          <h3 className="mb-2 text-lg font-semibold text-on-surface">{t('events.no_events', 'No events found')}</h3>
+          <p className="max-w-xs text-sm text-on-surface-variant">{t('events.no_events_desc', 'Check back later for upcoming events.')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -90,13 +94,13 @@ export default function EventsPage() {
             return (
               <article key={evt._id} className="flex flex-col overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-lowest shadow-[0_4px_20px_rgba(59,130,246,0.05)] transition-all hover:shadow-[0_8px_24px_rgba(59,130,246,0.08)]">
                 {/* Image / Color Header */}
-                <div className="relative h-32 bg-gradient-to-br from-primary-container to-primary-fixed">
+                <div className="relative h-32 bg-linear-to-br from-primary-container to-primary-fixed">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="material-symbols-outlined text-[48px] text-on-primary-container/30" style={{ fontVariationSettings: "'FILL' 1" }}>{icon}</span>
                   </div>
                   {evt.is_online && (
                     <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-surface-container-lowest/90 px-3 py-1 text-xs font-semibold text-primary backdrop-blur-sm">
-                      <span className="material-symbols-outlined text-[14px]">videocam</span> Online
+                      <span className="material-symbols-outlined text-[14px]">videocam</span> {t('events.online', 'Online')}
                     </span>
                   )}
                   <span className="absolute left-3 top-3 rounded-full bg-surface-container-lowest/90 px-3 py-1 text-xs font-semibold text-on-surface uppercase backdrop-blur-sm">{evt.category}</span>
@@ -108,7 +112,7 @@ export default function EventsPage() {
                   <div className="mb-4 space-y-2 text-sm text-on-surface-variant">
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[18px] text-primary">event</span>
-                      {dateStr} at {timeStr}
+                      {dateStr} {t('events.at', 'at')} {timeStr}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[18px] text-primary">location_on</span>
@@ -116,13 +120,13 @@ export default function EventsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-[18px] text-primary">group</span>
-                      {evt.attendee_count} attendees{evt.max_attendees ? ` / ${evt.max_attendees} max` : ""}
+                      {evt.attendee_count} {t('events.attendees', 'attendees')}{evt.max_attendees ? ` / ${evt.max_attendees} ${t('events.max', 'max')}` : ""}
                     </div>
                   </div>
 
                   <button onClick={() => handleRegister(evt._id)} disabled={registering === evt._id}
                     className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 font-semibold text-on-primary transition-all active:scale-[0.98] disabled:opacity-50 hover:bg-on-primary-fixed-variant">
-                    {registering === evt._id ? "Registering..." : "Register"}
+                    {registering === evt._id ? t('events.registering', "Registering...") : t('events.register', "Register")}
                     <span className="material-symbols-outlined text-[20px]">how_to_reg</span>
                   </button>
                 </div>

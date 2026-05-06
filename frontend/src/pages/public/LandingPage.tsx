@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getVideos } from "@/api/content.api"
 import { getEvents } from "@/api/events.api"
 import { useAuthStore } from "@/store/authStore"
+import { useTranslation } from "react-i18next"
 
 function getEmbedUrl(url?: string) {
   if (!url) return undefined;
@@ -24,6 +25,7 @@ export default function LandingPage() {
   const [activeEvent, setActiveEvent] = useState<any>(null)
   const hasSeenOnboarding = localStorage.getItem('nuru_has_seen_onboarding');
   const {isAuthenticated} = useAuthStore();
+  const { t } = useTranslation();
 
   const { data: realVideos } = useQuery({
     queryKey: ["published_videos"],
@@ -110,13 +112,13 @@ export default function LandingPage() {
         <main className="max-w-screen-xl mx-auto px-margin-mobile md:px-xl py-lg space-y-xl">
           <section className="text-center space-y-xl py-12 md:py-24 flex flex-col items-center justify-center reveal active">
             <div className="space-y-sm max-w-4xl">
-              <p className="font-label-caps text-on-surface-variant tracking-wider uppercase mb-4">Built for Ethiopian youth</p>
-              <h1 className="font-h1 text-5xl md:text-6xl lg:text-7xl font-bold text-on-surface leading-tight tracking-tight">You’re not alone. <br className="hidden md:block"/>Get guidance you can trust.</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mt-6">Get private, judgment-free support for your reproductive health and well-being.</p>
+              <p className="font-label-caps text-on-surface-variant tracking-wider uppercase mb-4">{t('landing.built_for')}</p>
+              <h1 className="font-h1 text-5xl md:text-6xl lg:text-7xl font-bold text-on-surface leading-tight tracking-tight">{t('landing.hero_title')}</h1>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mt-6">{t('landing.hero_subtitle')}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-md mt-8">
-              <Link to="/login" className="bg-primary text-on-primary font-button px-8 py-4 rounded-full hover:bg-surface-tint transition-colors shadow-sm text-lg">Start Safely</Link>
-              <button className="bg-surface border border-outline text-primary font-button px-8 py-4 rounded-full hover:bg-surface-container transition-colors text-lg">Explore Topics</button>
+              <Link to="/login" className="bg-primary text-on-primary font-button px-8 py-4 rounded-full hover:bg-surface-tint transition-colors shadow-sm text-lg">{t('landing.start_now')}</Link>
+              <button className="bg-surface border border-outline text-primary font-button px-8 py-4 rounded-full hover:bg-surface-container transition-colors text-lg">{t('landing.learn_more')}</button>
             </div>
           </section>
         </main>
@@ -128,24 +130,24 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-around items-center gap-lg">
             <div className="flex flex-col items-center text-center gap-2">
               <span className="material-symbols-outlined text-[32px] text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
-              <h3 className="font-button text-on-surface">Anonymous &amp; Private</h3>
+              <h3 className="font-button text-on-surface">{t('landing.step1_title')}</h3>
             </div>
             <div className="hidden md:block w-px h-12 bg-outline-variant"></div>
             <div className="flex flex-col items-center text-center gap-2">
               <span className="material-symbols-outlined text-[32px] text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-              <h3 className="font-button text-on-surface">No names. No judgment.</h3>
+              <h3 className="font-button text-on-surface">{t('landing.all_anonymous')}</h3>
             </div>
             <div className="hidden md:block w-px h-12 bg-outline-variant"></div>
             <div className="flex flex-col items-center text-center gap-2">
               <span className="material-symbols-outlined text-[32px] text-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <h3 className="font-button text-on-surface">Built with health professionals</h3>
+              <h3 className="font-button text-on-surface">{t('landing.step2_title')}</h3>
             </div>
           </div>
         </section>
 
         {/* 3. Trusted By */}
         <section className="text-center space-y-md py-md reveal">
-          <p className="font-label-caps text-on-surface-variant uppercase tracking-wider">Aligned with trusted youth and health initiatives</p>
+          <p className="font-label-caps text-on-surface-variant uppercase tracking-wider">{t('landing.trusted_title')}</p>
           <div className="flex flex-wrap justify-center items-center gap-xl md:gap-24 opacity-50">
             <div className="font-h2 text-xl font-semibold text-on-surface">UNFPA Ethiopia</div>
             <div className="font-h2 text-xl font-semibold text-on-surface">Ministry of Health Ethiopia</div>
@@ -162,7 +164,7 @@ export default function LandingPage() {
               <div className="text-4xl font-bold text-on-surface mb-1">
                 {metrics ? (metrics.total_users ?? 0).toLocaleString() + "+" : "5,000+"}
               </div>
-              <div className="font-body-md text-on-surface-variant">Youth supported</div>
+              <div className="font-body-md text-on-surface-variant">{t('landing.youth_supported')}</div>
             </div>
           </div>
           <div className="bg-surface p-xl rounded-2xl border border-outline-variant shadow-sm flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
@@ -173,7 +175,7 @@ export default function LandingPage() {
               <div className="text-4xl font-bold text-on-surface mb-1">
                 {metrics ? (metrics.total_questions ?? 0).toLocaleString() + "+" : "12,000+"}
               </div>
-              <div className="font-body-md text-on-surface-variant">Questions answered</div>
+              <div className="font-body-md text-on-surface-variant">{t('landing.questions_answered')}</div>
             </div>
           </div>
           <div className="bg-surface p-xl rounded-2xl border border-outline-variant shadow-sm flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
@@ -184,7 +186,7 @@ export default function LandingPage() {
               <div className="text-4xl font-bold text-on-surface mb-1">
                 {metrics ? (metrics.total_events ?? 0).toLocaleString() + "+" : "15,000+"}
               </div>
-              <div className="font-body-md text-on-surface-variant">Active Events</div>
+              <div className="font-body-md text-on-surface-variant">{t('reports.events_held')}</div>
             </div>
           </div>
         </section>
@@ -192,30 +194,30 @@ export default function LandingPage() {
         {/* 5. How It Works */}
         <section className="space-y-xl py-md reveal">
           <div className="text-center">
-            <h2 className="font-h1 text-4xl text-on-surface font-bold">How it works</h2>
-            <p className="font-body-lg text-on-surface-variant mt-4">Three simple steps to get the support you need.</p>
+            <h2 className="font-h1 text-4xl text-on-surface font-bold">{t('landing.how_it_works')}</h2>
+            <p className="font-body-lg text-on-surface-variant mt-4">{t('landing.how_subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg relative mt-12">
             <div className="hidden md:block absolute top-1/2 left-[16%] right-[16%] h-1 bg-outline-variant -z-10 rounded-full"></div>
             <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
               <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">1</div>
               <div className="space-y-2">
-                <h3 className="font-h2 text-xl text-on-surface">Choose a Topic</h3>
-                <p className="font-body-md text-on-surface-variant">Select what's on your mind right now from our guided topics.</p>
+                <h3 className="font-h2 text-xl text-on-surface">{t('landing.step1_title', 'Choose a Topic')}</h3>
+                <p className="font-body-md text-on-surface-variant">{t('landing.step1_desc', "Select what's on your mind right now from our guided topics.")}</p>
               </div>
             </div>
             <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
               <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">2</div>
               <div className="space-y-2">
-                <h3 className="font-h2 text-xl text-on-surface">Get Private Guidance</h3>
-                <p className="font-body-md text-on-surface-variant">Receive trustworthy, judgment-free information and answers.</p>
+                <h3 className="font-h2 text-xl text-on-surface">{t('landing.step2_title', 'Get Private Guidance')}</h3>
+                <p className="font-body-md text-on-surface-variant">{t('landing.step2_desc', 'Receive trustworthy, judgment-free information and answers.')}</p>
               </div>
             </div>
             <div className="flex flex-col items-center text-center gap-6 bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 hover:-translate-y-1 transition-transform">
               <div className="w-16 h-16 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-2xl shadow-md border-4 border-surface">3</div>
               <div className="space-y-2">
-                <h3 className="font-h2 text-xl text-on-surface">Take Action</h3>
-                <p className="font-body-md text-on-surface-variant">Find services, resources, or next steps near you.</p>
+                <h3 className="font-h2 text-xl text-on-surface">{t('landing.step3_title', 'Take Action')}</h3>
+                <p className="font-body-md text-on-surface-variant">{t('landing.step3_desc', 'Find services, resources, or next steps near you.')}</p>
               </div>
             </div>
           </div>
@@ -224,8 +226,8 @@ export default function LandingPage() {
         {/* 6. Start with what you're going through */}
         <section className="space-y-lg reveal">
           <div>
-            <h2 className="font-h1 text-4xl text-on-surface font-bold">Start with what you’re going through</h2>
-            <p className="font-body-lg text-on-surface-variant mt-4">Learn more about your body, relationships, and reproductive health in a safe space.</p>
+            <h2 className="font-h1 text-4xl text-on-surface font-bold">{t('landing.features_title', 'Start with what you’re going through')}</h2>
+            <p className="font-body-lg text-on-surface-variant mt-4">{t('landing.features_subtitle', 'Learn more about your body, relationships, and reproductive health in a safe space.')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg">
             <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
@@ -233,8 +235,8 @@ export default function LandingPage() {
                 <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>body_system</span>
               </div>
               <div className="space-y-2">
-                <span className="font-h2 text-2xl text-on-surface group-hover:text-primary transition-colors">Your Body &amp; Changes</span>
-                <p className="font-body-md text-on-surface-variant">Understand puberty, periods, and how your body works without embarrassment.</p>
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-primary transition-colors">{t('explore.body')}</span>
+                <p className="font-body-md text-on-surface-variant">{t('explore.body_desc', 'Understand puberty, periods, and how your body works without embarrassment.')}</p>
               </div>
             </button>
             <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
@@ -242,8 +244,8 @@ export default function LandingPage() {
                 <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>diversity_1</span>
               </div>
               <div className="space-y-2">
-                <span className="font-h2 text-2xl text-on-surface group-hover:text-tertiary transition-colors">Safe Relationships</span>
-                <p className="font-body-md text-on-surface-variant">Learn about consent, setting boundaries, and building healthy connections.</p>
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-tertiary transition-colors">{t('explore.relationships')}</span>
+                <p className="font-body-md text-on-surface-variant">{t('explore.relationships_desc', 'Learn about consent, setting boundaries, and building healthy connections.')}</p>
               </div>
             </button>
             <button className="bg-surface hover:bg-surface-container-low transition-colors rounded-3xl p-8 flex flex-col items-start gap-6 border border-outline-variant shadow-sm hover:shadow-md duration-200 text-left group">
@@ -251,8 +253,8 @@ export default function LandingPage() {
                 <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>fact_check</span>
               </div>
               <div className="space-y-2">
-                <span className="font-h2 text-2xl text-on-surface group-hover:text-secondary transition-colors">Myths vs. Facts</span>
-                <p className="font-body-md text-on-surface-variant">Get accurate, science-backed answers to common questions and dispel rumors.</p>
+                <span className="font-h2 text-2xl text-on-surface group-hover:text-secondary transition-colors">{t('explore.myths')}</span>
+                <p className="font-body-md text-on-surface-variant">{t('explore.myths_desc', 'Get accurate, science-backed answers to common questions and dispel rumors.')}</p>
               </div>
             </button>
           </div>
@@ -262,8 +264,8 @@ export default function LandingPage() {
         <section className="space-y-lg reveal">
           <div className="flex justify-between items-end">
             <div>
-              <h2 className="font-h1 text-3xl text-on-surface font-bold">Events &amp; Workshops</h2>
-              <p className="font-body-md text-on-surface-variant mt-2">Join community sessions online and near you.</p>
+              <h2 className="font-h1 text-3xl text-on-surface font-bold">{t('events.title')}</h2>
+              <p className="font-body-md text-on-surface-variant mt-2">{t('events.subtitle')}</p>
             </div>
             <button className="text-primary font-button hover:underline hidden md:block">View all events</button>
           </div>
@@ -303,8 +305,8 @@ export default function LandingPage() {
         <section className="space-y-lg reveal bg-surface-container-low -mx-margin-mobile md:-mx-xl px-margin-mobile md:px-xl py-12">
           <div className="flex justify-between items-end">
             <div>
-              <h2 className="font-h1 text-3xl text-on-surface font-bold">Watch &amp; Learn</h2>
-              <p className="font-body-md text-on-surface-variant mt-2">Short videos on important topics.</p>
+              <h2 className="font-h1 text-3xl text-on-surface font-bold">{t('explore.title', 'Watch & Learn')}</h2>
+              <p className="font-body-md text-on-surface-variant mt-2">{t('explore.subtitle', 'Short videos on important topics.')}</p>
             </div>
             <button className="text-primary font-button hover:underline hidden md:block">More videos</button>
           </div>
@@ -332,8 +334,8 @@ export default function LandingPage() {
         {/* 9. Learn Something New */}
         <section className="space-y-lg reveal">
           <div>
-            <h2 className="font-h1 text-3xl text-on-surface font-bold">Learn Something New</h2>
-            <p className="font-body-md text-on-surface-variant mt-2">Quick reads on essential health and relationship topics.</p>
+            <h2 className="font-h1 text-3xl text-on-surface font-bold">{t('explore.title', 'Learn Something New')}</h2>
+            <p className="font-body-md text-on-surface-variant mt-2">{t('explore.subtitle', 'Quick reads on essential health and relationship topics.')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
             {[
@@ -378,7 +380,7 @@ export default function LandingPage() {
         {/* 10. Learning & Help */}
         <section className="space-y-lg reveal">
           <div>
-            <h2 className="font-h1 text-3xl text-on-surface font-bold">Resources &amp; Support</h2>
+            <h2 className="font-h1 text-3xl text-on-surface font-bold">{t('common.support', 'Resources & Support')}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
             <a className="bg-surface p-8 rounded-3xl border border-outline-variant flex items-center justify-between hover:shadow-md hover:-translate-y-1 transition-all group h-full" href="#">
@@ -413,7 +415,7 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
             <span className="material-symbols-outlined text-[200px]" style={{ fontVariationSettings: "'FILL' 1" }}>format_quote</span>
           </div>
-          <h2 className="font-h1 text-4xl text-on-surface font-bold text-center mb-12">What others say</h2>
+          <h2 className="font-h1 text-4xl text-on-surface font-bold text-center mb-12">{t('landing.trusted_title', 'What others say')}</h2>
           <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 gap-6 snap-x no-scrollbar">
             {testimonials.map((testimonial, i) => {
               const colors = ["text-primary", "text-tertiary", "text-secondary"];
@@ -431,9 +433,9 @@ export default function LandingPage() {
 
         {/* 12. Final CTA */}
         <section className="text-center space-y-6 py-24 flex flex-col items-center reveal">
-          <h2 className="font-h1 text-4xl md:text-5xl font-bold text-on-surface">Start your journey safely today</h2>
-          <p className="font-body-lg text-on-surface-variant font-medium">Private. Safe. Always.</p>
-          <Link to="/login" className="bg-primary text-on-primary font-button px-10 py-4 rounded-full hover:bg-surface-tint transition-all shadow-md hover:shadow-lg mt-8 text-lg hover:-translate-y-1">Start Safely</Link>
+          <h2 className="font-h1 text-4xl md:text-5xl font-bold text-on-surface">{t('landing.start_journey')}</h2>
+          <p className="font-body-lg text-on-surface-variant font-medium">{t('landing.all_anonymous')}</p>
+          <Link to="/login" className="bg-primary text-on-primary font-button px-10 py-4 rounded-full hover:bg-surface-tint transition-all shadow-md hover:shadow-lg mt-8 text-lg hover:-translate-y-1">{t('landing.start_now')}</Link>
         </section>
       </main>
 
@@ -459,19 +461,19 @@ export default function LandingPage() {
             <button onClick={() => setShowSupportModal(false)} className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface p-2 rounded-full hover:bg-surface-variant transition-colors">
               <span className="material-symbols-outlined">close</span>
             </button>
-            <h2 className="font-h2 text-h2 mb-4 text-primary">Need Help?</h2>
+            <h2 className="font-h2 text-h2 mb-4 text-primary">{t('common.support', 'Need Help?')}</h2>
             <div className="flex flex-col gap-3">
               <Link to="/about" className="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors active:scale-[0.98]">
                 <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
                   <span className="material-symbols-outlined">info</span>
                 </div>
-                <span className="font-button text-button text-on-surface">About Nuru</span>
+                <span className="font-button text-button text-on-surface">{t('common.faq', 'About Nuru')}</span>
               </Link>
               <Link to="/contact" className="flex items-center gap-3 p-4 rounded-xl border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors active:scale-[0.98]">
                 <div className="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
                   <span className="material-symbols-outlined">support_agent</span>
                 </div>
-                <span className="font-button text-button text-on-surface">Contact Support</span>
+                <span className="font-button text-button text-on-surface">{t('common.contact', 'Contact Support')}</span>
               </Link>
               <button 
                 onClick={() => {

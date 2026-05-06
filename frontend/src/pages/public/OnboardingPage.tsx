@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(0)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const handleNext = () => {
     if (step < 5) {
@@ -31,14 +33,14 @@ export default function OnboardingPage() {
         <img alt="Warm Welcome Illustration" className="w-full h-full object-cover opacity-90 mix-blend-multiply dark:mix-blend-normal" src="/Nuru_Logo.png"/>
       </div>
       <div className="text-center w-full mb-xl">
-        <h1 className="font-h1 text-h1 text-primary mb-sm">Welcome to your safe space.</h1>
+        <h1 className="font-h1 text-h1 text-primary mb-sm">{t('onboarding.welcome_title', 'Welcome to your safe space.')}</h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant mx-auto">
-          Nuru is here to support you on your journey. We provide a private, trusted environment for you to explore and understand your health.
+          {t('onboarding.welcome_desc', 'Nuru is here to support you on your journey. We provide a private, trusted environment for you to explore and understand your health.')}
         </p>
       </div>
       <div className="w-full flex justify-center mt-auto">
         <button onClick={handleNext} className="w-full bg-primary text-on-primary font-button text-button py-4 rounded-full shadow-[0_-4px_20px_rgba(59,130,246,0.08)] active:scale-[0.98] transition-transform duration-200 flex items-center justify-center gap-2">
-          Get Started
+          {t('onboarding.get_started', 'Get Started')}
           <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>arrow_forward</span>
         </button>
       </div>
@@ -60,20 +62,20 @@ export default function OnboardingPage() {
           </div>
         </div>
         <div className="flex flex-col space-y-md mx-auto">
-          <h1 className="font-h1 text-h1 text-on-surface">No names.<br/>No judgment.</h1>
-          <h2 className="font-h2 text-h2 text-primary">Your secrets are safe with us.</h2>
+          <h1 className="font-h1 text-h1 text-on-surface"><span dangerouslySetInnerHTML={{ __html: t('onboarding.privacy_title_html', 'No names.<br/>No judgment.') }} /></h1>
+          <h2 className="font-h2 text-h2 text-primary">{t('onboarding.privacy_subtitle', 'Your secrets are safe with us.')}</h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant pt-sm">
-            Nuru is completely anonymous. We never ask for your real name, and your personal data is never shared. This is a secure space designed just for you.
+            {t('onboarding.privacy_desc', 'Nuru is completely anonymous. We never ask for your real name, and your personal data is never shared. This is a secure space designed just for you.')}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-gutter w-full mt-lg">
           <div className="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-[0_4px_16px_rgba(59,130,246,0.04)]">
             <span className="material-symbols-outlined text-secondary text-2xl mb-xs">visibility_off</span>
-            <span className="font-label-caps text-label-caps text-on-surface-variant">Invisible</span>
+            <span className="font-label-caps text-label-caps text-on-surface-variant">{t('onboarding.invisible', 'Invisible')}</span>
           </div>
           <div className="flex flex-col items-center justify-center p-md bg-surface-container-lowest rounded-2xl border border-outline-variant/20 shadow-[0_4px_16px_rgba(59,130,246,0.04)]">
             <span className="material-symbols-outlined text-secondary text-2xl mb-xs">encrypted</span>
-            <span className="font-label-caps text-label-caps text-on-surface-variant">Encrypted</span>
+            <span className="font-label-caps text-label-caps text-on-surface-variant">{t('onboarding.encrypted', 'Encrypted')}</span>
           </div>
         </div>
       </div>
@@ -83,9 +85,9 @@ export default function OnboardingPage() {
   const renderHowNuruHelps = () => (
     <main className="flex-grow w-full xl mx-auto px-margin-mobile pt-28 pb-40 flex flex-col gap-lg animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="text-center mb-md">
-        <h1 className="font-h1 text-h1 text-on-surface mb-sm">How Nuru Helps</h1>
+        <h1 className="font-h1 text-h1 text-on-surface mb-sm">{t('onboarding.how_helps', 'How Nuru Helps')}</h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant [280px] mx-auto">
-          Your safe, private space to find answers and get care.
+          {t('onboarding.how_helps_desc', 'Your safe, private space to find answers and get care.')}
         </p>
       </div>
       <div className="w-full h-48 rounded-2xl bg-surface-container-high mb-sm overflow-hidden relative shadow-[0_-4px_20px_rgba(59,130,246,0.08)]">
@@ -100,8 +102,8 @@ export default function OnboardingPage() {
             </div>
           </div>
           <div className="pt-2">
-            <h2 className="font-button text-button text-on-surface mb-xs">Ask a question</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Chat privately with our AI guide about your health concerns without any judgment.</p>
+            <h2 className="font-button text-button text-on-surface mb-xs">{t('onboarding.ask_question', 'Ask a question')}</h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">{t('onboarding.ask_question_desc', 'Chat privately with our AI guide about your health concerns without any judgment.')}</p>
           </div>
         </div>
         <div className="flex gap-md mb-lg relative z-10">
@@ -111,8 +113,8 @@ export default function OnboardingPage() {
             </div>
           </div>
           <div className="pt-2">
-            <h2 className="font-button text-button text-on-surface mb-xs">Get guided steps</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Receive personalized, medically accurate information and actionable advice.</p>
+            <h2 className="font-button text-button text-on-surface mb-xs">{t('onboarding.guided_steps', 'Get guided steps')}</h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">{t('onboarding.guided_steps_desc', 'Receive personalized, medically accurate information and actionable advice.')}</p>
           </div>
         </div>
         <div className="flex gap-md relative z-10">
@@ -122,8 +124,8 @@ export default function OnboardingPage() {
             </div>
           </div>
           <div className="pt-2">
-            <h2 className="font-button text-button text-on-surface mb-xs">Find safe solutions</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Locate verified, youth-friendly clinics nearby for professional support and care.</p>
+            <h2 className="font-button text-button text-on-surface mb-xs">{t('onboarding.safe_solutions', 'Find safe solutions')}</h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">{t('onboarding.safe_solutions_desc', 'Locate verified, youth-friendly clinics nearby for professional support and care.')}</p>
           </div>
         </div>
       </div>
@@ -136,9 +138,9 @@ export default function OnboardingPage() {
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container text-on-secondary-container mx-auto mb-sm">
           <span className="material-symbols-outlined text-[32px]" style={{fontVariationSettings: "'FILL' 1"}}>group</span>
         </div>
-        <h1 className="font-h1 text-h1 text-on-surface">Community &amp; Support</h1>
+        <h1 className="font-h1 text-h1 text-on-surface">{t('onboarding.community', 'Community & Support')}</h1>
         <p className="font-body-lg text-body-lg text-on-surface-variant px-4">
-          Hear from others like you. You are never alone on this journey.
+          {t('onboarding.community_desc', 'Hear from others like you. You are never alone on this journey.')}
         </p>
       </section>
       <section className="grid grid-cols-1 md:grid-cols-2 gap-md">
@@ -147,13 +149,13 @@ export default function OnboardingPage() {
             <span className="material-symbols-outlined text-[64px]" style={{fontVariationSettings: "'FILL' 1"}}>format_quote</span>
           </div>
           <p className="font-body-md text-body-md text-on-surface italic relative z-10">
-            "Finding reliable answers here helped me feel less anxious and more in control of my health choices."
+            "{t('onboarding.testimonial_1', 'Finding reliable answers here helped me feel less anxious and more in control of my health choices.')}"
           </p>
           <div className="flex items-center gap-sm relative z-10">
             <div className="w-10 h-10 rounded-full bg-primary-fixed-dim overflow-hidden bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdzkQIZEmz5vh3IA8BFL5dN9ifLEf4VtFnSlQ5GKsmGd1vPW-rkPC2sYe6DGi3zDz9ZKppjOCO0qda7sUT75a9UptGfE9gN4vu7rfi_fFQOQ7cRVj55dwHRNkcgLt6Frkqx1liMsjB-9EChXFYFcGJB8hF5Iv_6jr2RjxOemcU9fkTbhTXw2XWsTZGuhHR9SeMlCfJT106C3MHRaQG4-Q9jpiM_6ydVjwz6WyXOW2SQ4GYR6E8yOa1gkCFXmkwzVhXflbFlX64aHM')"}}></div>
             <div>
               <p className="font-button text-button text-on-surface">Anonymous</p>
-              <p className="font-label-caps text-label-caps text-outline">University Student</p>
+              <p className="font-label-caps text-label-caps text-outline">{t('onboarding.uni_student', 'University Student')}</p>
             </div>
           </div>
         </div>
@@ -162,13 +164,13 @@ export default function OnboardingPage() {
             <span className="material-symbols-outlined text-[64px]" style={{fontVariationSettings: "'FILL' 1"}}>format_quote</span>
           </div>
           <p className="font-body-md text-body-md text-on-surface italic relative z-10">
-            "The community feels safe. I finally asked questions I was too scared to ask anyone else."
+            "{t('onboarding.testimonial_2', 'The community feels safe. I finally asked questions I was too scared to ask anyone else.')}"
           </p>
           <div className="flex items-center gap-sm relative z-10">
             <div className="w-10 h-10 rounded-full bg-secondary-fixed-dim overflow-hidden bg-cover bg-center" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBfA-kJqqjWQ9DKMZ9Lx1FSXP1T67pdIFk3Ls1eFBSBsNjAxp4vtHu92sHzAiFmzF1hQ0OvVaXG83Aqc34w1gyT6R-MiuazZ6MxxMFVDCDjZymag-l1jSFzbYv3Xsosbm6TRrBq459w-hYseSoAfz52qtDUqXI_OVTQP9gsBqLW05bIF3rJHwsatOloS8r5v579TVB41OhJyS8Tnxs3nIdBSGgruDKQF5dbVJ7dvLsdzL7zv0TrhcmpUYmE-FxeotEf2By-cJhI_6Y')"}}></div>
             <div>
               <p className="font-button text-button text-on-surface">Anonymous</p>
-              <p className="font-label-caps text-label-caps text-outline">Young Professional</p>
+              <p className="font-label-caps text-label-caps text-outline">{t('onboarding.young_prof', 'Young Professional')}</p>
             </div>
           </div>
         </div>
@@ -178,9 +180,9 @@ export default function OnboardingPage() {
         <div className="absolute bottom-[-40px] right-[-20px] w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
         <div className="relative z-10 flex flex-col items-center gap-sm">
           <span className="material-symbols-outlined text-[40px]" style={{fontVariationSettings: "'FILL' 1"}}>support_agent</span>
-          <h2 className="font-h2 text-h2 text-on-primary-container">Need more help?</h2>
+          <h2 className="font-h2 text-h2 text-on-primary-container">{t('onboarding.more_help', 'Need more help?')}</h2>
           <p className="font-body-md text-body-md text-on-primary-container/90 [280px]">
-            Professional counselors are available to chat privately and confidentially whenever you're ready.
+            {t('onboarding.more_help_desc', "Professional counselors are available to chat privately and confidentially whenever you're ready.")}
           </p>
         </div>
       </section>
@@ -194,14 +196,17 @@ export default function OnboardingPage() {
     <main className="xl mx-auto px-margin-mobile flex flex-col gap-10 pt-28 pb-32 animate-in fade-in slide-in-from-right-4 duration-300">
       <section className="flex flex-col gap-3 mt-4">
         <div className="w-16 h-16 rounded-2xl mb-2 bg-gradient-to-br from-primary-fixed to-secondary-fixed opacity-60"></div>
-        <h1 className="font-h1 text-h1 text-on-surface">Personalize Your Experience</h1>
-        <p className="font-body-md text-body-md text-on-surface-variant">Let's tailor Nuru to make it feel like your own safe space.</p>
+        <h1 className="font-h1 text-h1 text-on-surface">{t('onboarding.personalize', 'Personalize Your Experience')}</h1>
+        <p className="font-body-md text-body-md text-on-surface-variant">{t('onboarding.personalize_desc', "Let's tailor Nuru to make it feel like your own safe space.")}</p>
       </section>
       <section className="flex flex-col gap-4">
-        <h2 className="font-h2 text-h2 text-on-surface">Language</h2>
+        <h2 className="font-h2 text-h2 text-on-surface">{t('onboarding.language', 'Language')}</h2>
         <div className="grid grid-cols-1 gap-3">
           {["English", "አማርኛ", "Afaan Oromoo"].map(lang => (
-            <button key={lang} onClick={() => setLanguage(lang)} className={`flex items-center justify-between p-lg rounded-xl border-2 text-left w-full transition-colors ${language === lang ? "border-primary bg-primary-fixed/20" : "border-outline-variant bg-surface hover:bg-surface-container-low"}`}>
+            <button key={lang} onClick={() => {
+              setLanguage(lang)
+              // Handle i18n change later if desired
+            }} className={`flex items-center justify-between p-lg rounded-xl border-2 text-left w-full transition-colors ${language === lang ? "border-primary bg-primary-fixed/20" : "border-outline-variant bg-surface hover:bg-surface-container-low"}`}>
               <div className="flex flex-col gap-1 relative z-10">
                 <span className={`font-button text-button ${language === lang ? "text-on-primary-fixed" : "text-on-surface"}`}>{lang}</span>
               </div>
@@ -211,13 +216,13 @@ export default function OnboardingPage() {
         </div>
       </section>
       <section className="flex flex-col gap-4">
-        <h2 className="font-h2 text-h2 text-on-surface">Areas of Focus</h2>
-        <p className="font-body-md text-body-md text-on-surface-variant mb-2">Select what you'd like to explore first.</p>
+        <h2 className="font-h2 text-h2 text-on-surface">{t('onboarding.focus', 'Areas of Focus')}</h2>
+        <p className="font-body-md text-body-md text-on-surface-variant mb-2">{t('onboarding.focus_desc', "Select what you'd like to explore first.")}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "Relationships", icon: "favorite", desc: "Navigating connections, boundaries, and communication." },
-            { id: "Health", icon: "health_and_safety", desc: "Understanding your body, wellbeing, and safety." },
-            { id: "Personal Growth", icon: "psychology", desc: "Building confidence, life skills, and planning for the future.", cols: "sm:col-span-2" }
+            { id: "Relationships", icon: "favorite", title: t('explore.relationships', 'Relationships'), desc: t('onboarding.focus_rel_desc', "Navigating connections, boundaries, and communication.") },
+            { id: "Health", icon: "health_and_safety", title: t('explore.body', 'Health'), desc: t('onboarding.focus_health_desc', "Understanding your body, wellbeing, and safety.") },
+            { id: "Personal Growth", icon: "psychology", title: t('explore.goals', 'Personal Growth'), desc: t('onboarding.focus_growth_desc', "Building confidence, life skills, and planning for the future."), cols: "sm:col-span-2" }
           ].map(item => (
             <button key={item.id} onClick={() => setInterest(item.id)} className={`flex flex-col gap-3 p-lg rounded-xl border-2 text-left w-full transition-colors ${item.cols || ""} ${interest === item.id ? "border-primary bg-surface" : "border-outline-variant bg-surface hover:bg-surface-container-low"}`}>
               <div className="flex justify-between items-start w-full">
@@ -227,7 +232,7 @@ export default function OnboardingPage() {
                 <span className={`material-symbols-outlined ${interest === item.id ? "text-primary" : "text-outline-variant opacity-50"}`} style={{fontVariationSettings: interest === item.id ? "'FILL' 1" : "'FILL' 0"}}>{interest === item.id ? "check_circle" : "add_circle"}</span>
               </div>
               <div>
-                <h3 className="font-button text-button text-on-surface mb-1">{item.id}</h3>
+                <h3 className="font-button text-button text-on-surface mb-1">{item.title}</h3>
                 <p className="font-body-md text-[14px] leading-tight text-on-surface-variant">{item.desc}</p>
               </div>
             </button>
@@ -248,13 +253,13 @@ export default function OnboardingPage() {
           </div>
         </div>
         <div className="space-y-sm [280px]">
-          <h1 className="font-h1 text-h1 text-on-surface tracking-tight">You're all set!</h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant">Your journey to safe, informed choices starts now.</p>
+          <h1 className="font-h1 text-h1 text-on-surface tracking-tight">{t('onboarding.all_set', "You're all set!")}</h1>
+          <p className="font-body-lg text-body-lg text-on-surface-variant">{t('onboarding.journey_starts', 'Your journey to safe, informed choices starts now.')}</p>
         </div>
       </section>
       <section className="w-full pt-lg pb-sm mt-auto z-20">
         <button onClick={completeOnboarding} className="w-full bg-primary text-on-primary font-button text-button py-[18px] px-6 rounded-full shadow-[0_8px_24px_rgba(0,88,190,0.15)] hover:bg-surface-tint hover:shadow-[0_12px_32px_rgba(0,88,190,0.2)] active:scale-[0.98] transition-all duration-300 flex justify-center items-center gap-2 group">
-          <span>Go to Dashboard</span>
+          <span>{t('onboarding.go_dashboard', 'Go to Dashboard')}</span>
           <span className="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
         </button>
       </section>
@@ -282,7 +287,7 @@ export default function OnboardingPage() {
           <span className="font-h1 text-2xl font-bold tracking-tight text-primary">Nuru</span>
           {step < 5 && (
             <button onClick={completeOnboarding} className="font-button text-primary hover:bg-surface-container-low px-4 py-2 rounded-full active:scale-95 transition-all">
-              Skip
+              {t('common.skip', 'Skip')}
             </button>
           )}
         </div>
@@ -306,7 +311,7 @@ export default function OnboardingPage() {
             <div className="flex justify-around items-center px-4 py-4 mx-auto w-full">
               <button onClick={handleBack} className="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-6 py-2 active:scale-[0.98] transition-all duration-200">
                 <span className="material-symbols-outlined mb-1 text-[24px]">arrow_back</span>
-                <span className="font-label-caps font-medium">Back</span>
+                <span className="font-label-caps font-medium">{t('common.back', 'Back')}</span>
               </button>
   
               <div className="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2">
@@ -320,7 +325,7 @@ export default function OnboardingPage() {
   
               <button onClick={handleNext} className="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-6 py-2 hover:bg-primary hover:text-on-primary active:scale-[0.98] transition-all duration-200">
                 <span className="material-symbols-outlined mb-1 text-[24px]">arrow_forward</span>
-                <span className="font-label-caps font-medium">Next</span>
+                <span className="font-label-caps font-medium">{t('common.next', 'Next')}</span>
               </button>
             </div>
           </nav>

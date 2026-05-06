@@ -2,15 +2,17 @@ import { useState, useEffect } from "react"
 import { getServices } from "@/api/services.api"
 import { NuruButton } from "@/components/shared/buttons/NuruButton"
 import type { ServiceLocation } from "@/types"
-
-const FILTERS = [
-  { label: "All Nearby", tag: "", icon: "check" },
-  { label: "Free Services", tag: "free_options", icon: "volunteer_activism" },
-  { label: "Youth-friendly", tag: "youth_friendly", icon: "child_care" },
-  { label: "Pharmacy", tag: "pharmacy", icon: "medication" },
-]
+import { useTranslation } from "react-i18next"
 
 export default function ServicesPage() {
+  const { t } = useTranslation()
+
+  const FILTERS = [
+    { label: t('services.filter_all', 'All Nearby'), tag: "", icon: "check" },
+    { label: t('services.filter_free', 'Free Services'), tag: "free_options", icon: "volunteer_activism" },
+    { label: t('services.filter_youth', 'Youth-friendly'), tag: "youth_friendly", icon: "child_care" },
+    { label: t('services.filter_pharmacy', 'Pharmacy'), tag: "pharmacy", icon: "medication" },
+  ]
   const [services, setServices] = useState<ServiceLocation[]>([])
   const [selectedService, setSelectedService] = useState<ServiceLocation | null>(null)
   const [activeFilter, setActiveFilter] = useState("")
@@ -56,7 +58,7 @@ export default function ServicesPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-xl border border-outline-variant/50 bg-surface-container-low py-3 pr-4 pl-12 text-on-surface transition-all outline-none focus:border-primary focus:ring-2 focus:ring-primary"
-            placeholder="Search clinics, services..."
+            placeholder={t('services.search_placeholder', 'Search clinics, services...')}
           />
         </div>
         <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
@@ -88,7 +90,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Map Placeholder */}
-      <section id="services-map" className="relative mb-8 h-64 overflow-hidden rounded-[24px] border border-outline-variant/20 shadow-[0_8px_30px_rgba(59,130,246,0.12)] md:h-80">
+      <section id="services-map" className="relative mb-8 h-64 overflow-hidden rounded-3xl border border-outline-variant/20 shadow-[0_8px_30px_rgba(59,130,246,0.12)] md:h-80">
         <div className="absolute inset-0 flex items-center justify-center bg-surface-container">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn4iEXwaN2fcAMyoxD7jmyIAdBiHujlws1iwjqL3vfrRLtM251LTQgMQqB295xugyb97YkMBix1I0soxnjCzVFauuEXRat_MpPw0qjEJVjC9NI12KnprQUax5htODoCKskmuyOAkYC3VEMb7oRZIAATljRZaSoLNgKinUIPT6rm6g248_qJH0mOOU8ROMnRM6o2eOEW5tyK_7tAjYg1hSaNCMX1Qwyt3v4olnNFqw3gcg3v9IgQVSUi1homcLN1W55rDdyS_EtXgg"
@@ -96,14 +98,14 @@ export default function ServicesPage() {
             className="h-full w-full object-cover opacity-60"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-surface/80 to-transparent" />
         <div className="absolute right-4 bottom-4 left-4 flex items-end justify-between">
           <div className="rounded-xl border border-outline-variant/30 bg-surface/90 px-4 py-2 shadow-sm backdrop-blur-md">
             <p className="mb-1 text-xs font-semibold tracking-wider text-outline uppercase">
-              {selectedService ? "Directions to" : "Showing"}
+              {selectedService ? t('services.directions_to', "Directions to") : t('services.showing', "Showing")}
             </p>
             <p className="font-semibold text-on-surface">
-              {selectedService ? `${selectedService.name} (${selectedService.distance})` : `${services.length} clinics near you`}
+              {selectedService ? `${selectedService.name} (${selectedService.distance})` : t('services.clinics_near_you', { count: services.length, defaultValue: '{{count}} clinics near you' })}
             </p>
           </div>
           <button className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg transition-transform hover:scale-105">
@@ -122,14 +124,14 @@ export default function ServicesPage() {
           {services?.map((svc, i) => (
             <article
               key={i}
-              className="flex h-full flex-col rounded-[24px] border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(59,130,246,0.05)] transition-all hover:shadow-[0_8px_24px_rgba(59,130,246,0.08)]"
+              className="flex h-full flex-col rounded-3xl border border-outline-variant/30 bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(59,130,246,0.05)] transition-all hover:shadow-[0_8px_24px_rgba(59,130,246,0.08)]"
             >
               <div className="mb-4 flex items-start justify-between">
                 <div>
                   <div className="mb-1 flex flex-wrap items-center gap-2">
                     {svc.verified && (
                       <span className="rounded-md bg-secondary-container/50 px-2 py-0.5 text-[10px] font-semibold text-on-secondary-container uppercase">
-                        Verified
+                        {t('services.verified', 'Verified')}
                       </span>
                     )}
                     {svc.tags?.map((tag: string) => (
@@ -148,7 +150,7 @@ export default function ServicesPage() {
                     <span className="material-symbols-outlined text-[16px]">
                       location_on
                     </span>
-                    {svc.distance} away • {svc.area}
+                    {svc.distance} {t('services.away', 'away')} • {svc.area}
                   </p>
                 </div>
                 <div className="rounded-xl bg-surface-container p-2 text-primary">
@@ -157,9 +159,9 @@ export default function ServicesPage() {
                   </span>
                 </div>
               </div>
-              <div className="mb-6 flex-grow">
+              <div className="mb-6 grow">
                 <p className="mb-2 text-xs font-semibold text-outline uppercase">
-                  Available Services
+                  {t('services.available_services', 'Available Services')}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {svc.services?.map((s: string) => (
@@ -179,7 +181,7 @@ export default function ServicesPage() {
                   onClick={() => handleGetDirections(svc)}
                   leftIcon={<span className="material-symbols-outlined text-[20px]">directions</span>}
                 >
-                  Get Directions
+                  {t('services.get_directions', 'Get Directions')}
                 </NuruButton>
                 {svc.phone && (
                   <NuruButton
@@ -188,7 +190,7 @@ export default function ServicesPage() {
                     onClick={() => window.location.href = `tel:${svc.phone}`}
                     leftIcon={<span className="material-symbols-outlined text-[20px]">call</span>}
                   >
-                    Call
+                    {t('services.call', 'Call')}
                   </NuruButton>
                 )}
               </div>

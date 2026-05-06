@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { createAppointment } from "@/api/appointment.api"
+import { useTranslation } from "react-i18next"
 
 const TIME_SLOTS = ["09:00 AM", "10:30 AM", "01:00 PM", "03:30 PM"]
 
 export default function BookAppointmentPage() {
   const { professionalId } = useParams<{ professionalId: string }>()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [selectedDate, setSelectedDate] = useState<number | null>(null)
   const [selectedTime, setSelectedTime] = useState("")
   const [appointmentType, setAppointmentType] = useState<"online" | "offline">("online")
@@ -47,11 +49,11 @@ export default function BookAppointmentPage() {
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
             <span className="material-symbols-outlined text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
-          <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">Appointment Booked!</h1>
-          <p className="text-lg text-on-surface-variant">Your session has been scheduled. You'll receive a confirmation shortly.</p>
+          <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">{t('appointments.booked_title', 'Appointment Booked!')}</h1>
+          <p className="text-lg text-on-surface-variant">{t('appointments.booked_desc', "Your session has been scheduled. You'll receive a confirmation shortly.")}</p>
           <div className="flex flex-col gap-3">
-            <button onClick={() => navigate("/appointments")} className="w-full rounded-full bg-primary py-4 font-semibold text-on-primary">View My Appointments</button>
-            <button onClick={() => navigate("/professionals")} className="w-full rounded-full border border-outline-variant py-4 font-semibold text-on-surface transition-colors hover:bg-surface-container-low">Back to Directory</button>
+            <button onClick={() => navigate("/appointments")} className="w-full rounded-full bg-primary py-4 font-semibold text-on-primary">{t('appointments.view_my_appointments', 'View My Appointments')}</button>
+            <button onClick={() => navigate("/professionals")} className="w-full rounded-full border border-outline-variant py-4 font-semibold text-on-surface transition-colors hover:bg-surface-container-low">{t('appointments.back_directory', 'Back to Directory')}</button>
           </div>
         </div>
       </div>
@@ -73,8 +75,8 @@ export default function BookAppointmentPage() {
       <main className="mx-auto w-full grow px-5 py-6 pb-32 md:pb-6">
         {/* Title */}
         <div className="mb-6 mt-4 text-center">
-          <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">Book a Session</h1>
-          <p className="text-on-surface-variant">We're here to listen. Let's find a time that works for you.</p>
+          <h1 className="mb-2 font-['Plus_Jakarta_Sans'] text-[30px] font-bold text-on-surface">{t('appointments.book_session_title', 'Book a Session')}</h1>
+          <p className="text-on-surface-variant">{t('appointments.book_session_desc', "We're here to listen. Let's find a time that works for you.")}</p>
         </div>
 
         {/* Progress */}
@@ -88,8 +90,8 @@ export default function BookAppointmentPage() {
             <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary-container/20 blur-3xl" />
 
             {/* Calendar */}
-            <h2 className="mb-1 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">Select Date</h2>
-            <p className="mb-4 text-on-surface-variant">Choose an available day.</p>
+            <h2 className="mb-1 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">{t('appointments.select_date', 'Select Date')}</h2>
+            <p className="mb-4 text-on-surface-variant">{t('appointments.select_date_desc', 'Choose an available day.')}</p>
 
             <div className="mb-2 flex items-center justify-between px-2">
               <span className="font-semibold text-on-surface">{currentMonth}</span>
@@ -117,7 +119,7 @@ export default function BookAppointmentPage() {
             <hr className="mb-6 border-outline-variant/50" />
 
             {/* Time */}
-            <h2 className="mb-2 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">Select Time</h2>
+            <h2 className="mb-2 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">{t('appointments.select_time', 'Select Time')}</h2>
             <div className="mb-6 grid grid-cols-3 gap-2">
               {TIME_SLOTS.map((t) => (
                 <button key={t} onClick={() => setSelectedTime(t)}
@@ -129,7 +131,7 @@ export default function BookAppointmentPage() {
 
             <button disabled={!selectedDate || !selectedTime} onClick={() => setStep(2)}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-semibold text-on-primary shadow-[0_4px_12px_rgba(0,88,190,0.2)] transition-all active:scale-[0.98] disabled:opacity-50 hover:opacity-90">
-              Continue to Next Step
+              {t('appointments.continue_next', 'Continue to Next Step')}
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>
@@ -137,24 +139,24 @@ export default function BookAppointmentPage() {
 
         {step === 2 && (
           <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-6 shadow-[0_4px_20px_rgba(59,130,246,0.05)]">
-            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">Confirm Details</h2>
+            <h2 className="mb-4 font-['Plus_Jakarta_Sans'] text-2xl font-semibold text-on-surface">{t('appointments.confirm_details', 'Confirm Details')}</h2>
 
             <div className="mb-6 space-y-3">
               <div className="flex items-center gap-3 rounded-lg bg-surface-container-low p-3">
                 <span className="material-symbols-outlined text-primary">event</span>
-                <span className="text-on-surface">{selectedDate} {currentMonth} at {selectedTime}</span>
+                <span className="text-on-surface">{selectedDate} {currentMonth} {t('appointments.at', 'at')} {selectedTime}</span>
               </div>
             </div>
 
             {/* Type */}
             <div className="mb-6">
-              <p className="mb-2 text-sm font-semibold text-on-surface-variant">Session Type</p>
+              <p className="mb-2 text-sm font-semibold text-on-surface-variant">{t('appointments.session_type', 'Session Type')}</p>
               <div className="flex gap-3">
-                {(["online", "offline"] as const).map((t) => (
-                  <button key={t} onClick={() => setAppointmentType(t)}
-                    className={`flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 px-4 font-semibold transition-all ${appointmentType === t ? "border-2 border-primary bg-surface-container-low text-primary" : "border-outline-variant text-on-surface"}`}>
-                    <span className="material-symbols-outlined text-[20px]">{t === "online" ? "video_camera_front" : "location_on"}</span>
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                {(["online", "offline"] as const).map((apptType) => (
+                  <button key={apptType} onClick={() => setAppointmentType(apptType)}
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-xl border py-3 px-4 font-semibold transition-all ${appointmentType === apptType ? "border-2 border-primary bg-surface-container-low text-primary" : "border-outline-variant text-on-surface"}`}>
+                    <span className="material-symbols-outlined text-[20px]">{apptType === "online" ? "video_camera_front" : "location_on"}</span>
+                    {apptType === "online" ? t('appointments.type_online', 'Online') : t('appointments.type_offline', 'In-Person')}
                   </button>
                 ))}
               </div>
@@ -162,14 +164,14 @@ export default function BookAppointmentPage() {
 
             {/* Notes */}
             <div className="mb-6">
-              <label className="mb-2 block text-sm font-semibold text-on-surface-variant">Notes (optional)</label>
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} placeholder="Anything you'd like the professional to know..." className="w-full rounded-xl border border-outline-variant bg-surface-container-low p-3 text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary" />
+              <label className="mb-2 block text-sm font-semibold text-on-surface-variant">{t('appointments.notes', 'Notes (optional)')}</label>
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} placeholder={t('appointments.notes_placeholder', "Anything you'd like the professional to know...")} className="w-full rounded-xl border border-outline-variant bg-surface-container-low p-3 text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary" />
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 rounded-full border border-outline-variant py-4 font-semibold text-on-surface transition-colors hover:bg-surface-container-low">Back</button>
+              <button onClick={() => setStep(1)} className="flex-1 rounded-full border border-outline-variant py-4 font-semibold text-on-surface transition-colors hover:bg-surface-container-low">{t('appointments.back', 'Back')}</button>
               <button onClick={handleBook} disabled={loading} className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary py-4 font-semibold text-on-primary transition-all active:scale-[0.98] disabled:opacity-50">
-                {loading ? "Booking..." : "Confirm Booking"}
+                {loading ? t('appointments.booking_btn', "Booking...") : t('appointments.confirm_btn', "Confirm Booking")}
               </button>
             </div>
           </div>

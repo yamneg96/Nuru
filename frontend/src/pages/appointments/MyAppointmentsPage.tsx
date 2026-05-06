@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { getMyAppointments, cancelAppointment, rateAppointment } from "@/api/appointment.api"
 import type { Appointment } from "@/types"
+import { useTranslation } from "react-i18next"
 
 type Tab = "upcoming" | "past"
 
@@ -14,6 +15,7 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; icon: string }> 
 
 export default function MyAppointmentsPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<Tab>("upcoming")
@@ -33,7 +35,7 @@ export default function MyAppointmentsPage() {
   const displayed = tab === "upcoming" ? upcoming : past
 
   const handleCancel = async (id: string) => {
-    if (!confirm("Cancel this appointment?")) return
+    if (!confirm(t('appointments.cancel_confirm', "Cancel this appointment?"))) return
     try {
       const updated = await cancelAppointment(id)
       setAppointments((prev) => prev.map((a) => (a._id === id ? updated : a)))
@@ -50,7 +52,7 @@ export default function MyAppointmentsPage() {
 
   const getProfName = (a: Appointment) => {
     if (typeof a.professional_id === "object") return a.professional_id.full_name
-    return "Professional"
+    return t('appointments.professional_default', "Professional")
   }
 
   const getProfType = (a: Appointment) => {
@@ -63,14 +65,14 @@ export default function MyAppointmentsPage() {
       {/* Header */}
       <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="mb-1 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-[38px] text-on-background">My Appointments</h1>
-          <p className="text-on-surface-variant">Manage your upcoming visits and view past interactions.</p>
+          <h1 className="mb-1 font-['Plus_Jakarta_Sans'] text-[30px] font-bold leading-9.5 text-on-background">{t('appointments.title', 'My Appointments')}</h1>
+          <p className="text-on-surface-variant">{t('appointments.subtitle', 'Manage your upcoming visits and view past interactions.')}</p>
         </div>
         <div className="flex gap-2 rounded-full bg-surface-variant p-1">
-          {(["upcoming", "past"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)}
-              className={`rounded-full px-6 py-2 font-semibold transition-all ${tab === t ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-background"}`}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+          {(["upcoming", "past"] as const).map((tabType) => (
+            <button key={tabType} onClick={() => setTab(tabType)}
+              className={`rounded-full px-6 py-2 font-semibold transition-all ${tab === tabType ? "bg-primary text-on-primary shadow-sm" : "text-on-surface-variant hover:text-on-background"}`}>
+              {tabType === "upcoming" ? t('appointments.tab_upcoming', 'Upcoming') : t('appointments.tab_past', 'Past')}
             </button>
           ))}
         </div>
@@ -81,12 +83,12 @@ export default function MyAppointmentsPage() {
       ) : displayed.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <span className="material-symbols-outlined mb-4 text-[48px] text-outline">calendar_month</span>
-          <h3 className="mb-2 text-lg font-semibold text-on-surface">No {tab} appointments</h3>
+          <h3 className="mb-2 text-lg font-semibold text-on-surface">{tab === "upcoming" ? t('appointments.no_upcoming', 'No upcoming appointments') : t('appointments.no_past', 'No past appointments')}</h3>
           <p className="mb-4 text-sm text-on-surface-variant">
-            {tab === "upcoming" ? "Book a session with a professional to get started." : "Your past appointments will appear here."}
+            {tab === "upcoming" ? t('appointments.no_upcoming_desc', "Book a session with a professional to get started.") : t('appointments.no_past_desc', "Your past appointments will appear here.")}
           </p>
           {tab === "upcoming" && (
-            <button onClick={() => navigate("/professionals")} className="rounded-full bg-primary px-6 py-3 font-semibold text-on-primary">Find Professionals</button>
+            <button onClick={() => navigate("/professionals")} className="rounded-full bg-primary px-6 py-3 font-semibold text-on-primary">{t('appointments.find_professionals', 'Find Professionals')}</button>
           )}
         </div>
       ) : (
@@ -125,19 +127,19 @@ export default function MyAppointmentsPage() {
                 {/* Actions */}
                 {tab === "upcoming" && apt.status !== "cancelled" && (
                   <div className="flex gap-2 border-t border-outline-variant/20 pt-3">
-                    <button onClick={() => handleCancel(apt._id)} className="rounded-full px-4 py-2 text-sm font-semibold text-error transition-colors hover:bg-error-container">Cancel</button>
+                    <button onClick={() => handleCancel(apt._id)} className="rounded-full px-4 py-2 text-sm font-semibold text-error transition-colors hover:bg-error-container">{t('appointments.cancel', 'Cancel')}</button>
                   </div>
                 )}
                 {tab === "past" && apt.status === "completed" && !apt.user_rating && (
                   <div className="border-t border-outline-variant/20 pt-3">
                     <button onClick={() => setRatingModal(apt._id)} className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-sm font-semibold text-primary transition-colors hover:bg-surface-variant">
-                      <span className="material-symbols-outlined text-[18px]">rate_review</span> Leave a Rating
+                      <span className="material-symbols-outlined text-[18px]">rate_review</span> {t('appointments.leave_rating', 'Leave a Rating')}
                     </button>
                   </div>
                 )}
                 {apt.user_rating && (
                   <div className="flex items-center justify-between border-t border-outline-variant/20 pt-3">
-                    <span className="text-xs font-semibold uppercase text-on-surface-variant">Your Rating</span>
+                    <span className="text-xs font-semibold uppercase text-on-surface-variant">{t('appointments.your_rating', 'Your Rating')}</span>
                     <div className="flex gap-0.5 text-tertiary-fixed-dim">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <span key={s} className="material-symbols-outlined text-[18px]" style={s <= apt.user_rating! ? { fontVariationSettings: "'FILL' 1" } : { opacity: 0.3 }}>star</span>
@@ -155,7 +157,7 @@ export default function MyAppointmentsPage() {
       {ratingModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="mx-4 w-full rounded-2xl bg-surface-container-lowest p-6 shadow-xl">
-            <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">Rate Your Experience</h3>
+            <h3 className="mb-4 font-['Plus_Jakarta_Sans'] text-xl font-semibold text-on-surface">{t('appointments.rate_experience', 'Rate Your Experience')}</h3>
             <div className="mb-6 flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((s) => (
                 <button key={s} onClick={() => setRatingValue(s)} className="text-tertiary-fixed-dim transition-transform hover:scale-110">
@@ -164,8 +166,8 @@ export default function MyAppointmentsPage() {
               ))}
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setRatingModal(null)} className="flex-1 rounded-full border border-outline-variant py-3 font-semibold text-on-surface">Cancel</button>
-              <button onClick={() => handleRate(ratingModal)} className="flex-1 rounded-full bg-primary py-3 font-semibold text-on-primary">Submit</button>
+              <button onClick={() => setRatingModal(null)} className="flex-1 rounded-full border border-outline-variant py-3 font-semibold text-on-surface">{t('appointments.cancel', 'Cancel')}</button>
+              <button onClick={() => handleRate(ratingModal)} className="flex-1 rounded-full bg-primary py-3 font-semibold text-on-primary">{t('appointments.submit', 'Submit')}</button>
             </div>
           </div>
         </div>

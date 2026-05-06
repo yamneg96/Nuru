@@ -3,12 +3,14 @@ import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"
 import { loginWithGoogle, loginAnonymous } from "@/api/auth.api"
 import { useAuthStore } from "@/store/authStore"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const login = useAuthStore((s) => s.login)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const { t } = useTranslation()
 
   const handleGoogleSuccess = async (response: CredentialResponse) => {
     if (!response.credential) return
@@ -42,8 +44,8 @@ export default function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-container-low p-4 font-sans text-on-surface antialiased md:p-8">
       {/* Ambient Background */}
-      <div className="pointer-events-none absolute top-0 left-0 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-fixed-dim/20 blur-[120px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 h-[600px] w-[600px] translate-x-1/3 translate-y-1/3 rounded-full bg-secondary-container/20 blur-[100px]" />
+      <div className="pointer-events-none absolute top-0 left-0 h-200 w-200 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-fixed-dim/20 blur-[120px]" />
+      <div className="pointer-events-none absolute right-0 bottom-0 h-150 w-150 translate-x-1/3 translate-y-1/3 rounded-full bg-secondary-container/20 blur-[100px]" />
 
       <main className="relative min-h-screen z-10 grid w-full grid-cols-1 items-center gap-8 md:grid-cols-12">
         {/* Left Column: Hero */}
@@ -56,19 +58,19 @@ export default function LoginPage() {
               Nuru
             </Link>
           </div>
-          <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-[38px] font-bold text-on-surface">
-            Talk freely.
+          <h1 className="font-['Plus_Jakarta_Sans'] text-[30px] leading-9.5 font-bold text-on-surface">
+            {t('login.title_1', 'Talk freely.')}
             <br />
-            <span className="text-primary">Stay private.</span>
+            <span className="text-primary">{t('login.title_2', 'Stay private.')}</span>
           </h1>
           <p className="text-lg leading-7 text-on-surface-variant">
-            We use secure sign-in, but your identity stays anonymous.
+            {t('login.subtitle', 'We use secure sign-in, but your identity stays anonymous.')}
           </p>
         </div>
 
         {/* Right Column: Interactive Card */}
         <div className="md:col-span-7">
-          <div className="relative flex flex-col gap-8 overflow-hidden rounded-[2rem] border border-outline-variant/30 bg-surface-container-lowest p-8 shadow-sm shadow-primary/5 md:p-12">
+          <div className="relative flex flex-col gap-8 overflow-hidden rounded-3xl border border-outline-variant/30 bg-surface-container-lowest p-8 shadow-sm shadow-primary/5 md:p-12">
             {error && (
               <div className="rounded-xl bg-error-container px-4 py-3 text-sm font-medium text-on-error-container">
                 {error}
@@ -98,7 +100,7 @@ export default function LoginPage() {
               <div className="flex items-center gap-4 py-2">
                 <div className="h-px flex-1 bg-outline-variant/50" />
                 <span className="text-xs font-semibold tracking-wider text-outline uppercase">
-                  or
+                  {t('login.or', 'or')}
                 </span>
                 <div className="h-px flex-1 bg-outline-variant/50" />
               </div>
@@ -112,7 +114,7 @@ export default function LoginPage() {
                   incognito
                 </span>
                 <span className="font-semibold">
-                  Continue anonymously (limited features)
+                  {t('login.continue_anon', 'Continue anonymously (limited features)')}
                 </span>
               </button>
             </div>
@@ -124,27 +126,19 @@ export default function LoginPage() {
               {[
                 {
                   icon: "no_accounts",
-                  text: (
-                    <>
-                      We do{" "}
-                      <strong className="font-semibold text-on-surface">
-                        NOT
-                      </strong>{" "}
-                      store your name or email
-                    </>
-                  ),
+                  text: <span dangerouslySetInnerHTML={{ __html: t('login.trust_1', 'We do <strong>NOT</strong> store your name or email') }} />,
                 },
                 {
                   icon: "visibility_off",
-                  text: "You will be anonymous inside the app",
+                  text: t('login.trust_2', 'You will be anonymous inside the app'),
                 },
-                { icon: "lock", text: "Your conversations are private" },
+                { icon: "lock", text: t('login.trust_3', 'Your conversations are private') },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
                   <span className="material-symbols-outlined fill text-[24px] text-secondary">
                     {item.icon}
                   </span>
-                  <p className="pt-[2px] text-on-surface-variant">
+                  <p className="pt-0.5 text-on-surface-variant">
                     {item.text}
                   </p>
                 </div>
@@ -154,9 +148,7 @@ export default function LoginPage() {
             {/* Footer Microcopy */}
             <div className="pt-1 text-center">
               <p className="text-xs font-normal text-outline-variant">
-                We only use Google to verify you are real.
-                <br />
-                You will not be identified.
+                <span dangerouslySetInnerHTML={{ __html: t('login.footer', 'We only use Google to verify you are real.<br />You will not be identified.') }} />
               </p>
             </div>
           </div>
