@@ -14,7 +14,11 @@
     "professionals": "Ogeeyyii",
     "events": "Taateewwan",
     "appointments": "Beellama",
-    "reports": "Gabaasa"
+    "reports": "Gabaasa",
+    "decision": "Gorsituu Murtee",
+    "quiz": "Qormaata",
+    "safely": "Nageenya",
+    "contact": "Nu Quunnamaa"
   },
   "landing": {
     "hero_title": "Jireenya kee. Filannoo kee. Fuuldura kee.",
@@ -230,11 +234,11 @@
   },
   "privacy_policy": {
     "title": "Imaammata Iccitii",
-    "effective": "Guyyaa Hojiirra Itti Oolu: Amajjii 1, 2024"
+    "effective": "Guyyaa Hojiirra Itti Oolu: Amajjii 1, 2026"
   },
   "terms": {
     "title": "Haala Tajaajilaa",
-    "effective": "Guyyaa Hojiirra Itti Oolu: Amajjii 1, 2024"
+    "effective": "Guyyaa Hojiirra Itti Oolu: Amajjii 1, 2026"
   },
   "common": {
     "loading": "Fe'aa jira...",
@@ -250,6 +254,6 @@
     "faq": "Gaaffilee Irra Deddeebiin Gaafataman",
     "support": "Deeggarsa",
     "contact": "Nu Quunnamaa",
-    "copyright": "© 2024 Nuru. Dargaggoota Itoophiyaatiif hiriyyaa amanamaa."
+    "copyright": "© 2026 Nuru. Dargaggoota Itoophiyaatiif hiriyyaa amanamaa."
   }
 }

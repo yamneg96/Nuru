@@ -14,7 +14,11 @@
     "professionals": "Professionals",
     "events": "Events",
     "appointments": "Appointments",
-    "reports": "Reports"
+    "reports": "Reports",
+    "decision": "Decision Tool",
+    "quiz": "Quiz",
+    "safely": "Safety",
+    "contact": "Contact"
   },
   "landing": {
     "hero_title": "Your life. Your choices. Your future.",
@@ -230,11 +234,11 @@
   },
   "privacy_policy": {
     "title": "Privacy Policy",
-    "effective": "Effective Date: January 1, 2024"
+    "effective": "Effective Date: January 1, 2026"
   },
   "terms": {
     "title": "Terms of Service",
-    "effective": "Effective Date: January 1, 2024"
+    "effective": "Effective Date: January 1, 2026"
   },
   "common": {
     "loading": "Loading...",
@@ -250,6 +254,6 @@
     "faq": "FAQ",
     "support": "Support",
     "contact": "Contact",
-    "copyright": "© 2024 Nuru. Trusted companion for Ethiopian youth."
+    "copyright": "© 2026 Nuru. Trusted companion for Ethiopian youth."
   }
 }

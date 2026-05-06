@@ -14,7 +14,11 @@
     "professionals": "ባለሙያዎች",
     "events": "ክስተቶች",
     "appointments": "ቀጠሮዎች",
-    "reports": "ሪፖርቶች"
+    "reports": "ሪፖርቶች",
+    "decision": "የውሳኔ ረዳት",
+    "quiz": "ፈተና",
+    "safely": "ደህንነት",
+    "contact": "ያግኙን"
   },
   "landing": {
     "hero_title": "ሕይወትህ። ምርጫህ። የወደፊትህ።",
@@ -230,11 +234,11 @@
   },
   "privacy_policy": {
     "title": "የግላዊነት ፖሊሲ",
-    "effective": "ተግባራዊ ቀን: ጃንዋሪ 1, 2024"
+    "effective": "ተግባራዊ ቀን: ጃንዋሪ 1, 2026"
   },
   "terms": {
     "title": "የአገልግሎት ውል",
-    "effective": "ተግባራዊ ቀን: ጃንዋሪ 1, 2024"
+    "effective": "ተግባራዊ ቀን: ጃንዋሪ 1, 2026"
   },
   "common": {
     "loading": "በመጫን ላይ...",
@@ -250,6 +254,6 @@
     "faq": "ተደጋግመው የሚጠየቁ ጥያቄዎች",
     "support": "ድጋፍ",
     "contact": "ያግኙን",
-    "copyright": "© 2024 ኑሩ። ለኢትዮጵያ ወጣቶች ታማኝ አጋር።"
+    "copyright": "© 2026 ኑሩ። ለኢትዮጵያ ወጣቶች ታማኝ አጋር።"
   }
 }
