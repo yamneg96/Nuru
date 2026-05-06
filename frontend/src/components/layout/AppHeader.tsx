@@ -2,12 +2,14 @@ import { Link, useLocation } from "react-router-dom"
 import { useThemeStore } from "@/store/themeStore"
 import { useTranslation } from "react-i18next"
 import { usePreferencesStore } from "@/store/preferencesStore";
+import { useAuthStore } from "@/store/authStore";
 
 export function AppHeader() {
   const location = useLocation()
   const { theme, setTheme } = useThemeStore()
   const { t, i18n } = useTranslation()
   const { language, setLanguage } = usePreferencesStore()
+  const {isAuthenticated} = useAuthStore();
   const isDark =
     theme === "dark" ||
     (theme === "system" &&
@@ -76,15 +78,15 @@ export function AppHeader() {
             {isDark ? "light_mode" : "dark_mode"}
           </span>
         </button>
-        {isLanding ? (
+        {isAuthenticated && isLanding ? (
           <Link
-            to="/login"
+            to="/settings"
             className="flex items-center gap-2 rounded-full bg-primary/10 px-6 py-2 font-semibold text-primary transition-colors hover:bg-primary/20"
           >
             <span className="material-symbols-outlined text-[20px]">
               lock_person
             </span>
-            Login
+            {t("common.settings", "Settings")}
           </Link>
         ) : (
           <Link
@@ -104,6 +106,7 @@ export function MobileHeader({ title, onMenuClick }: { title?: string; onMenuCli
   const { theme, setTheme } = useThemeStore()
   const { t, i18n } = useTranslation()
   const { language, setLanguage } = usePreferencesStore()
+  const {isAuthenticated} = useAuthStore();
   
   const isDark =
     theme === "dark" ||
@@ -161,12 +164,13 @@ export function MobileHeader({ title, onMenuClick }: { title?: string; onMenuCli
             {isDark ? "light_mode" : "dark_mode"}
           </span>
         </button>
-        {isLanding ? (
+        {isAuthenticated && isLanding ? (
           <Link
-            to="/login"
+            to="/settings"
             className="rounded-full p-2 text-primary transition-colors hover:bg-surface-container-high dark:text-blue-400 dark:hover:bg-gray-800"
           >
-            <span className="material-symbols-outlined">login</span>
+            <span className="material-symbols-outlined">settings</span>
+            {t("common.settings", "Settings")}
           </Link>
         ) : (
           <Link

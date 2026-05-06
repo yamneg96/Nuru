@@ -5,8 +5,16 @@ const NAV_ITEMS = [
   { path: "/dashboard", labelKey: "home", icon: "home" },
   { path: "/explore", labelKey: "explore", icon: "explore" },
   { path: "/chat", labelKey: "chat", icon: "chat" },
+  { path: "/decision", labelKey: "decision", icon: "account_tree" },
+  { path: "/quiz", labelKey: "quiz", icon: "quiz" },
   { path: "/services", labelKey: "services", icon: "medical_services" },
-  { path: "/settings", labelKey: "profile", icon: "person" },
+  { path: "/appointments", labelKey: "appointments", icon: "calendar_today" },
+  { path: "/professionals", labelKey: "professionals", icon: "clinical_notes" },
+  { path: "/events", labelKey: "events", icon: "campaign" },
+  { path: "/reports", labelKey: "reports", icon: "bar_chart" },
+  { path: "/safely", labelKey: "safely", icon: "health_and_safety" },
+  { path: "/contact", labelKey: "contact", icon: "contact_support" },
+  { path: "/settings", labelKey: "settings", icon: "settings" },
 ]
 
 interface AppSidebarProps {
