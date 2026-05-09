@@ -11,6 +11,8 @@ const querySchema = z.object({
   search: z.string().optional(),
   lat: z.coerce.number().optional(),
   lng: z.coerce.number().optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
 });
 
 const nearbyQuerySchema = z.object({
@@ -18,6 +20,8 @@ const nearbyQuerySchema = z.object({
   lng: z.coerce.number(),
   radius: z.coerce.number().default(5000),
   type: z.string().optional(),
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(20),
 });
 
 /**
@@ -54,13 +58,25 @@ const nearbyQuerySchema = z.object({
  *         schema:
  *           type: number
  *         description: Optional longitude for real-time fallback
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page (max 100)
  *     responses:
  *       200:
  *         description: List of health services
  */
 servicesRoutes.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { tag, type, search, lat, lng } = querySchema.parse(req.query);
+    const { tag, type, search, lat, lng, page, limit } = querySchema.parse(req.query);
     const filter: Record<string, any> = {};
 
     if (tag) filter.tags = { $in: [tag] };
@@ -72,10 +88,15 @@ servicesRoutes.get("/", async (req: Request, res: Response, next: NextFunction) 
       ];
     }
 
-    const services = await Service.find(filter).sort({ verified: -1, name: 1 });
+    const skip = (page - 1) * limit;
+    const total = await Service.countDocuments(filter);
+    const services = await Service.find(filter)
+      .sort({ verified: -1, name: 1 })
+      .skip(skip)
+      .limit(limit);
 
     // If DB is empty, fall back to real-time OSM data
-    if (services.length === 0) {
+    if (total === 0) {
       const searchLat = lat || 9.03; // Default to Addis Ababa if no lat provided
       const searchLng = lng || 38.75;
       const { findNearbyServices } = await import("../services/services.service.js");
@@ -85,10 +106,20 @@ servicesRoutes.get("/", async (req: Request, res: Response, next: NextFunction) 
         ? `No admin-curated services found. Showing real-time data near your location (${lat}, ${lng}).`
         : "No admin-curated services found. Showing real-time data near Addis Ababa. Provide lat/lng for your location.";
 
-      return res.json({ data: osmServices, source: "openstreetmap", note: noteMsg });
+      const paginatedOsm = osmServices.slice(skip, skip + limit);
+
+      return res.json({ 
+        data: paginatedOsm, 
+        meta: { page, limit, total: osmServices.length, pages: Math.ceil(osmServices.length / limit) },
+        source: "openstreetmap", 
+        note: noteMsg 
+      });
     }
 
-    res.json({ data: services });
+    res.json({ 
+      data: services,
+      meta: { page, limit, total, pages: Math.ceil(total / limit) }
+    });
   } catch (error) {
     next(error);
   }
@@ -127,6 +158,18 @@ servicesRoutes.get("/", async (req: Request, res: Response, next: NextFunction) 
  *         schema:
  *           type: string
  *           enum: [clinic, pharmacy, hospital, youth_center, counseling]
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page (max 100)
  *     responses:
  *       200:
  *         description: Real-time list of nearby health services
@@ -135,9 +178,21 @@ servicesRoutes.get("/", async (req: Request, res: Response, next: NextFunction) 
  */
 servicesRoutes.get("/nearby", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { lat, lng, radius, type } = nearbyQuerySchema.parse(req.query);
+    const { lat, lng, radius, type, page, limit } = nearbyQuerySchema.parse(req.query);
     const services = await findNearbyServices(lat, lng, radius, type);
-    res.json({ data: services });
+    
+    const skip = (page - 1) * limit;
+    const paginatedServices = services.slice(skip, skip + limit);
+
+    res.json({ 
+      data: paginatedServices,
+      meta: {
+        page,
+        limit,
+        total: services.length,
+        pages: Math.ceil(services.length / limit)
+      }
+    });
   } catch (error) {
     next(error);
   }
